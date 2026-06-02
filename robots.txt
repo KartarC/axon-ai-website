@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://axon.ai/sitemap.xml
+
+# Allow major AI crawlers for GEO/AEO
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /

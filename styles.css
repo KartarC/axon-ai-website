@@ -529,6 +529,59 @@ img,svg{display:block;max-width:100%}
   font-size:.78rem;color:var(--gray-400);flex-wrap:wrap;gap:8px;
 }
 
+/* ── TOOL GRID PREVIEW (hero visual) ─────────────────────────────────────── */
+.tool-grid-preview{
+  background:var(--white);border:var(--border);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-lg);overflow:hidden;
+}
+.tgp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;background:var(--gray-50);border-bottom:var(--border);
+}
+.tgp-title{display:flex;align-items:center;gap:7px;font-size:.83rem;font-weight:700;color:var(--gray-800)}
+.tgp-count{font-size:.72rem;font-weight:600;color:var(--gray-400);background:var(--gray-100);border:var(--border);padding:2px 9px;border-radius:100px}
+.tgp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gray-200)}
+.tgp-module{
+  background:var(--white);padding:14px 16px;
+  transition:background var(--t);cursor:default;
+  display:flex;flex-direction:column;gap:4px;
+}
+.tgp-module:hover{background:var(--gray-50)}
+.tgp-module--active{background:var(--blue-50)}
+.tgp-module--active:hover{background:var(--blue-50)}
+.tgp-module--new{position:relative}
+.tgp-module--service{background:var(--gray-50)}
+.tgp-mod-icon{color:var(--gray-400);margin-bottom:4px}
+.tgp-module--active .tgp-mod-icon{color:var(--blue-600)}
+.tgp-mod-name{font-size:.82rem;font-weight:700;color:var(--gray-900)}
+.tgp-mod-stat{font-size:.72rem;color:var(--gray-400)}
+.tgp-mod-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:100px;width:fit-content;margin-top:4px}
+.tgp-badge--ok{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+.tgp-badge--alert{background:#FFF1F2;color:#DC2626;border:1px solid #FECACA}
+.tgp-badge--warn{background:#FFFBEB;color:#D97706;border:1px solid #FDE68A}
+.tgp-badge--new{background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-100)}
+.tgp-badge--service{background:var(--gray-100);color:var(--gray-600);border:var(--border)}
+
+/* ── WEBSITE DESIGN SECTION ──────────────────────────────────────────────── */
+.wd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.wd-card{
+  background:var(--white);border:var(--border);border-radius:var(--radius-lg);
+  padding:28px;transition:box-shadow var(--t),border-color var(--t),transform var(--t);
+}
+.wd-card:hover{box-shadow:var(--shadow);border-color:var(--gray-300);transform:translateY(-2px)}
+.wd-icon{
+  width:44px;height:44px;border-radius:var(--radius);
+  background:var(--gray-100);border:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gray-600);margin-bottom:16px;
+  transition:background var(--t),border-color var(--t),color var(--t);
+}
+.wd-card:hover .wd-icon{background:var(--blue-50);border-color:var(--blue-100);color:var(--blue-700)}
+.wd-card h3{font-size:1.05rem;font-weight:700;color:var(--gray-900);margin-bottom:10px;letter-spacing:-.01em}
+.wd-card p{font-size:.875rem;color:var(--gray-500);line-height:1.7;margin-bottom:14px}
+.wd-includes{display:flex;flex-wrap:wrap;gap:6px}
+.wd-includes span{font-size:.72rem;font-weight:600;color:var(--gray-500);padding:3px 9px;border-radius:100px;background:var(--gray-100);border:var(--border)}
+
 /* ── REVEAL ANIMATION ────────────────────────────────────────────────────── */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
 .reveal.visible{opacity:1;transform:none}
