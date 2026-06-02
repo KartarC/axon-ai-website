@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Axon AI — Lead Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#F9FAFB;color:#111827;-webkit-font-smoothing:antialiased}
+    a{text-decoration:none;color:inherit}
+
+    /* ── LOGIN SCREEN ─────────────────────────────── */
+    #login-screen{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      padding:20px;
+    }
+    .login-card{
+      background:#fff;border:1px solid #E5E7EB;border-radius:16px;
+      padding:40px;width:100%;max-width:380px;
+      box-shadow:0 4px 24px rgba(0,0,0,.08);
+      text-align:center;
+    }
+    .login-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px}
+    .login-logo span{font-size:1.1rem;font-weight:800;color:#111827}
+    .login-card h1{font-size:1.3rem;font-weight:700;margin-bottom:6px}
+    .login-card p{font-size:.875rem;color:#6B7280;margin-bottom:24px}
+    .login-input{
+      width:100%;padding:11px 14px;border:1px solid #D1D5DB;border-radius:8px;
+      font-size:.9rem;font-family:inherit;outline:none;margin-bottom:12px;
+      transition:border-color .15s;
+    }
+    .login-input:focus{border-color:#1D4ED8;box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+    .login-btn{
+      width:100%;padding:12px;border:none;border-radius:8px;
+      background:#111827;color:#fff;font-size:.9rem;font-weight:700;
+      cursor:pointer;transition:background .15s;
+    }
+    .login-btn:hover{background:#1F2937}
+    .login-error{font-size:.82rem;color:#DC2626;margin-top:8px;display:none}
+
+    /* ── DASHBOARD ────────────────────────────────── */
+    #dashboard{display:none}
+    .topbar{
+      background:#fff;border-bottom:1px solid #E5E7EB;
+      padding:0 24px;height:60px;display:flex;align-items:center;gap:16px;
+      position:sticky;top:0;z-index:10;
+    }
+    .topbar-logo{display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:800;color:#111827}
+    .topbar-badge{
+      font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:100px;
+      background:#EFF6FF;color:#1D4ED8;border:1px solid #DBEAFE;
+    }
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+    .topbar-count{font-size:.82rem;color:#6B7280;font-weight:500}
+    .btn-logout{
+      padding:6px 14px;border-radius:7px;font-size:.82rem;font-weight:600;
+      color:#6B7280;border:1px solid #E5E7EB;background:#fff;cursor:pointer;
+      transition:all .15s;
+    }
+    .btn-logout:hover{color:#111827;border-color:#D1D5DB}
+
+    .main{padding:28px 24px;max-width:1200px;margin:0 auto}
+
+    /* ── STATS ROW ────────────────────────────────── */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .stat-card{
+      background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:20px 22px;
+    }
+    .stat-card-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9CA3AF;margin-bottom:8px}
+    .stat-card-num{font-size:2rem;font-weight:900;color:#111827;letter-spacing:-.04em;line-height:1}
+    .stat-card-sub{font-size:.75rem;color:#9CA3AF;margin-top:4px}
+    .stat-card--blue .stat-card-num{color:#1D4ED8}
+
+    /* ── FILTERS ──────────────────────────────────── */
+    .filters-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-search{
+      flex:1;min-width:220px;padding:9px 14px;border:1px solid #E5E7EB;
+      border-radius:8px;font-size:.875rem;font-family:inherit;outline:none;
+      transition:border-color .15s;
+    }
+    .filter-search:focus{border-color:#1D4ED8;box-shadow:0 0 0 3px rgba(29,78,216,.07)}
+    .filter-btn{
+      padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:600;
+      border:1px solid #E5E7EB;background:#fff;color:#6B7280;cursor:pointer;
+      transition:all .15s;white-space:nowrap;
+    }
+    .filter-btn.active,.filter-btn:hover{background:#111827;color:#fff;border-color:#111827}
+
+    /* ── TABLE ────────────────────────────────────── */
+    .table-wrap{background:#fff;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    thead{background:#F9FAFB;border-bottom:1px solid #E5E7EB}
+    th{
+      padding:11px 16px;text-align:left;font-size:.72rem;font-weight:700;
+      color:#6B7280;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;
+    }
+    tbody tr{border-bottom:1px solid #F3F4F6;transition:background .1s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:#FAFAFA}
+    td{padding:14px 16px;font-size:.875rem;color:#374151;vertical-align:middle}
+    .td-name{font-weight:700;color:#111827}
+    .td-company{color:#6B7280;font-size:.82rem;margin-top:2px}
+    .td-email a{color:#1D4ED8;font-weight:500}
+    .td-email a:hover{text-decoration:underline}
+    .td-volume{color:#9CA3AF;font-size:.82rem}
+    .td-date{color:#9CA3AF;font-size:.82rem;white-space:nowrap}
+    .status-pill{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:100px;
+      letter-spacing:.03em;text-transform:capitalize;white-space:nowrap;
+    }
+    .status-new{background:#EFF6FF;color:#1D4ED8;border:1px solid #DBEAFE}
+    .status-contacted{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+    .status-booked{background:#F5F3FF;color:#7C3AED;border:1px solid #DDD6FE}
+    .status-closed{background:#F9FAFB;color:#6B7280;border:1px solid #E5E7EB}
+    .actions-cell{display:flex;gap:6px;align-items:center}
+    .btn-reply{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:6px 13px;border-radius:7px;font-size:.8rem;font-weight:700;
+      background:#111827;color:#fff;border:none;cursor:pointer;
+      transition:background .15s;white-space:nowrap;
+      text-decoration:none;
+    }
+    .btn-reply:hover{background:#1F2937}
+    .btn-reply svg{flex-shrink:0}
+    .btn-status{
+      padding:5px 11px;border-radius:7px;font-size:.78rem;font-weight:600;
+      color:#6B7280;border:1px solid #E5E7EB;background:#fff;cursor:pointer;
+      transition:all .15s;white-space:nowrap;
+    }
+    .btn-status:hover{border-color:#9CA3AF;color:#374151}
+
+    /* ── EMPTY / LOADING ──────────────────────────── */
+    .empty-row td{text-align:center;padding:60px;color:#9CA3AF;font-size:.9rem}
+    .loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:10px;color:#9CA3AF;font-size:.9rem}
+    .spinner{width:18px;height:18px;border:2px solid #E5E7EB;border-top-color:#374151;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── TOAST ────────────────────────────────────── */
+    .toast{
+      position:fixed;bottom:24px;right:24px;z-index:999;
+      background:#111827;color:#fff;padding:12px 20px;border-radius:10px;
+      font-size:.875rem;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);
+      transform:translateY(100px);opacity:0;transition:all .3s ease;
+      pointer-events:none;
+    }
+    .toast.show{transform:none;opacity:1}
+
+    @media(max-width:900px){
+      .stats-row{grid-template-columns:1fr 1fr}
+      .topbar{padding:0 16px}
+      .main{padding:20px 16px}
+      th:nth-child(4),td:nth-child(4){display:none}
+    }
+    @media(max-width:600px){
+      .stats-row{grid-template-columns:1fr 1fr}
+      th:nth-child(5),td:nth-child(5){display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ─────────────────────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+        <circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".45"/>
+        <line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      </svg>
+      <span>Axon AI</span>
+    </div>
+    <h1>Lead Dashboard</h1>
+    <p>Enter your admin password to view demo requests</p>
+    <input type="password" id="passwordInput" class="login-input" placeholder="Admin password" onkeydown="if(event.key==='Enter')login()"/>
+    <button class="login-btn" onclick="login()">Sign In</button>
+    <p class="login-error" id="loginError">Incorrect password</p>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ─────────────────────────────────────────────────────────── -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+        <circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".45"/>
+        <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".45"/>
+        <line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      </svg>
+      Axon AI
+    </div>
+    <span class="topbar-badge">Lead Dashboard</span>
+    <div class="topbar-right">
+      <span class="topbar-count" id="topbarCount"></span>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card stat-card--blue">
+        <div class="stat-card-label">Total Leads</div>
+        <div class="stat-card-num" id="statTotal">—</div>
+        <div class="stat-card-sub">all time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">New</div>
+        <div class="stat-card-num" id="statNew">—</div>
+        <div class="stat-card-sub">uncontacted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Contacted</div>
+        <div class="stat-card-num" id="statContacted">—</div>
+        <div class="stat-card-sub">in progress</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">This Week</div>
+        <div class="stat-card-num" id="statWeek">—</div>
+        <div class="stat-card-sub">last 7 days</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-row">
+      <input type="text" class="filter-search" id="searchInput" placeholder="Search by name, email, or company..." oninput="applyFilter()"/>
+      <button class="filter-btn active" data-status="all"    onclick="setStatusFilter('all',this)">All</button>
+      <button class="filter-btn"        data-status="new"    onclick="setStatusFilter('new',this)">New</button>
+      <button class="filter-btn"        data-status="contacted" onclick="setStatusFilter('contacted',this)">Contacted</button>
+      <button class="filter-btn"        data-status="booked"   onclick="setStatusFilter('booked',this)">Booked</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="loading" id="loadingState">
+        <div class="spinner"></div>
+        Loading leads…
+      </div>
+      <table id="leadsTable" style="display:none">
+        <thead>
+          <tr>
+            <th>Name / Company</th>
+            <th>Email</th>
+            <th>RFQ Volume</th>
+            <th>Received</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let allLeads = []
+let currentStatus = 'all'
+let adminSecret = ''
+
+// ── AUTH ────────────────────────────────────────────────────────────────────
+function login() {
+  const pw = document.getElementById('passwordInput').value
+  if (!pw) return
+  adminSecret = pw
+  loadLeads()
+}
+
+function logout() {
+  adminSecret = ''
+  allLeads = []
+  document.getElementById('login-screen').style.display = 'flex'
+  document.getElementById('dashboard').style.display = 'none'
+  document.getElementById('passwordInput').value = ''
+  document.getElementById('loginError').style.display = 'none'
+}
+
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login()
+})
+
+// ── LOAD DATA ───────────────────────────────────────────────────────────────
+async function loadLeads() {
+  try {
+    const res = await fetch('/api/leads?secret=' + encodeURIComponent(adminSecret))
+
+    if (res.status === 401) {
+      document.getElementById('loginError').style.display = 'block'
+      return
+    }
+
+    if (!res.ok) throw new Error('Server error')
+
+    allLeads = await res.json()
+
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('dashboard').style.display = 'block'
+    document.getElementById('loginError').style.display = 'none'
+    document.getElementById('loadingState').style.display = 'none'
+    document.getElementById('leadsTable').style.display = 'table'
+
+    updateStats()
+    renderTable()
+
+  } catch (err) {
+    console.error(err)
+    document.getElementById('loginError').style.display = 'block'
+    document.getElementById('loginError').textContent = 'Connection error — check console'
+  }
+}
+
+// ── STATS ───────────────────────────────────────────────────────────────────
+function updateStats() {
+  const total = allLeads.length
+  const newCount = allLeads.filter(l => l.status === 'new').length
+  const contacted = allLeads.filter(l => l.status === 'contacted').length
+  const weekAgo = new Date(Date.now() - 7 * 86400000)
+  const thisWeek = allLeads.filter(l => new Date(l.created_at) > weekAgo).length
+
+  document.getElementById('statTotal').textContent = total
+  document.getElementById('statNew').textContent = newCount
+  document.getElementById('statContacted').textContent = contacted
+  document.getElementById('statWeek').textContent = thisWeek
+  document.getElementById('topbarCount').textContent = total + ' lead' + (total !== 1 ? 's' : '')
+}
+
+// ── FILTER ──────────────────────────────────────────────────────────────────
+function setStatusFilter(status, btn) {
+  currentStatus = status
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  renderTable()
+}
+
+function applyFilter() { renderTable() }
+
+// ── RENDER ──────────────────────────────────────────────────────────────────
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase()
+
+  let filtered = allLeads.filter(l => {
+    const matchStatus = currentStatus === 'all' || l.status === currentStatus
+    const matchSearch = !search ||
+      l.name?.toLowerCase().includes(search) ||
+      l.email?.toLowerCase().includes(search) ||
+      l.company?.toLowerCase().includes(search)
+    return matchStatus && matchSearch
+  })
+
+  const tbody = document.getElementById('leadsBody')
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No leads found</td></tr>'
+    return
+  }
+
+  tbody.innerHTML = filtered.map(lead => `
+    <tr id="row-${lead.id}">
+      <td>
+        <div class="td-name">${esc(lead.name)}</div>
+        ${lead.company ? `<div class="td-company">${esc(lead.company)}</div>` : ''}
+      </td>
+      <td class="td-email"><a href="mailto:${esc(lead.email)}">${esc(lead.email)}</a></td>
+      <td class="td-volume">${lead.rfq_volume ? esc(lead.rfq_volume) : '—'}</td>
+      <td class="td-date">${formatDate(lead.created_at)}</td>
+      <td><span class="status-pill status-${lead.status}">${lead.status}</span></td>
+      <td>
+        <div class="actions-cell">
+          <a class="btn-reply" href="${buildMailto(lead)}">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+              <rect x="1" y="2.5" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M1 4l5.5 3.5L12 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            Reply
+          </a>
+          <button class="btn-status" onclick="cycleStatus('${lead.id}', '${lead.status}')">
+            Mark ${nextStatus(lead.status)}
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('')
+}
+
+// ── STATUS CYCLE ────────────────────────────────────────────────────────────
+const statusOrder = ['new', 'contacted', 'booked', 'closed']
+function nextStatus(s) {
+  const idx = statusOrder.indexOf(s)
+  return statusOrder[(idx + 1) % statusOrder.length]
+}
+
+async function cycleStatus(id, current) {
+  const next = nextStatus(current)
+  const lead = allLeads.find(l => l.id === id)
+  if (!lead) return
+
+  // Optimistic update
+  lead.status = next
+  updateStats()
+  renderTable()
+
+  // Persist to Supabase via API
+  try {
+    await fetch(`/api/leads?secret=${encodeURIComponent(adminSecret)}&id=${id}&status=${next}`, {
+      method: 'PATCH',
+    })
+    showToast(`Marked as ${next}`)
+  } catch (e) {
+    showToast('Failed to update status')
+  }
+}
+
+// ── MAILTO ──────────────────────────────────────────────────────────────────
+function buildMailto(lead) {
+  const subject = encodeURIComponent(`Re: Demo Request — Axon AI${lead.company ? ' | ' + lead.company : ''}`)
+  const body = encodeURIComponent(
+`Hi ${lead.name.split(' ')[0]},
+
+Thanks for requesting a demo of Axon AI. I'd love to show you how we can automate your RFQ-to-quote process and get you to measurable ROI within 30 days.
+
+Would any of the following times work for a 30-minute call?
+
+- [Option 1]
+- [Option 2]
+- [Option 3]
+
+Looking forward to connecting.
+
+Best,
+[Your name]
+Axon AI
+`
+  )
+  return `mailto:${lead.email}?subject=${subject}&body=${body}`
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function formatDate(iso) {
+  const d = new Date(iso)
+  const now = new Date()
+  const diff = Math.floor((now - d) / 60000) // minutes
+  if (diff < 1)  return 'Just now'
+  if (diff < 60) return diff + 'm ago'
+  if (diff < 1440) return Math.floor(diff/60) + 'h ago'
+  return d.toLocaleDateString('en-CA', { month:'short', day:'numeric', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined })
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2800)
+}
+</script>
+</body>
+</html>

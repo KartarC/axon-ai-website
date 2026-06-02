@@ -38,18 +38,46 @@ setInterval(() => {
 }, 2400)
 
 /* ── DEMO FORM ──────────────────────────────────────────────────────────── */
-document.getElementById('demoForm')?.addEventListener('submit', e => {
+document.getElementById('demoForm')?.addEventListener('submit', async e => {
   e.preventDefault()
-  const btn = e.target.querySelector('.btn-submit')
+  const form = e.target
+  const btn  = form.querySelector('.btn-submit')
+
   btn.textContent = 'Submitting...'
-  btn.disabled = true
-  btn.style.opacity = '.75'
-  setTimeout(() => {
-    btn.textContent = 'Request received — we\'ll be in touch within 1 business day'
-    btn.style.opacity = '1'
-    btn.style.background = '#16A34A'
-    btn.style.boxShadow = '0 4px 16px rgba(22,163,74,.25)'
-  }, 900)
+  btn.disabled    = true
+  btn.style.opacity = '.7'
+
+  const data = {
+    name:    form.name.value.trim(),
+    email:   form.email.value.trim(),
+    company: form.company?.value?.trim() || '',
+    volume:  form.volume?.value?.trim()  || '',
+  }
+
+  try {
+    const res = await fetch('/api/submit-demo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(data),
+    })
+
+    const json = await res.json()
+
+    if (!res.ok) throw new Error(json.error || 'Submission failed')
+
+    btn.textContent       = 'Request received — we\'ll be in touch within 1 business day'
+    btn.style.opacity     = '1'
+    btn.style.background  = '#16A34A'
+    btn.style.boxShadow   = '0 4px 16px rgba(22,163,74,.25)'
+    form.reset()
+
+  } catch (err) {
+    console.error('Form submit error:', err)
+    btn.textContent  = 'Something went wrong — please email us directly'
+    btn.style.background = '#DC2626'
+    btn.style.opacity    = '1'
+    btn.disabled         = false
+  }
 })
 
 /* ── ACTIVE NAV LINK ────────────────────────────────────────────────────── */
