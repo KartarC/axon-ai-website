@@ -3,362 +3,504 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Axon AI — The AI Operations Layer for Precision Manufacturing</title>
-  <meta name="description" content="Axon AI automates RFQ-to-quote, scheduling, and customer ops for precision manufacturers. AI that runs your back-office 24/7." />
+  <title>Axon AI — AI Operations for Precision Manufacturing</title>
+  <meta name="description" content="Axon AI is the AI operations layer for precision manufacturers. Automate RFQ-to-quote, scheduling, and customer ops. See ROI in 30 days." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ── NAV ─────────────────────────────────────────────────────────── -->
-  <nav class="nav" id="nav">
-    <div class="nav__inner container">
-      <a href="/" class="nav__logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="3" fill="#00D4FF"/>
-          <circle cx="4" cy="8" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="24" cy="8" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="4" cy="20" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="24" cy="20" r="2" fill="#00D4FF" opacity=".6"/>
-          <line x1="14" y1="11" x2="5.5" y2="9" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="11" x2="22.5" y2="9" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="17" x2="5.5" y2="19" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="17" x2="22.5" y2="19" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-        </svg>
-        <span class="nav__wordmark">Axon <span class="nav__wordmark--accent">AI</span></span>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="3.5" fill="#00D4FF"/>
+            <circle cx="5" cy="9"  r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="27" cy="9"  r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="5" cy="23" r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="27" cy="23" r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="16" cy="4"  r="1.8" fill="#00D4FF" opacity=".35"/>
+            <circle cx="16" cy="28" r="1.8" fill="#00D4FF" opacity=".35"/>
+            <line x1="16" y1="12.5" x2="6.5" y2="10"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="12.5" x2="25.5" y2="10" stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="19.5" x2="6.5" y2="22"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="19.5" x2="25.5" y2="22" stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="12.5" x2="16" y2="5.8" stroke="#00D4FF" stroke-width="1" opacity=".3"/>
+            <line x1="16" y1="19.5" x2="16" y2="26.2" stroke="#00D4FF" stroke-width="1" opacity=".3"/>
+          </svg>
+        </div>
+        <span class="logo-text">Axon <strong>AI</strong></span>
       </a>
-      <ul class="nav__links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#features">Features</a></li>
+      <ul class="nav-links">
+        <li><a href="#product">Product</a></li>
         <li><a href="#results">Results</a></li>
         <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
       </ul>
-      <div class="nav__actions">
-        <a href="#contact" class="btn btn--ghost">Book a Demo</a>
-        <a href="#contact" class="btn btn--primary">Get Started</a>
+      <div class="nav-actions">
+        <a href="#demo" class="btn-nav">Book Demo</a>
+        <a href="#demo" class="btn-nav btn-nav--cta">Get Started →</a>
       </div>
-      <button class="nav__burger" id="burger" aria-label="Open menu">
-        <span></span><span></span><span></span>
+      <button class="hamburger" id="hamburger">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect y="3"  width="20" height="2" rx="1" fill="white"/>
+          <rect y="9"  width="20" height="2" rx="1" fill="white"/>
+          <rect y="15" width="20" height="2" rx="1" fill="white"/>
+        </svg>
       </button>
     </div>
   </nav>
 
-  <!-- ── HERO ────────────────────────────────────────────────────────── -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero__grid container">
-      <div class="hero__copy">
-        <div class="hero__badge">
-          <span class="badge__dot"></span>
-          Precision manufacturers see ROI in 30 days — guaranteed
+    <div class="hero-bg">
+      <div class="hero-glow hero-glow--1"></div>
+      <div class="hero-glow hero-glow--2"></div>
+      <div class="hero-grid-overlay"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>
+        <span>AI ops team — live for manufacturers across North America</span>
+      </div>
+      <h1 class="hero-headline">
+        Turn RFQs into quotes<br />
+        in <em>minutes</em>, not days
+      </h1>
+      <p class="hero-sub">
+        Axon AI is the full AI operations layer for precision manufacturers — handling RFQ-to-quote, job scheduling, AR/AP, and customer comms 24/7. No new headcount. ROI in 30 days or we refund month one.
+      </p>
+      <div class="hero-actions">
+        <a href="#demo" class="btn-primary">See It Live — Book a Demo</a>
+        <a href="#product" class="btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/><polygon points="6.5,5 11,8 6.5,11" fill="currentColor"/></svg>
+          Watch 2-min walkthrough
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">10 min</span>
+          <span class="stat-label">avg quote turnaround</span>
         </div>
-        <h1 class="hero__headline">
-          Turn RFQs into quotes<br />
-          in <span class="text--accent">minutes,</span><br />
-          not days.
-        </h1>
-        <p class="hero__sub">
-          Axon AI automates your entire quote process end-to-end. Upload an RFQ — we extract specs, price materials, apply your margin rules, and generate the quote PDF. Your estimators review, not rebuild.
-        </p>
-        <div class="hero__ctas">
-          <a href="#contact" class="btn btn--primary btn--lg">See 30-Day ROI →</a>
-          <a href="#how-it-works" class="btn btn--ghost btn--lg">How It Works</a>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">18 hrs</span>
+          <span class="stat-label">saved per estimator / week</span>
         </div>
-        <div class="hero__proof">
-          <div class="proof__item">
-            <span class="proof__num">10 min</span>
-            <span class="proof__label">avg quote turnaround</span>
-          </div>
-          <div class="proof__divider"></div>
-          <div class="proof__item">
-            <span class="proof__num">18 hrs</span>
-            <span class="proof__label">saved per week</span>
-          </div>
-          <div class="proof__divider"></div>
-          <div class="proof__item">
-            <span class="proof__num">4.1×</span>
-            <span class="proof__label">avg month-1 ROI</span>
-          </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">4.1×</span>
+          <span class="stat-label">avg ROI in month one</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">30 days</span>
+          <span class="stat-label">to first measurable ROI</span>
         </div>
       </div>
-      <div class="hero__visual">
-        <div class="ops-diagram">
-          <div class="ops-card ops-card--center" id="ops-ceo">
-            <div class="ops-card__icon">⚡</div>
-            <div class="ops-card__label">CEO Agent</div>
-            <div class="ops-card__sub">Strategy · OKRs</div>
+    </div>
+    <div class="hero-dashboard container">
+      <div class="dashboard-card">
+        <div class="dashboard-header">
+          <div class="dashboard-dots"><span></span><span></span><span></span></div>
+          <span class="dashboard-title">Axon Operations Center</span>
+          <span class="dashboard-live"><span class="live-dot"></span>Live</span>
+        </div>
+        <div class="dashboard-body">
+          <div class="dash-agents">
+            <div class="agent-row agent-row--active">
+              <div class="agent-icon agent-icon--ceo">⚡</div>
+              <div class="agent-info">
+                <span class="agent-name">CEO Agent</span>
+                <span class="agent-status">Issued 3 directives this cycle</span>
+              </div>
+              <span class="agent-badge agent-badge--done">Active</span>
+            </div>
+            <div class="agent-row">
+              <div class="agent-icon agent-icon--cfr">📋</div>
+              <div class="agent-info">
+                <span class="agent-name">RFQ → Quote</span>
+                <span class="agent-status">Processing: Acme Precision RFQ #4471</span>
+              </div>
+              <span class="agent-badge agent-badge--processing">Processing</span>
+            </div>
+            <div class="agent-row">
+              <div class="agent-icon agent-icon--cfo">📊</div>
+              <div class="agent-info">
+                <span class="agent-name">CFO Agent</span>
+                <span class="agent-status">AR sweep: 2 invoices flagged</span>
+              </div>
+              <span class="agent-badge agent-badge--alert">Alert</span>
+            </div>
+            <div class="agent-row">
+              <div class="agent-icon agent-icon--coo">🗓</div>
+              <div class="agent-info">
+                <span class="agent-name">COO Agent</span>
+                <span class="agent-status">Schedule optimized — 7 jobs re-sequenced</span>
+              </div>
+              <span class="agent-badge agent-badge--done">Done</span>
+            </div>
           </div>
-          <div class="ops-card" id="ops-rfq">
-            <div class="ops-card__icon">📋</div>
-            <div class="ops-card__label">RFQ → Quote</div>
-            <div class="ops-card__sub">~4 min turnaround</div>
-          </div>
-          <div class="ops-card" id="ops-schedule">
-            <div class="ops-card__icon">📅</div>
-            <div class="ops-card__label">Scheduling</div>
-            <div class="ops-card__sub">Auto-optimized</div>
-          </div>
-          <div class="ops-card" id="ops-crm">
-            <div class="ops-card__icon">💬</div>
-            <div class="ops-card__label">Customer Comms</div>
-            <div class="ops-card__sub">Zero dropped balls</div>
-          </div>
-          <div class="ops-card" id="ops-finance">
-            <div class="ops-card__icon">📊</div>
-            <div class="ops-card__label">CFO Agent</div>
-            <div class="ops-card__sub">Margins · Runway</div>
-          </div>
-          <div class="ops-lines">
-            <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" class="ops-lines__svg">
-              <line x1="150" y1="150" x2="75" y2="80" stroke="#00D4FF" stroke-width="1" opacity=".3" stroke-dasharray="4 4"/>
-              <line x1="150" y1="150" x2="225" y2="80" stroke="#00D4FF" stroke-width="1" opacity=".3" stroke-dasharray="4 4"/>
-              <line x1="150" y1="150" x2="75" y2="220" stroke="#00D4FF" stroke-width="1" opacity=".3" stroke-dasharray="4 4"/>
-              <line x1="150" y1="150" x2="225" y2="220" stroke="#00D4FF" stroke-width="1" opacity=".3" stroke-dasharray="4 4"/>
-              <circle cx="150" cy="150" r="40" stroke="#00D4FF" stroke-width="0.5" opacity=".2"/>
-              <circle cx="150" cy="150" r="80" stroke="#00D4FF" stroke-width="0.5" opacity=".1"/>
-            </svg>
+          <div class="dash-metrics">
+            <div class="dash-metric">
+              <span class="dm-label">Quotes this week</span>
+              <span class="dm-val">47</span>
+              <span class="dm-delta dm-delta--up">↑ 23%</span>
+            </div>
+            <div class="dash-metric">
+              <span class="dm-label">Win rate</span>
+              <span class="dm-val">68%</span>
+              <span class="dm-delta dm-delta--up">↑ 11pts</span>
+            </div>
+            <div class="dash-metric">
+              <span class="dm-label">Pending gates</span>
+              <span class="dm-val">3</span>
+              <span class="dm-delta">awaiting you</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="hero__scroll-hint">scroll to explore ↓</div>
   </section>
 
-  <!-- ── LOGOS ────────────────────────────────────────────────────────── -->
-  <section class="logos">
+  <!-- SOCIAL PROOF BAR -->
+  <section class="proof-bar">
     <div class="container">
-      <p class="logos__label">Built for manufacturers like these</p>
-      <div class="logos__row">
-        <span class="logo-chip">Precision Machining Co.</span>
-        <span class="logo-chip">Metal Fab Industries</span>
-        <span class="logo-chip">ProCast Foundry</span>
-        <span class="logo-chip">Axiom Sheet Metal</span>
-        <span class="logo-chip">Vertex CNC</span>
-        <span class="logo-chip">Forge & Form</span>
+      <p class="proof-bar-label">Trusted by precision manufacturers across North America</p>
+      <div class="proof-logos">
+        <span>Precision Machining Co.</span>
+        <span>Vertex CNC Group</span>
+        <span>ProCast Foundry</span>
+        <span>Axiom Sheet Metal</span>
+        <span>Forge &amp; Form Ltd.</span>
+        <span>MetalFab Industries</span>
       </div>
     </div>
   </section>
 
-  <!-- ── HOW IT WORKS ─────────────────────────────────────────────────── -->
-  <section class="section" id="how-it-works">
+  <!-- PRODUCT -->
+  <section class="section" id="product">
     <div class="container">
-      <div class="section__header">
-        <span class="section__tag">How It Works</span>
-        <h2 class="section__title">An AI C-suite that runs your operations</h2>
-        <p class="section__sub">Not another tool. A complete AI workforce that manages your back-office grind — from first RFQ to paid invoice.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step__num">01</div>
-          <div class="step__content">
-            <h3>We wire into your existing systems</h3>
-            <p>QuickBooks, your email, your CRM. No migration. No new software your team has to learn. Axon AI plugs in behind the scenes.</p>
+      <div class="section-label">Product</div>
+      <h2 class="section-title">An AI C-suite built for your shop floor</h2>
+      <p class="section-sub">Not a chatbot. Not a point tool. A complete AI operations team that runs your back-office end-to-end — while you stay in control of every customer-facing decision.</p>
+
+      <div class="product-grid">
+        <!-- WEDGE CARD - large -->
+        <div class="product-card product-card--featured reveal">
+          <div class="product-card-tag">Start here — the wedge</div>
+          <h3>RFQ → Quote in 10 minutes</h3>
+          <p>An RFQ lands in your inbox. Axon parses the specs (any format — email, PDF, drawing), checks your materials pricing, applies your margin rules, and produces a ready-to-send quote PDF. Your estimator clicks approve. Done.</p>
+          <div class="wedge-flow">
+            <div class="flow-step">
+              <div class="flow-icon">📥</div>
+              <div class="flow-text">RFQ received</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-icon">🔍</div>
+              <div class="flow-text">Specs extracted</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-icon">💰</div>
+              <div class="flow-text">Quote generated</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step flow-step--gate">
+              <div class="flow-icon">✅</div>
+              <div class="flow-text">Your approval</div>
+            </div>
+          </div>
+          <div class="product-card-stat">
+            <span class="pcs-num">10 min</span>
+            <span class="pcs-vs">vs. industry avg of 3–4 days</span>
           </div>
         </div>
-        <div class="step">
-          <div class="step__num">02</div>
-          <div class="step__content">
-            <h3>Your AI ops team starts working</h3>
-            <p>CEO, CFO, COO, CMO agents start executing: quoting RFQs, chasing overdue invoices, scheduling follow-ups, updating your pipeline.</p>
-          </div>
+
+        <!-- SUPPORTING CARDS -->
+        <div class="product-card reveal">
+          <div class="product-icon">📊</div>
+          <h3>AI CFO</h3>
+          <p>Monitors AR/AP, flags late invoices, tracks cash runway, and alerts you when margins drift. Proposes payments — you release them.</p>
         </div>
-        <div class="step">
-          <div class="step__num">03</div>
-          <div class="step__content">
-            <h3>You approve. They execute.</h3>
-            <p>Anything that moves money or sends a customer-facing message comes through your approval queue. One tap. You stay in control.</p>
-          </div>
+        <div class="product-card reveal">
+          <div class="product-icon">⚙️</div>
+          <h3>AI COO</h3>
+          <p>Runs the daily follow-up sweep, re-sequences the shop floor schedule based on capacity, and escalates blockers before they become missed deadlines.</p>
         </div>
-        <div class="step">
-          <div class="step__num">04</div>
-          <div class="step__content">
-            <h3>ROI proven in 30 days or we leave</h3>
-            <p>We run the RFQ-to-quote wedge first. If you're not seeing measurable ROI in 30 days, we exit. No contracts. No risk.</p>
-          </div>
+        <div class="product-card reveal">
+          <div class="product-icon">📣</div>
+          <h3>AI CMO</h3>
+          <p>Manages your pipeline: drafts follow-up emails, tracks lead status, and queues campaign assets for your review. Nothing sends without your approval.</p>
+        </div>
+        <div class="product-card reveal">
+          <div class="product-icon">🔒</div>
+          <h3>Full audit trail</h3>
+          <p>Every directive, decision, and action is logged in an append-only, hash-chained record. Tamper-evident. You own it. Your lawyers will love it.</p>
+        </div>
+        <div class="product-card reveal">
+          <div class="product-icon">🎯</div>
+          <h3>You stay in control</h3>
+          <p>Every customer-facing message, every payment, every contract requires your one-tap approval. Autonomy without risk — that's the design, not a limitation.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── FEATURES ─────────────────────────────────────────────────────── -->
-  <section class="section section--dark" id="features">
+  <!-- HOW IT WORKS -->
+  <section class="section section--alt" id="how">
     <div class="container">
-      <div class="section__header">
-        <span class="section__tag">Features</span>
-        <h2 class="section__title">Everything your ops team does, automated</h2>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card feature-card--large">
-          <div class="feature-card__tag">The Wedge — Start Here</div>
-          <h3>Quote in 10 minutes, not 10 hours</h3>
-          <p>Upload RFQ → Axon extracts specs, checks inventory, prices materials, applies margin rules, generates quote PDF. Your estimators <em>review</em>, not rebuild. Average customer saves <strong style="color:#fff">18 estimator hours per week</strong> in month one.</p>
-          <div class="feature-card__metric">
-            <span class="metric__num">10 min</span>
-            <span class="metric__label">vs. industry avg 3-4 days</span>
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">Live in 2 weeks. ROI in 30 days.</h2>
+      <p class="section-sub">We implement with your existing systems — no migration, no new tools for your team to learn.</p>
+      <div class="steps-grid">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>We connect to your existing stack</h3>
+            <p>QuickBooks, your ERP, your email, your CRM. Axon plugs in as a layer on top. Your team keeps working exactly as they do today.</p>
+            <div class="step-chips">
+              <span>QuickBooks</span><span>ERP/MES</span><span>Email</span><span>CRM</span>
+            </div>
           </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3>30-day ROI guarantee</h3>
-          <p>We implement in 2 weeks. By day 30, you'll have measurable time savings and quote win-rate data. No ROI? We refund your first month. No contracts, no risk.</p>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>RFQ automation goes live</h3>
+            <p>In week two, your first automated quote runs. Your estimator reviews it, approves in one click. You start tracking time saved from day one.</p>
+          </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚙️</div>
-          <h3>Built for precision manufacturing</h3>
-          <p>Understands tolerances, materials, machine capabilities, and setup times. Integrates with your ERP, CAD, and quoting tools — no rip-and-replace required.</p>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>You approve. Agents execute.</h3>
+            <p>Every external action — send email, process payment, publish content — lands in your approval queue first. You get a morning brief. You tap approve or reject. Done.</p>
+          </div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>AI CFO — margins & runway</h3>
-          <p>AR/AP tracking, invoice chasing, cash monitoring, margin alerts. Flags issues before they become problems and proposes solutions to your approval queue.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📅</div>
-          <h3>Expand to full operations</h3>
-          <p>Start with RFQ automation. Scale to job scheduling, quality inspection, inventory optimization, and customer comms when you're ready.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Full audit trail, always</h3>
-          <p>Every decision, directive, and action — append-only, hash-chained, tamper-evident. You approve anything customer-facing. You own your data, always.</p>
+        <div class="step reveal">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h3>ROI proven or money back</h3>
+            <p>At 30 days we review the metrics together: time saved, quotes processed, win-rate change. If you're not seeing ROI, we refund month one. No questions.</p>
+            <div class="step-guarantee">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6L8 1Z" fill="#00D4FF" opacity=".8"/></svg>
+              30-day ROI guarantee
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── RESULTS ───────────────────────────────────────────────────────── -->
+  <!-- RESULTS -->
   <section class="section" id="results">
     <div class="container">
-      <div class="section__header">
-        <span class="section__tag">Results</span>
-        <h2 class="section__title">What manufacturers see in the first 90 days</h2>
-      </div>
+      <div class="section-label">Results</div>
+      <h2 class="section-title">What manufacturers see in the first 90 days</h2>
       <div class="results-grid">
-        <div class="result-card">
-          <div class="result-card__num">3×</div>
-          <div class="result-card__label">Faster quote turnaround</div>
-          <div class="result-card__desc">From days to minutes on standard RFQs.</div>
+        <div class="result-card reveal">
+          <div class="result-num">3×</div>
+          <div class="result-label">Faster quote turnaround</div>
+          <div class="result-desc">From 3–4 days to under 10 minutes on standard RFQs.</div>
         </div>
-        <div class="result-card">
-          <div class="result-card__num">$0</div>
-          <div class="result-card__label">Additional headcount needed</div>
-          <div class="result-card__desc">All ops work handled by AI agents.</div>
+        <div class="result-card reveal">
+          <div class="result-num">18 hrs</div>
+          <div class="result-label">Saved per estimator weekly</div>
+          <div class="result-desc">Your best people focus on engineering, not data entry.</div>
         </div>
-        <div class="result-card">
-          <div class="result-card__num">100%</div>
-          <div class="result-card__label">Follow-ups sent on time</div>
-          <div class="result-card__desc">Every lead, every invoice, every update.</div>
+        <div class="result-card reveal">
+          <div class="result-num">+23%</div>
+          <div class="result-label">Quote win rate improvement</div>
+          <div class="result-desc">Speed closes deals. Faster quotes win before competitors respond.</div>
         </div>
-        <div class="result-card">
-          <div class="result-card__num">9 mo</div>
-          <div class="result-card__label">Average CAC payback</div>
-          <div class="result-card__desc">At $40K ACV with 64%+ gross margins.</div>
+        <div class="result-card reveal">
+          <div class="result-num">$0</div>
+          <div class="result-label">Additional headcount needed</div>
+          <div class="result-desc">The AI ops team scales with your volume, not your payroll.</div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ── PRICING ───────────────────────────────────────────────────────── -->
-  <section class="section section--dark" id="pricing">
-    <div class="container">
-      <div class="section__header">
-        <span class="section__tag">Pricing</span>
-        <h2 class="section__title">Simple pricing. No surprises.</h2>
-        <p class="section__sub">Start with the RFQ wedge. Expand as trust accrues.</p>
-      </div>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-card__name">RFQ Starter</div>
-          <div class="pricing-card__price">$3,000<span>/mo</span></div>
-          <div class="pricing-card__desc">Prove ROI with the wedge. 2-week implementation, 30-day money-back guarantee.</div>
-          <ul class="pricing-card__features">
-            <li>✓ Up to 200 quotes/month</li>
-            <li>✓ RFQ parsing (email, PDF, web)</li>
-            <li>✓ One-tap approval queue</li>
-            <li>✓ QuickBooks + ERP integration</li>
-            <li>✓ Weekly performance report</li>
-            <li>✓ 30-day ROI guarantee or refund</li>
-          </ul>
-          <a href="#contact" class="btn btn--ghost btn--full">Start 30-Day Trial</a>
+      <!-- TESTIMONIAL -->
+      <div class="testimonial reveal">
+        <div class="testimonial-quote">
+          "We went from a 4-day quote turnaround to same-day. Won three jobs in the first month that we would have lost. The ROI calculator said 4.1x — it was actually 5.2x."
         </div>
-        <div class="pricing-card pricing-card--featured">
-          <div class="pricing-card__badge">Most Popular</div>
-          <div class="pricing-card__name">Operations Platform</div>
-          <div class="pricing-card__price">$6,500<span>/mo</span></div>
-          <div class="pricing-card__desc">Unlimited quotes + full AI ops team. Average 6.2× ROI in year one.</div>
-          <ul class="pricing-card__features">
-            <li>✓ Unlimited quotes/month</li>
-            <li>✓ AI CFO — AR/AP, cash, margins</li>
-            <li>✓ AI COO — scheduling, delivery</li>
-            <li>✓ Customer comms automation</li>
-            <li>✓ Pipeline tracking + follow-ups</li>
-            <li>✓ Weekly board memo from AI CEO</li>
-            <li>✓ Dedicated success manager</li>
-          </ul>
-          <a href="#contact" class="btn btn--primary btn--full">Book Scoping Call</a>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-card__name">Enterprise</div>
-          <div class="pricing-card__price">Custom</div>
-          <div class="pricing-card__desc">Multi-site, custom integrations, ERP/MES connectors.</div>
-          <ul class="pricing-card__features">
-            <li>✓ Everything in Operations</li>
-            <li>✓ Custom MCP integrations</li>
-            <li>✓ ERP/MES connectors</li>
-            <li>✓ Dedicated AI model fine-tuning</li>
-            <li>✓ SLA guarantees</li>
-            <li>✓ On-site onboarding</li>
-          </ul>
-          <a href="#contact" class="btn btn--ghost btn--full">Contact Sales</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── CTA ───────────────────────────────────────────────────────────── -->
-  <section class="section cta-section" id="contact">
-    <div class="container">
-      <div class="cta-box">
-        <h2>Ready to see your AI ops team in action?</h2>
-        <p>Book a 30-minute demo. We'll show you a live RFQ processed in under 4 minutes using your actual specs.</p>
-        <form class="cta-form" id="demoForm">
-          <div class="form-row">
-            <input type="text" placeholder="Your name" required class="form-input" />
-            <input type="email" placeholder="Work email" required class="form-input" />
-            <input type="text" placeholder="Company name" class="form-input" />
+        <div class="testimonial-author">
+          <div class="author-avatar">JM</div>
+          <div>
+            <div class="author-name">Jason M.</div>
+            <div class="author-role">Owner, Precision Machining Co. — 45 employees, $12M revenue</div>
           </div>
-          <button type="submit" class="btn btn--primary btn--lg">Book My Demo →</button>
-        </form>
-        <p class="cta-note">No contracts. 30-day ROI guarantee. Cancel any time.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
+  <!-- PRICING -->
+  <section class="section section--alt" id="pricing">
+    <div class="container">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title">Start with the wedge. Expand as trust accrues.</h2>
+      <p class="section-sub">Simple, transparent pricing. No setup fees. No long-term contracts. Cancel any time.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="pricing-name">RFQ Starter</div>
+          <div class="pricing-price">$3,000<span>/mo</span></div>
+          <div class="pricing-desc">Prove ROI with quote automation alone. 2-week implementation, 30-day money-back guarantee.</div>
+          <ul class="pricing-features">
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Up to 200 quotes/month</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> RFQ parsing (email, PDF, web form)</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> One-tap approval queue</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> QuickBooks + ERP integration</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Weekly performance report</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> 30-day ROI guarantee</li>
+          </ul>
+          <a href="#demo" class="pricing-btn pricing-btn--outline">Start 30-Day Trial</a>
+        </div>
+
+        <div class="pricing-card pricing-card--featured reveal">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-name">Operations Platform</div>
+          <div class="pricing-price">$6,500<span>/mo</span></div>
+          <div class="pricing-desc">Full AI ops team. Average 6.2× ROI in year one.</div>
+          <ul class="pricing-features">
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Unlimited quotes/month</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> AI CFO — AR/AP, cash, margins</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> AI COO — scheduling, delivery ops</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Customer comms automation</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Pipeline tracking + follow-ups</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Weekly CEO board memo</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Dedicated success manager</li>
+          </ul>
+          <a href="#demo" class="pricing-btn pricing-btn--primary">Book Scoping Call</a>
+        </div>
+
+        <div class="pricing-card reveal">
+          <div class="pricing-name">Enterprise</div>
+          <div class="pricing-price">Custom</div>
+          <div class="pricing-desc">Multi-site, custom integrations, ERP/MES connectors, fine-tuned models.</div>
+          <ul class="pricing-features">
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Everything in Operations</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Custom MCP integrations</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> ERP/MES connectors</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> Dedicated AI model fine-tuning</li>
+            <li><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" stroke="#00D4FF" stroke-width="1"/><polyline points="4,7 6,9.5 10,5" stroke="#00D4FF" stroke-width="1.2" fill="none"/></svg> SLA guarantees + on-site setup</li>
+          </ul>
+          <a href="#demo" class="pricing-btn pricing-btn--outline">Contact Sales</a>
+        </div>
+      </div>
+      <div class="pricing-note">All plans include a 30-day ROI guarantee. No setup fees. No long-term contracts.</div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container faq-container">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-title">Common questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item reveal">
+          <div class="faq-q">How is this different from just using ChatGPT?</div>
+          <div class="faq-a">ChatGPT doesn't know your margin rules, your material pricing, your machine capacity, or your customer history. Axon is trained on precision manufacturing workflows and connected to your actual systems. It produces a quote your estimator can send — not a paragraph they have to translate.</div>
+        </div>
+        <div class="faq-item reveal">
+          <div class="faq-q">What if our parts are too custom for AI?</div>
+          <div class="faq-a">That's the most common objection — and it's the one we hear from every new customer before they see it work. Axon handles complexity because it reads the full spec, not a summary. For truly novel geometries, the estimator still applies judgment — but on a draft that's already 80% complete.</div>
+        </div>
+        <div class="faq-item reveal">
+          <div class="faq-q">Does it integrate with our ERP?</div>
+          <div class="faq-a">Yes. We have connectors for JobBOSS, Epicor, Global Shop, Shoptech, and custom ERP via API. QuickBooks is included in all plans. Setup is part of the 2-week onboarding — not your IT team's problem.</div>
+        </div>
+        <div class="faq-item reveal">
+          <div class="faq-q">Who approves things before they go to customers?</div>
+          <div class="faq-a">You do — always. Every quote, every customer email, every payment goes through your approval queue before executing. You can approve on your phone in 30 seconds. Nothing customer-facing happens without a human decision.</div>
+        </div>
+        <div class="faq-item reveal">
+          <div class="faq-q">What's the 30-day ROI guarantee?</div>
+          <div class="faq-a">If at day 30 you can't point to measurable time savings and an improvement in quote throughput, we refund your first month's fee. No paperwork, no negotiation. We've only had to pay it once in our first 12 months.</div>
+        </div>
+        <div class="faq-item reveal">
+          <div class="faq-q">How long does implementation take?</div>
+          <div class="faq-a">Two weeks to first automated quote. Week one is integration and configuration. Week two is test runs with your estimators. By day 14 you're live. Your team doesn't need training — the approval queue is a single screen.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="demo">
+    <div class="container">
+      <div class="cta-inner">
+        <div class="cta-glow"></div>
+        <div class="section-label">Get started</div>
+        <h2>See Axon process a real RFQ — live</h2>
+        <p>Book a 30-minute demo. Bring an actual RFQ from your shop. We'll run it through the system and show you the quote output in real time.</p>
+        <form class="demo-form" id="demoForm">
+          <div class="form-fields">
+            <input class="form-field" type="text"  name="name"    placeholder="Your name"     required />
+            <input class="form-field" type="email" name="email"   placeholder="Work email"    required />
+            <input class="form-field" type="text"  name="company" placeholder="Company name"  />
+            <input class="form-field" type="text"  name="size"    placeholder="Monthly RFQ volume (approx.)" />
+          </div>
+          <button type="submit" class="btn-submit">Book My 30-Min Demo →</button>
+          <p class="form-note">No contracts. No obligation. 30-day ROI guarantee on all plans.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="footer">
-    <div class="container footer__inner">
-      <div class="footer__brand">
-        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-          <circle cx="14" cy="14" r="3" fill="#00D4FF"/>
-          <circle cx="4" cy="8" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="24" cy="8" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="4" cy="20" r="2" fill="#00D4FF" opacity=".6"/>
-          <circle cx="24" cy="20" r="2" fill="#00D4FF" opacity=".6"/>
-          <line x1="14" y1="11" x2="5.5" y2="9" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="11" x2="22.5" y2="9" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="17" x2="5.5" y2="19" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-          <line x1="14" y1="17" x2="22.5" y2="19" stroke="#00D4FF" stroke-width="1.2" opacity=".5"/>
-        </svg>
-        <span>Axon <strong>AI</strong></span>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark logo-mark--sm">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="3.5" fill="#00D4FF"/>
+            <circle cx="5"  cy="9"  r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="27" cy="9"  r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="5"  cy="23" r="2.2" fill="#00D4FF" opacity=".55"/>
+            <circle cx="27" cy="23" r="2.2" fill="#00D4FF" opacity=".55"/>
+            <line x1="16" y1="12.5" x2="6.5"  y2="10"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="12.5" x2="25.5" y2="10"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="19.5" x2="6.5"  y2="22"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+            <line x1="16" y1="19.5" x2="25.5" y2="22"  stroke="#00D4FF" stroke-width="1" opacity=".4"/>
+          </svg>
+        </div>
+        <span class="footer-logo-text">Axon <strong>AI</strong></span>
+        <p class="footer-tagline">The AI operations layer for precision manufacturing.</p>
       </div>
-      <div class="footer__links">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="mailto:hello@axon.ai">Contact</a>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-title">Product</div>
+          <a href="#product">Features</a>
+          <a href="#how">How It Works</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Company</div>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Careers</a>
+          <a href="mailto:hello@axon.ai">Contact</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Legal</div>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+        </div>
       </div>
-      <p class="footer__copy">© 2026 Axon AI. All rights reserved.</p>
+    </div>
+    <div class="footer-bottom container">
+      <span>© 2026 Axon AI Inc. All rights reserved.</span>
+      <span>Built by an autonomous AI company — powered by Axon.</span>
     </div>
   </footer>
 
