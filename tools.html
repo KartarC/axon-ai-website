@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Tools — Axon AI for CNC & Fabrication Shops</title>
+  <meta name="description" content="Every Axon AI module explained in detail — Digital Production Board, Job Costing, Shop Traveler, Customer Portal, Maintenance, Inventory, CoC Generator, and Outside Service Tracker."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* ── TOOLS PAGE SPECIFIC ──────────────────────────────────────────────── */
+    .tools-hero{
+      padding:calc(62px + clamp(40px,5vw,72px)) 0 clamp(40px,5vw,64px);
+      background:var(--gray-50);border-bottom:var(--border);
+    }
+    .tools-hero-inner{max-width:720px}
+    .tools-hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-.04em;color:var(--gray-900);margin-bottom:14px;line-height:1.1}
+    .tools-hero p{font-size:1.05rem;color:var(--gray-500);line-height:1.75;margin-bottom:28px}
+    .tools-hero-ctas{display:flex;gap:10px;flex-wrap:wrap}
+
+    /* Sticky sidebar nav */
+    .tools-layout{display:grid;grid-template-columns:220px 1fr;gap:48px;padding:clamp(32px,5vw,64px) 0;align-items:start}
+    .tools-nav{position:sticky;top:80px}
+    .tools-nav-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--gray-400);margin-bottom:10px}
+    .tools-nav-list{display:flex;flex-direction:column;gap:2px}
+    .tools-nav-link{
+      display:flex;align-items:center;gap:10px;
+      padding:9px 12px;border-radius:var(--radius);
+      font-size:.875rem;font-weight:500;color:var(--gray-600);
+      transition:all var(--t);text-decoration:none;
+    }
+    .tools-nav-link:hover,.tools-nav-link.active{background:var(--blue-50);color:var(--blue-700);font-weight:600}
+    .tools-nav-link svg{flex-shrink:0;width:16px;height:16px}
+    .tools-nav-cta{
+      margin-top:20px;display:block;text-align:center;
+      padding:11px;border-radius:var(--radius);
+      background:var(--gray-900);color:var(--white);
+      font-size:.85rem;font-weight:700;
+      transition:background var(--t);
+    }
+    .tools-nav-cta:hover{background:var(--gray-800)}
+
+    /* Tool sections */
+    .tool-section{
+      padding:clamp(36px,4vw,56px) 0;
+      border-bottom:var(--border);
+    }
+    .tool-section:last-child{border-bottom:none}
+    .tool-section-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px}
+    .tool-section-icon{
+      width:52px;height:52px;border-radius:var(--radius-lg);
+      background:var(--gray-100);border:var(--border);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gray-600);flex-shrink:0;
+    }
+    .tool-section-meta{flex:1}
+    .tool-section-tag{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-700);margin-bottom:6px}
+    .tool-section-meta h2{font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:800;color:var(--gray-900);letter-spacing:-.03em;margin-bottom:6px}
+    .tool-section-meta p{font-size:.95rem;color:var(--gray-500);line-height:1.7}
+    .tool-section-price{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:.8rem;font-weight:700;color:var(--blue-700);
+      background:var(--blue-50);border:1px solid var(--blue-100);
+      padding:4px 12px;border-radius:100px;margin-top:8px;
+    }
+
+    /* Mockup card */
+    .tool-mockup{
+      background:var(--white);border:var(--border);border-radius:var(--radius-xl);
+      box-shadow:var(--shadow-lg);overflow:hidden;margin:28px 0;
+    }
+    .mockup-bar{
+      display:flex;align-items:center;gap:10px;
+      padding:12px 18px;background:var(--gray-50);border-bottom:var(--border);
+    }
+    .mockup-dots{display:flex;gap:5px}
+    .mockup-dots span{width:10px;height:10px;border-radius:50%}
+    .mockup-dots span:nth-child(1){background:#FF5F57}
+    .mockup-dots span:nth-child(2){background:#FFBD2E}
+    .mockup-dots span:nth-child(3){background:#28C840}
+    .mockup-title{font-size:.8rem;font-weight:600;color:var(--gray-500);margin-left:4px}
+    .mockup-body{padding:20px}
+
+    /* Scheduling board mockup */
+    .sched-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .sched-col-head{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);padding:8px 10px;background:var(--gray-50);border-radius:6px;text-align:center}
+    .sched-job{
+      padding:10px 12px;border-radius:8px;border:var(--border);
+      background:var(--white);margin-top:8px;cursor:default;
+      transition:transform var(--t),box-shadow var(--t);
+    }
+    .sched-job:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+    .sched-job-name{font-size:.82rem;font-weight:700;color:var(--gray-900)}
+    .sched-job-meta{font-size:.72rem;color:var(--gray-400);margin-top:3px}
+    .sched-job-due{font-size:.72rem;font-weight:600;margin-top:6px}
+    .sched-job--ok .sched-job-due{color:#16A34A}
+    .sched-job--warn .sched-job-due{color:#D97706}
+    .sched-job--late .sched-job-due{color:#DC2626}
+    .sched-job--late{border-left:3px solid #DC2626}
+    .sched-job--warn{border-left:3px solid #D97706}
+    .sched-job--ok{border-left:3px solid #16A34A}
+
+    /* Costing mockup */
+    .costing-table{width:100%;border-collapse:collapse}
+    .costing-table th{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);padding:8px 12px;text-align:left;border-bottom:var(--border);background:var(--gray-50)}
+    .costing-table td{padding:12px;font-size:.875rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100);vertical-align:middle}
+    .costing-table tr:last-child td{border-bottom:none}
+    .costing-over{color:#DC2626;font-weight:700}
+    .costing-under{color:#16A34A;font-weight:700}
+    .costing-on{color:var(--gray-500)}
+    .bar-wrap{background:var(--gray-100);border-radius:4px;height:8px;width:100px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+    .bar-fill{height:100%;border-radius:4px}
+    .bar-over{background:#FCA5A5}
+    .bar-under{background:#86EFAC}
+    .bar-on{background:#93C5FD}
+
+    /* Traveler mockup */
+    .traveler-steps{display:flex;flex-direction:column;gap:2px}
+    .traveler-step{
+      display:flex;align-items:center;gap:14px;
+      padding:12px 16px;border-radius:8px;border:var(--border);background:var(--white);
+    }
+    .traveler-step-num{
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.78rem;font-weight:800;flex-shrink:0;
+    }
+    .traveler-step--done .traveler-step-num{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+    .traveler-step--active .traveler-step-num{background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-100)}
+    .traveler-step--pending .traveler-step-num{background:var(--gray-100);color:var(--gray-400);border:var(--border)}
+    .traveler-step--active{background:var(--blue-50);border-color:var(--blue-100)}
+    .traveler-step-info{flex:1}
+    .traveler-step-name{font-size:.875rem;font-weight:700;color:var(--gray-900)}
+    .traveler-step-detail{font-size:.75rem;color:var(--gray-400);margin-top:2px}
+    .traveler-step-status{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:100px}
+    .status-done-chip{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+    .status-active-chip{background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-100)}
+    .status-pending-chip{background:var(--gray-100);color:var(--gray-400);border:var(--border)}
+
+    /* Portal mockup */
+    .portal-timeline{display:flex;flex-direction:column;gap:0}
+    .portal-step{display:flex;gap:16px;padding:14px 0;position:relative}
+    .portal-step::before{content:'';position:absolute;left:15px;top:42px;bottom:-14px;width:2px;background:var(--gray-200)}
+    .portal-step:last-child::before{display:none}
+    .portal-dot{
+      width:32px;height:32px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .portal-dot--done{background:#F0FDF4;border:2px solid #86EFAC}
+    .portal-dot--active{background:var(--blue-50);border:2px solid var(--blue-100)}
+    .portal-dot--pending{background:var(--gray-100);border:2px solid var(--gray-200)}
+    .portal-step-title{font-size:.9rem;font-weight:700;color:var(--gray-900)}
+    .portal-step-desc{font-size:.78rem;color:var(--gray-400);margin-top:3px}
+    .portal-step-time{font-size:.72rem;color:var(--gray-300);margin-top:4px}
+
+    /* Maintenance mockup */
+    .maint-list{display:flex;flex-direction:column;gap:10px}
+    .maint-item{
+      display:flex;align-items:center;gap:14px;
+      padding:14px 16px;border-radius:10px;border:var(--border);background:var(--white);
+    }
+    .maint-machine{flex:1}
+    .maint-machine-name{font-size:.9rem;font-weight:700;color:var(--gray-900)}
+    .maint-machine-type{font-size:.75rem;color:var(--gray-400);margin-top:2px}
+    .maint-progress{width:120px}
+    .maint-label{font-size:.7rem;color:var(--gray-400);margin-bottom:5px;display:flex;justify-content:space-between}
+    .maint-bar{height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden}
+    .maint-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+    .maint-bar-fill--ok{background:#86EFAC}
+    .maint-bar-fill--warn{background:#FDE68A}
+    .maint-bar-fill--over{background:#FCA5A5}
+    .maint-badge{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;white-space:nowrap}
+
+    /* Inventory mockup */
+    .inv-table{width:100%;border-collapse:collapse}
+    .inv-table th{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);padding:8px 12px;text-align:left;background:var(--gray-50);border-bottom:var(--border)}
+    .inv-table td{padding:11px 12px;font-size:.875rem;color:var(--gray-700);border-bottom:1px solid var(--gray-100)}
+    .inv-table tr:last-child td{border-bottom:none}
+    .inv-stock{font-weight:700}
+    .inv-stock--ok{color:#16A34A}
+    .inv-stock--low{color:#D97706}
+    .inv-stock--out{color:#DC2626}
+    .inv-reorder{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:100px;background:#FFFBEB;color:#D97706;border:1px solid #FDE68A}
+
+    /* CoC mockup */
+    .coc-doc{
+      background:var(--white);border:var(--border);border-radius:10px;
+      padding:24px;font-size:.82rem;color:var(--gray-700);line-height:1.7;
+    }
+    .coc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:var(--border)}
+    .coc-company{font-size:1rem;font-weight:800;color:var(--gray-900)}
+    .coc-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-top:4px}
+    .coc-stamp{
+      background:#F0FDF4;border:2px solid #86EFAC;border-radius:8px;
+      padding:8px 14px;text-align:center;
+    }
+    .coc-stamp-text{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#16A34A}
+    .coc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .coc-field{display:flex;flex-direction:column;gap:3px}
+    .coc-field-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400)}
+    .coc-field-value{font-size:.82rem;color:var(--gray-900);font-weight:500}
+    .coc-sig{display:flex;align-items:center;gap:20px;margin-top:16px;padding-top:16px;border-top:var(--border)}
+    .coc-sig-line{flex:1;height:1px;background:var(--gray-300)}
+    .coc-sig-label{font-size:.68rem;color:var(--gray-400);text-align:center;margin-top:4px}
+
+    /* Outside services mockup */
+    .outs-table{width:100%;border-collapse:collapse}
+    .outs-table th{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);padding:8px 12px;text-align:left;background:var(--gray-50);border-bottom:var(--border)}
+    .outs-table td{padding:12px;font-size:.875rem;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+    .outs-table tr:last-child td{border-bottom:none}
+    .outs-job{font-weight:700;color:var(--gray-900);display:block}
+    .outs-customer{font-size:.75rem;color:var(--gray-400)}
+    .outs-badge{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:100px}
+    .outs-ok{background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0}
+    .outs-late{background:#FFF1F2;color:#DC2626;border:1px solid #FECACA}
+    .outs-due{background:#FFFBEB;color:#D97706;border:1px solid #FDE68A}
+    .outs-followup{font-size:.72rem;color:var(--blue-700);font-weight:600;cursor:pointer}
+
+    /* Detail columns */
+    .tool-details{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px}
+    .detail-block h4{font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-700);margin-bottom:10px}
+    .detail-list{display:flex;flex-direction:column;gap:7px}
+    .detail-list li{font-size:.875rem;color:var(--gray-600);display:flex;gap:9px;align-items:flex-start;line-height:1.6}
+    .detail-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue-700);flex-shrink:0;margin-top:7px}
+    .roi-box{
+      background:var(--gray-50);border:var(--border);border-radius:var(--radius-lg);
+      padding:18px 20px;margin-top:14px;
+    }
+    .roi-box-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:8px}
+    .roi-stat{font-size:1.8rem;font-weight:900;color:var(--gray-900);letter-spacing:-.04em;line-height:1}
+    .roi-desc{font-size:.78rem;color:var(--gray-500);margin-top:4px;line-height:1.5}
+
+    /* CTA between sections */
+    .tool-cta-strip{
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      background:var(--gray-50);border:var(--border);border-radius:var(--radius-lg);
+      padding:18px 24px;margin-top:24px;flex-wrap:wrap;
+    }
+    .tool-cta-strip span{font-size:.9rem;color:var(--gray-600);font-weight:500}
+    .tool-cta-strip strong{color:var(--gray-900)}
+    .btn-sm{
+      padding:9px 18px;border-radius:var(--radius);font-size:.85rem;font-weight:700;
+      background:var(--gray-900);color:var(--white);border:none;
+      transition:background var(--t);white-space:nowrap;
+    }
+    .btn-sm:hover{background:var(--gray-800)}
+
+    @media(max-width:960px){
+      .tools-layout{grid-template-columns:1fr}
+      .tools-nav{display:none}
+      .tool-details{grid-template-columns:1fr}
+      .sched-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:600px){
+      .sched-grid{grid-template-columns:1fr}
+      .coc-grid{grid-template-columns:1fr}
+      .tool-details{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+        <circle cx="4"  cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="24" cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="4"  cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+        <line x1="14" y1="11" x2="5.2"  y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="11" x2="22.8" y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="5.2"  y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      </svg>
+      <span class="logo-text">Axon <strong>AI</strong></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="tools.html" style="color:var(--gray-900);font-weight:700">All Tools</a></li>
+      <li><a href="index.html#how">How It Works</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="index.html#demo" class="nav-link-btn">Book Demo</a>
+      <a href="index.html#demo" class="nav-cta-btn">Get Started
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <button class="hamburger" id="hamburger">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <line x1="2" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="2" y1="11" x2="20" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="2" y1="16" x2="20" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="tools-hero">
+  <div class="container tools-hero-inner">
+    <div class="section-eyebrow">All Tools</div>
+    <h1>8 modules. Every problem your shop floor has.</h1>
+    <p>Each tool is built for a specific, validated pain point. Start with the one costing you the most. Every module is standalone — no ERP, no consultant, running on day one.</p>
+    <div class="tools-hero-ctas">
+      <a href="index.html#pricing" class="btn-primary">See Pricing — from $99/mo</a>
+      <a href="index.html#demo" class="btn-outline">Book a Demo</a>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="container">
+  <div class="tools-layout">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="tools-nav">
+      <div class="tools-nav-title">Jump to tool</div>
+      <nav class="tools-nav-list">
+        <a href="#scheduling" class="tools-nav-link active">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="1" y="2.5" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1v3M11 1v3M1 7h14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Production Board
+        </a>
+        <a href="#costing" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><polyline points="2,12 6,7.5 9,10 14,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="11,5 14,5 14,8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Job Costing
+        </a>
+        <a href="#traveler" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M6 5h4M6 8h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Shop Traveler
+        </a>
+        <a href="#portal" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M1 4l7 4.5L15 4M1 4h14v10H1V4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Customer Portal
+        </a>
+        <a href="#maintenance" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 1.5a4 4 0 0 1 0 5.5L4.5 12.5a2 2 0 1 1-2-2L8 5a4 4 0 0 1 2-3.5z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Maintenance
+        </a>
+        <a href="#inventory" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M14 5H2l1.5-3h9L14 5zM3 5v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Material Inventory
+        </a>
+        <a href="#coc" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M10 1H4a1.5 1.5 0 0 0-1.5 1.5v11A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5V5L10 1z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 1v4h3.5M6 10l1.5 1.5 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CoC Generator
+        </a>
+        <a href="#outside" class="tools-nav-link">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 4.5v3.5l2.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Outside Services
+        </a>
+      </nav>
+      <a href="index.html#demo" class="tools-nav-cta">Book a Demo</a>
+    </aside>
+
+    <!-- TOOL SECTIONS -->
+    <div class="tools-content">
+
+      <!-- ── 1. SCHEDULING ─────────────────────────────────────────────── -->
+      <div class="tool-section" id="scheduling">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 2v4M17 2v4M2 10h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Most Requested</div>
+            <h2>Digital Production Board</h2>
+            <p>The whiteboard every shop uses — replaced with a live digital version every department can see. Drag jobs, flag delays, see the full week at a glance.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited machines, unlimited users
+            </div>
+          </div>
+        </div>
+
+        <!-- Mockup -->
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Production Board — Week of June 2, 2026</span>
+          </div>
+          <div class="mockup-body">
+            <div class="sched-grid">
+              <div>
+                <div class="sched-col-head">Haas VF-2</div>
+                <div class="sched-job sched-job--ok">
+                  <div class="sched-job-name">Job #2841</div>
+                  <div class="sched-job-meta">Acme Corp · Aluminum 6061</div>
+                  <div class="sched-job-due">Due Jun 4 — On track</div>
+                </div>
+                <div class="sched-job sched-job--warn">
+                  <div class="sched-job-name">Job #2839</div>
+                  <div class="sched-job-meta">Vertex Inc · Steel 4140</div>
+                  <div class="sched-job-due">Due Jun 3 — At risk</div>
+                </div>
+              </div>
+              <div>
+                <div class="sched-col-head">Mazak QT-250</div>
+                <div class="sched-job sched-job--late">
+                  <div class="sched-job-name">Job #2834</div>
+                  <div class="sched-job-meta">Hydro Systems · SS 316</div>
+                  <div class="sched-job-due">Due Jun 1 — OVERDUE</div>
+                </div>
+                <div class="sched-job sched-job--ok">
+                  <div class="sched-job-name">Job #2845</div>
+                  <div class="sched-job-meta">ProCast · Bronze</div>
+                  <div class="sched-job-due">Due Jun 7 — On track</div>
+                </div>
+              </div>
+              <div>
+                <div class="sched-col-head">Waterjet</div>
+                <div class="sched-job sched-job--ok">
+                  <div class="sched-job-name">Job #2843</div>
+                  <div class="sched-job-meta">Metro Fab · A36 Plate</div>
+                  <div class="sched-job-due">Due Jun 5 — On track</div>
+                </div>
+              </div>
+              <div>
+                <div class="sched-col-head">CMM / Inspection</div>
+                <div class="sched-job sched-job--ok">
+                  <div class="sched-job-name">Job #2838</div>
+                  <div class="sched-job-meta">Axiom · Tolerance: ±0.0005</div>
+                  <div class="sched-job-due">Due Jun 4 — On track</div>
+                </div>
+                <div class="sched-job sched-job--warn">
+                  <div class="sched-job-name">Job #2836</div>
+                  <div class="sched-job-meta">DynaTech · AS9100</div>
+                  <div class="sched-job-due">Due Jun 3 — FAI pending</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Drag-and-drop jobs between machines, operators, and shifts</li>
+              <li>Real-time status — production, inspection, shipping all share one board</li>
+              <li>Auto-flags jobs at risk of missing due date based on queue depth</li>
+              <li>Color-coded: green (on track), amber (at risk), red (overdue)</li>
+              <li>Works on any screen — shop TV, manager PC, tablet, phone</li>
+              <li>Offline-capable — syncs when connection restores</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Validated ROI</div>
+              <div class="roi-stat">10–15%</div>
+              <div class="roi-desc">Throughput improvement from eliminating scheduling conflicts and double-booking. Shops also report 6–12 point improvement in on-time delivery within 60 days.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">The real problem it solves</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">"We found two jobs assigned to the same machine on the same day. Nobody had caught it in six months." The whiteboard fails because only one person updates it — and usually after the fact.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>Start with the Production Board. <strong>Running the same day you sign up.</strong></span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 2. JOB COSTING ────────────────────────────────────────────── -->
+      <div class="tool-section" id="costing">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><polyline points="3,18 8,12 12,15 20,7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17,7 20,7 20,10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Margin Recovery</div>
+            <h2>Job Costing Feedback Loop</h2>
+            <p>Close the gap between what you quoted and what a job actually cost. Operators tap start/stop. You see exactly where margin is leaking — per operation, per machine, per customer.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited jobs, unlimited operators
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Job Costing — This Week</span>
+          </div>
+          <div class="mockup-body">
+            <table class="costing-table">
+              <thead><tr><th>Job</th><th>Customer</th><th>Quoted</th><th>Actual</th><th>Variance</th><th>Margin</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>#2841</strong></td>
+                  <td>Acme Corp</td>
+                  <td>$2,400</td>
+                  <td>$2,190</td>
+                  <td class="costing-under">-$210<div class="bar-wrap"><div class="bar-fill bar-under" style="width:80%"></div></div></td>
+                  <td class="costing-under">54%</td>
+                </tr>
+                <tr>
+                  <td><strong>#2839</strong></td>
+                  <td>Vertex Inc</td>
+                  <td>$1,850</td>
+                  <td>$2,180</td>
+                  <td class="costing-over">+$330<div class="bar-wrap"><div class="bar-fill bar-over" style="width:100%"></div></div></td>
+                  <td class="costing-over">-18%</td>
+                </tr>
+                <tr>
+                  <td><strong>#2836</strong></td>
+                  <td>DynaTech</td>
+                  <td>$4,200</td>
+                  <td>$4,050</td>
+                  <td class="costing-under">-$150<div class="bar-wrap"><div class="bar-fill bar-under" style="width:70%"></div></div></td>
+                  <td class="costing-under">48%</td>
+                </tr>
+                <tr>
+                  <td><strong>#2834</strong></td>
+                  <td>Hydro Systems</td>
+                  <td>$3,100</td>
+                  <td>$3,890</td>
+                  <td class="costing-over">+$790<div class="bar-wrap"><div class="bar-fill bar-over" style="width:100%"></div></div></td>
+                  <td class="costing-over">-25%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Operators scan QR code or tap tablet to clock in/out per job operation</li>
+              <li>Actual labor cost per operation vs. what was quoted — automatically calculated</li>
+              <li>Dashboard shows which jobs lost money and exactly which operation caused it</li>
+              <li>Feeds back into future quotes — stops you from making the same mistake twice</li>
+              <li>Customer profitability view — some customers are always losers</li>
+              <li>Machine efficiency tracking — which machines are consistently over or under estimate</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">What shops find on first review</div>
+              <div class="roi-stat">8–12%</div>
+              <div class="roi-desc">Average gap between quoted and actual margin. On $1M revenue, that's $80K–$120K in hidden losses — usually traced to 3–4 specific customers or job types.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">The real problem it solves</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">"We thought we were at 45% margins. Actuals were 35%. We had no feedback loop between quotes and what jobs actually cost." Without this tool, you're flying blind on every job.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>The average shop finds <strong>$80K–$120K in hidden losses</strong> in the first month.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 3. SHOP TRAVELER ───────────────────────────────────────────── -->
+      <div class="tool-section" id="traveler">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 7h6M9 11h4M9 15h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Paperless Operations</div>
+            <h2>Digital Shop Traveler</h2>
+            <p>Each job gets a QR code. Operators scan to see instructions, drawings, and tolerances. Tap through operations. Record measurements. Flag issues with photos. No paper. Ever.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited jobs, unlimited operators
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Job #2841 — Acme Corp — 4× Aluminum Housing</span>
+          </div>
+          <div class="mockup-body">
+            <div class="traveler-steps">
+              <div class="traveler-step traveler-step--done">
+                <div class="traveler-step-num">1</div>
+                <div class="traveler-step-info">
+                  <div class="traveler-step-name">Raw material receipt</div>
+                  <div class="traveler-step-detail">6061-T6 Aluminum — Heat# 84729A — 4 pcs received</div>
+                </div>
+                <span class="traveler-step-status status-done-chip">Done — J.Kim 9:14am</span>
+              </div>
+              <div class="traveler-step traveler-step--done">
+                <div class="traveler-step-num">2</div>
+                <div class="traveler-step-info">
+                  <div class="traveler-step-name">CNC Milling — Haas VF-2</div>
+                  <div class="traveler-step-detail">Program: ACM-2841-R2 · Tolerance: ±0.002"</div>
+                </div>
+                <span class="traveler-step-status status-done-chip">Done — M.Park 11:32am</span>
+              </div>
+              <div class="traveler-step traveler-step--active">
+                <div class="traveler-step-num">3</div>
+                <div class="traveler-step-info">
+                  <div class="traveler-step-name">Turning — Mazak QT-250</div>
+                  <div class="traveler-step-detail">Bore ID to 1.875" ±0.0005" · Check with bore gauge</div>
+                </div>
+                <span class="traveler-step-status status-active-chip">In progress</span>
+              </div>
+              <div class="traveler-step traveler-step--pending">
+                <div class="traveler-step-num">4</div>
+                <div class="traveler-step-info">
+                  <div class="traveler-step-name">First Article Inspection</div>
+                  <div class="traveler-step-detail">CMM program: ACM-2841-FAI · Record all dimensions</div>
+                </div>
+                <span class="traveler-step-status status-pending-chip">Pending</span>
+              </div>
+              <div class="traveler-step traveler-step--pending">
+                <div class="traveler-step-num">5</div>
+                <div class="traveler-step-info">
+                  <div class="traveler-step-name">Ship to Acme Corp</div>
+                  <div class="traveler-step-detail">Generate CoC · Pack per customer spec · UPS Ground</div>
+                </div>
+                <span class="traveler-step-status status-pending-chip">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>QR code per job — scan with any phone or tablet, no app install required</li>
+              <li>Step-by-step instructions with drawings and tolerances attached per operation</li>
+              <li>Operator taps through each step — builds a real-time production record</li>
+              <li>Dimension recording per step — actual measurements logged against spec</li>
+              <li>Photo attachment for non-conformances — flagged to supervisor instantly</li>
+              <li>Auto-archives when job ships — full searchable history, no filing cabinets</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Time saved</div>
+              <div class="roi-stat">45 min</div>
+              <div class="roi-desc">Per operator per day — no more searching for paper travelers, reprinting lost documents, or re-entering inspection data. For a 5-person shop, that's 37+ hours per week recovered.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">Compliance benefit</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">AS9100 and IATF shops get a complete, timestamped, operator-signed digital record per job — ready for customer audits. No binders, no scanning, no scrambling.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>Over <strong>50% of US shops</strong> still run paper travelers. This fixes that today.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 4. CUSTOMER PORTAL ─────────────────────────────────────────── -->
+      <div class="tool-section" id="portal">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M2 6l10 7 10-7M2 6h20v14H2V6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Customer Experience</div>
+            <h2>Customer Status Portal</h2>
+            <p>Your customers stop calling. They get a link that shows their order status in real time. You get 1–2 hours of your day back. Every time a job moves, they know automatically.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited customers, unlimited orders
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Order Status — Acme Corp · PO #44821</span>
+          </div>
+          <div class="mockup-body">
+            <div style="background:var(--gray-50);border-radius:10px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+              <div>
+                <div style="font-size:.78rem;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.08em">Order</div>
+                <div style="font-size:1rem;font-weight:800;color:var(--gray-900);margin-top:2px">4× Aluminum Housing — Job #2841</div>
+              </div>
+              <span style="background:#EFF6FF;color:#1D4ED8;border:1px solid #DBEAFE;font-size:.75rem;font-weight:700;padding:5px 14px;border-radius:100px">In Production — 60% complete</span>
+            </div>
+            <div class="portal-timeline">
+              <div class="portal-step">
+                <div class="portal-dot portal-dot--done"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="3,7 5.5,9.5 11,4.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div>
+                  <div class="portal-step-title">Order confirmed</div>
+                  <div class="portal-step-desc">PO received and acknowledged</div>
+                  <div class="portal-step-time">May 28 at 9:04am</div>
+                </div>
+              </div>
+              <div class="portal-step">
+                <div class="portal-dot portal-dot--done"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polyline points="3,7 5.5,9.5 11,4.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div>
+                  <div class="portal-step-title">Material received</div>
+                  <div class="portal-step-desc">6061-T6 stock in — ready for machining</div>
+                  <div class="portal-step-time">May 30 at 2:17pm</div>
+                </div>
+              </div>
+              <div class="portal-step">
+                <div class="portal-dot portal-dot--active"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="3" fill="#1D4ED8"/></svg></div>
+                <div>
+                  <div class="portal-step-title">In production</div>
+                  <div class="portal-step-desc">Machining in progress — estimated complete Jun 3</div>
+                  <div class="portal-step-time">Started Jun 1 at 8:00am</div>
+                </div>
+              </div>
+              <div class="portal-step">
+                <div class="portal-dot portal-dot--pending"></div>
+                <div>
+                  <div class="portal-step-title">Quality inspection</div>
+                  <div class="portal-step-desc">CMM inspection and dimensional verification</div>
+                </div>
+              </div>
+              <div class="portal-step">
+                <div class="portal-dot portal-dot--pending"></div>
+                <div>
+                  <div class="portal-step-title">Shipped</div>
+                  <div class="portal-step-desc">Expected ship date: June 4</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Unique tracking link per order — customers bookmark it, no login required</li>
+              <li>Auto email/SMS notification at every status change</li>
+              <li>Proactive alert to customer when a job goes at-risk — before they call you</li>
+              <li>Delivery estimate shown — updated automatically as schedule changes</li>
+              <li>Certificate of Conformance automatically attached when job ships</li>
+              <li>Branded with your shop name and logo</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Time recovered</div>
+              <div class="roi-stat">1–2 hrs</div>
+              <div class="roi-desc">Per day for the average shop owner or manager. Inbound "where's my order?" calls eliminated. That's 300–500 hours per year given back to revenue-generating work.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">Customer retention impact</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">Shops that go dark during production lose customers. Proactive communication — even bad news delivered early — builds more loyalty than always being on time.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>Eliminate every <strong>"where's my order?"</strong> call starting day one.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 5. MAINTENANCE ────────────────────────────────────────────── -->
+      <div class="tool-section" id="maintenance">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Uptime Protection</div>
+            <h2>Preventive Maintenance Tracker</h2>
+            <p>Set PM schedules per machine. Get alerted before something breaks. Log every service. Track downtime. Nothing more complicated than it needs to be — built for machinists, not facilities managers.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited machines
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Machine Health Dashboard</span>
+          </div>
+          <div class="mockup-body">
+            <div class="maint-list">
+              <div class="maint-item">
+                <div class="maint-machine">
+                  <div class="maint-machine-name">Haas VF-2 #1</div>
+                  <div class="maint-machine-type">CNC Vertical Mill · 4,823 spindle hrs</div>
+                </div>
+                <div class="maint-progress">
+                  <div class="maint-label"><span>Spindle PM</span><span style="font-weight:700;color:#D97706">Due in 4 hrs</span></div>
+                  <div class="maint-bar"><div class="maint-bar-fill maint-bar-fill--warn" style="width:92%"></div></div>
+                </div>
+                <span class="maint-badge" style="background:#FFFBEB;color:#D97706;border:1px solid #FDE68A">Due soon</span>
+              </div>
+              <div class="maint-item">
+                <div class="maint-machine">
+                  <div class="maint-machine-name">Mazak QT-250</div>
+                  <div class="maint-machine-type">CNC Lathe · 2,104 spindle hrs</div>
+                </div>
+                <div class="maint-progress">
+                  <div class="maint-label"><span>Coolant flush</span><span style="font-weight:700;color:#16A34A">38 days left</span></div>
+                  <div class="maint-bar"><div class="maint-bar-fill maint-bar-fill--ok" style="width:45%"></div></div>
+                </div>
+                <span class="maint-badge" style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0">OK</span>
+              </div>
+              <div class="maint-item">
+                <div class="maint-machine">
+                  <div class="maint-machine-name">Flow Waterjet</div>
+                  <div class="maint-machine-type">Waterjet · Pump: 842 hrs</div>
+                </div>
+                <div class="maint-progress">
+                  <div class="maint-label"><span>HP pump seals</span><span style="font-weight:700;color:#DC2626">OVERDUE</span></div>
+                  <div class="maint-bar"><div class="maint-bar-fill maint-bar-fill--over" style="width:100%"></div></div>
+                </div>
+                <span class="maint-badge" style="background:#FFF1F2;color:#DC2626;border:1px solid #FECACA">Overdue</span>
+              </div>
+              <div class="maint-item">
+                <div class="maint-machine">
+                  <div class="maint-machine-name">Doosan DNM 5700</div>
+                  <div class="maint-machine-type">CNC Mill · 1,290 spindle hrs</div>
+                </div>
+                <div class="maint-progress">
+                  <div class="maint-label"><span>Way lube / filters</span><span style="font-weight:700;color:#16A34A">64 days left</span></div>
+                  <div class="maint-bar"><div class="maint-bar-fill maint-bar-fill--ok" style="width:25%"></div></div>
+                </div>
+                <span class="maint-badge" style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0">OK</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>PM schedules by spindle hours, cycle count, or calendar days — per machine</li>
+              <li>Alert before due — not the day it fails</li>
+              <li>Service log: what was done, who did it, what parts were replaced, cost</li>
+              <li>Downtime cause tracking — planned vs. unplanned, root cause</li>
+              <li>Works with any machine brand — no hardware integration required</li>
+              <li>Mobile-friendly — operators log service from their phone in the shop</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Cost of doing nothing</div>
+              <div class="roi-stat">$5K–$15K</div>
+              <div class="roi-desc">Cost of a single unplanned spindle repair, plus lost capacity while the machine is down. Most shops that track maintenance data find 3–4 preventable failures per year.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">Industry stat</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">61% of manufacturers suffered unplanned downtime in the previous year. CNC machines cost $200–$500/hour in lost capacity when down. PM tracking pays for itself in the first prevented breakdown.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>One prevented spindle failure covers <strong>4 years of subscription cost</strong>.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 6. INVENTORY ──────────────────────────────────────────────── -->
+      <div class="tool-section" id="inventory">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 7H4L6 3h12l2 4zM4 7v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Material Control</div>
+            <h2>Material &amp; Remnant Inventory</h2>
+            <p>Know what you have before you order more. Track raw stock, drops, and remnants. Check availability before quoting. Stop buying material you already own.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited materials and locations
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Material Inventory — Bar Stock &amp; Remnants</span>
+          </div>
+          <div class="mockup-body">
+            <table class="inv-table">
+              <thead><tr><th>Material</th><th>Size</th><th>Location</th><th>On Hand</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>6061-T6 Aluminum Round</td>
+                  <td>2.0" Dia × 12ft</td>
+                  <td>Rack B-4</td>
+                  <td class="inv-stock inv-stock--ok">14 pcs</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>6061-T6 Remnant</td>
+                  <td>2.0" Dia × 3.2ft</td>
+                  <td>Drops bin</td>
+                  <td class="inv-stock inv-stock--ok">2 pcs</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>4140 Steel Round</td>
+                  <td>1.5" Dia × 12ft</td>
+                  <td>Rack A-2</td>
+                  <td class="inv-stock inv-stock--low">3 pcs</td>
+                  <td><span class="inv-reorder">Reorder</span></td>
+                </tr>
+                <tr>
+                  <td>304 Stainless Plate</td>
+                  <td>0.25" × 48" × 96"</td>
+                  <td>Sheet rack</td>
+                  <td class="inv-stock inv-stock--out">0 pcs</td>
+                  <td><span class="inv-reorder" style="background:#FFF1F2;color:#DC2626;border-color:#FECACA">Out of stock</span></td>
+                </tr>
+                <tr>
+                  <td>A36 Flat Bar Remnant</td>
+                  <td>0.5" × 3" × 28"</td>
+                  <td>Drops bin</td>
+                  <td class="inv-stock inv-stock--ok">6 pcs</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Add stock when it arrives — scan barcode or manual entry, takes 10 seconds</li>
+              <li>Deduct material automatically when a work order starts</li>
+              <li>Tracks remnants and drops by exact size — check before buying new</li>
+              <li>Low-stock alerts with configurable reorder points per material</li>
+              <li>Suggested reorder quantity based on recent job consumption</li>
+              <li>Works offline — sync when back on network</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Annual savings</div>
+              <div class="roi-stat">$10–20K</div>
+              <div class="roi-desc">Shops spending $200K/year on material typically reduce overbuying by 10–15% once they can see their remnants. That's $10K–$20K per year in recovered material cost.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">The real problem it solves</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">"Material handlers waste time searching for inventory that isn't there. Purchasing expedites orders at premium prices." Remnants are invisible until someone trips over them — this makes them visible.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>Stop buying material you already own. <strong>Average saves $10K–$20K/year.</strong></span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 7. CoC GENERATOR ──────────────────────────────────────────── -->
+      <div class="tool-section" id="coc">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-4-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6M9 13l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Quality &amp; Compliance</div>
+            <h2>Certificate of Conformance Generator</h2>
+            <p>Job ships — CoC is auto-generated, pre-filled with all job data, and ready to email in one click. Material certs linked at receiving. No Word documents. No reprints. No scrambling at shipping.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited shipments
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Certificate of Conformance — Auto-Generated</span>
+          </div>
+          <div class="mockup-body">
+            <div class="coc-doc">
+              <div class="coc-header">
+                <div>
+                  <div class="coc-company">Precision Machining Co.</div>
+                  <div class="coc-title">Certificate of Conformance</div>
+                  <div style="font-size:.72rem;color:var(--gray-400);margin-top:4px">Doc #: COC-2841-2026-06-04</div>
+                </div>
+                <div class="coc-stamp">
+                  <div class="coc-stamp-text">Conforms</div>
+                  <div style="font-size:.65rem;color:#16A34A;margin-top:2px">All requirements met</div>
+                </div>
+              </div>
+              <div class="coc-grid">
+                <div class="coc-field"><div class="coc-field-label">Customer PO</div><div class="coc-field-value">PO-44821</div></div>
+                <div class="coc-field"><div class="coc-field-label">Job Number</div><div class="coc-field-value">#2841</div></div>
+                <div class="coc-field"><div class="coc-field-label">Part Number</div><div class="coc-field-value">ACM-HSD-001 Rev B</div></div>
+                <div class="coc-field"><div class="coc-field-label">Quantity</div><div class="coc-field-value">4 pieces</div></div>
+                <div class="coc-field"><div class="coc-field-label">Material</div><div class="coc-field-value">6061-T6 Aluminum</div></div>
+                <div class="coc-field"><div class="coc-field-label">Heat / Lot #</div><div class="coc-field-value">84729A — cert attached</div></div>
+                <div class="coc-field"><div class="coc-field-label">Drawing Rev</div><div class="coc-field-value">Rev B — dated 2026-01-14</div></div>
+                <div class="coc-field"><div class="coc-field-label">Ship Date</div><div class="coc-field-value">June 4, 2026</div></div>
+              </div>
+              <div style="font-size:.8rem;color:var(--gray-600);line-height:1.6;padding:12px 0;border-top:var(--border);border-bottom:var(--border);margin:12px 0">
+                We certify that the above parts were manufactured in accordance with all applicable drawings, specifications, and purchase order requirements. All materials are traceable to mill certifications. Parts were inspected and found to conform to all dimensional and material requirements.
+              </div>
+              <div class="coc-sig">
+                <div style="flex:1">
+                  <div class="coc-sig-line"></div>
+                  <div class="coc-sig-label">Quality Manager Signature</div>
+                </div>
+                <div style="flex:1">
+                  <div class="coc-sig-line"></div>
+                  <div class="coc-sig-label">Date</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Auto-generates CoC when job is marked shipped — pre-filled from job data</li>
+              <li>One-click email to customer with CoC as PDF attachment</li>
+              <li>Material certs linked to job at receiving — automatically included in shipment package</li>
+              <li>Searchable archive — find any cert by job, customer, PO, or date range</li>
+              <li>AS9100 / IATF 16949 compatible format — matches what your aerospace customers require</li>
+              <li>Custom certificate template with your logo and company details</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">Time saved per shipment</div>
+              <div class="roi-stat">45 min</div>
+              <div class="roi-desc">From opening Word, finding the template, filling in 10 fields, printing, signing, scanning, emailing. For a shop shipping 20 jobs/week, that's 150 hours per year on document prep alone.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">Revenue protection</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">For aerospace and defense shops, a missing CoC holds up payment. Having the cert auto-generated and sent the moment the job ships eliminates the most common reason for delayed invoices.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>20 shipments/week × 45 min = <strong>150 hours/year</strong> recovered just on cert paperwork.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- ── 8. OUTSIDE SERVICES ────────────────────────────────────────── -->
+      <div class="tool-section" id="outside">
+        <div class="tool-section-header">
+          <div class="tool-section-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 12h2M20 12h2M12 2v2M12 20v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity=".4"/></svg>
+          </div>
+          <div class="tool-section-meta">
+            <div class="tool-section-tag">Vendor Management</div>
+            <h2>Outside Service Tracker</h2>
+            <p>When a job goes to heat treat, anodize, plating, or waterjet — it shouldn't disappear for weeks. Track every job out, automate follow-ups, and know the instant something is overdue.</p>
+            <div class="tool-section-price">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6 3.5V6l2 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              From $99/mo — unlimited vendors and jobs
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <span class="mockup-title">Outside Services — Currently Out</span>
+          </div>
+          <div class="mockup-body">
+            <table class="outs-table">
+              <thead><tr><th>Job</th><th>Vendor</th><th>Service</th><th>Sent</th><th>Due Back</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="outs-job">#2831</span><span class="outs-customer">Hydro Systems</span></td>
+                  <td>AIM Heat Treating</td>
+                  <td>Case harden</td>
+                  <td style="color:var(--gray-400);font-size:.82rem">May 28</td>
+                  <td style="font-size:.82rem;color:#DC2626;font-weight:700">Jun 1 — 3 days late</td>
+                  <td><span class="outs-badge outs-late">Overdue</span></td>
+                </tr>
+                <tr>
+                  <td><span class="outs-job">#2837</span><span class="outs-customer">Axiom Corp</span></td>
+                  <td>Anodize Plus</td>
+                  <td>Type II anodize</td>
+                  <td style="color:var(--gray-400);font-size:.82rem">May 31</td>
+                  <td style="font-size:.82rem;color:#D97706;font-weight:700">Jun 3 — due today</td>
+                  <td><span class="outs-badge outs-due">Due today</span></td>
+                </tr>
+                <tr>
+                  <td><span class="outs-job">#2840</span><span class="outs-customer">DynaTech</span></td>
+                  <td>Pacific Plating</td>
+                  <td>Nickel plate</td>
+                  <td style="color:var(--gray-400);font-size:.82rem">Jun 1</td>
+                  <td style="font-size:.82rem;color:#16A34A;font-weight:700">Jun 6 — 3 days</td>
+                  <td><span class="outs-badge outs-ok">On track</span></td>
+                </tr>
+                <tr>
+                  <td><span class="outs-job">#2844</span><span class="outs-customer">MetroFab</span></td>
+                  <td>Flow Waterjet Co.</td>
+                  <td>Waterjet cut</td>
+                  <td style="color:var(--gray-400);font-size:.82rem">Jun 2</td>
+                  <td style="font-size:.82rem;color:#16A34A;font-weight:700">Jun 5 — 2 days</td>
+                  <td><span class="outs-badge outs-ok">On track</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tool-details">
+          <div class="detail-block">
+            <h4>What it does</h4>
+            <ul class="detail-list">
+              <li>Log jobs when they leave for outside service — vendor, PO, service type, due date</li>
+              <li>Automated follow-up emails to vendors at configurable intervals (e.g. day before due)</li>
+              <li>Dashboard of all jobs currently out — with overdue flagged prominently</li>
+              <li>Confirm return receipt — updates job status automatically</li>
+              <li>Vendor performance tracking — who's always late, who's reliable</li>
+              <li>Ties back into the scheduling board so jobs aren't assigned until material is back</li>
+            </ul>
+          </div>
+          <div>
+            <div class="roi-box">
+              <div class="roi-box-label">What this eliminates</div>
+              <div class="roi-stat">Zero</div>
+              <div class="roi-desc">Jobs lost in vendor black holes. Currently the standard response when a job doesn't come back on time is: nobody notices until the customer calls. This makes every outside job visible and chased automatically.</div>
+            </div>
+            <div class="roi-box" style="margin-top:12px">
+              <div class="roi-box-label">The real problem it solves</div>
+              <div class="roi-desc" style="font-size:.875rem;color:var(--gray-700)">"Jobs sit at a vendor for weeks past due and nobody notices until the customer calls asking where their parts are." Every shop with outside services has this problem. None of them have a system for it.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tool-cta-strip">
+          <span>Stop finding out about late outside services <strong>when the customer calls</strong>.</span>
+          <a href="index.html#demo" class="btn-sm">Get This Module</a>
+        </div>
+      </div>
+
+      <!-- BOTTOM CTA -->
+      <div style="padding:clamp(36px,4vw,56px) 0;text-align:center">
+        <div class="section-eyebrow" style="justify-content:center">Get Started</div>
+        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;color:var(--gray-900);letter-spacing:-.03em;margin-bottom:12px">Pick the module that hurts most.<br/>Be running today.</h2>
+        <p style="color:var(--gray-500);font-size:1rem;max-width:480px;margin:0 auto 28px;line-height:1.7">Every module is $99/mo standalone. All 8 for $299/mo. No setup fee. No per-user charges. 30-day ROI guarantee on every plan.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="index.html#demo" class="btn-primary">Book a 30-Minute Demo</a>
+          <a href="index.html#pricing" class="btn-outline">See All Pricing</a>
+        </div>
+      </div>
+
+    </div><!-- /tools-content -->
+  </div><!-- /tools-layout -->
+</div><!-- /container -->
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="logo footer-logo">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+          <circle cx="4"  cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="24" cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="4"  cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+          <line x1="14" y1="11" x2="5.2"  y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="11" x2="22.8" y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="17" x2="5.2"  y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        </svg>
+        <span class="logo-text">Axon <strong>AI</strong></span>
+      </a>
+      <p>AI operations suite for CNC machine shops and metal fabrication.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">Tools</div>
+        <a href="#scheduling">Production Board</a>
+        <a href="#costing">Job Costing</a>
+        <a href="#traveler">Shop Traveler</a>
+        <a href="#portal">Customer Portal</a>
+        <a href="#maintenance">Maintenance</a>
+        <a href="#inventory">Inventory</a>
+        <a href="#coc">CoC Generator</a>
+        <a href="#outside">Outside Services</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="index.html">Home</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#demo">Book Demo</a>
+        <a href="mailto:hello@axon.ai">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar container">
+    <span>&copy; 2026 Axon AI Inc. All rights reserved.</span>
+    <span>Built for the shop floor. Not the corner office.</span>
+  </div>
+</footer>
+
+<script>
+// Nav scroll
+const nav = document.getElementById('nav')
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 10), { passive: true })
+
+// Active sidebar nav tracking
+const sections = document.querySelectorAll('.tool-section[id]')
+const navLinks = document.querySelectorAll('.tools-nav-link')
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'))
+      const link = document.querySelector('.tools-nav-link[href="#' + e.target.id + '"]')
+      link?.classList.add('active')
+    }
+  })
+}, { rootMargin: '-20% 0px -70% 0px' })
+sections.forEach(s => obs.observe(s))
+
+// Reveal
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target) } })
+}, { threshold: 0.06 })
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el))
+
+// Mobile hamburger
+const hamburger = document.getElementById('hamburger')
+hamburger?.addEventListener('click', () => {
+  let m = document.getElementById('mobileMenuTools')
+  if (!m) {
+    m = document.createElement('div')
+    m.id = 'mobileMenuTools'
+    m.className = 'mobile-menu'
+    m.innerHTML = `
+      <a href="#scheduling" onclick="this.closest('.mobile-menu').classList.remove('open')">Production Board</a>
+      <a href="#costing" onclick="this.closest('.mobile-menu').classList.remove('open')">Job Costing</a>
+      <a href="#traveler" onclick="this.closest('.mobile-menu').classList.remove('open')">Shop Traveler</a>
+      <a href="#portal" onclick="this.closest('.mobile-menu').classList.remove('open')">Customer Portal</a>
+      <a href="#maintenance" onclick="this.closest('.mobile-menu').classList.remove('open')">Maintenance</a>
+      <a href="#inventory" onclick="this.closest('.mobile-menu').classList.remove('open')">Inventory</a>
+      <a href="#coc" onclick="this.closest('.mobile-menu').classList.remove('open')">CoC Generator</a>
+      <a href="#outside" onclick="this.closest('.mobile-menu').classList.remove('open')">Outside Services</a>
+      <a href="index.html#demo" class="mobile-cta">Book a Demo</a>
+    `
+    document.body.appendChild(m)
+  }
+  m.classList.toggle('open')
+})
+</script>
+</body>
+</html>
