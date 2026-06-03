@@ -28,15 +28,6 @@ const revealObs = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el))
 
-/* ── AGENT ROW CYCLE ────────────────────────────────────────────────────── */
-const agentRows = document.querySelectorAll('.ops-row')
-let activeIdx = 0
-setInterval(() => {
-  agentRows.forEach(r => r.classList.remove('ops-row--active'))
-  agentRows[activeIdx % agentRows.length]?.classList.add('ops-row--active')
-  activeIdx++
-}, 2400)
-
 /* ── DEMO FORM ──────────────────────────────────────────────────────────── */
 document.getElementById('demoForm')?.addEventListener('submit', async e => {
   e.preventDefault()

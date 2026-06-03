@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pricing — Axon AI for CNC & Fabrication Shops</title>
+  <meta name="description" content="Simple flat-rate pricing for machine shops. Starter $99/mo, Growth $199/mo, Shop Suite $349/mo — all plans include unlimited users. No per-user fees. No contracts. 30-day ROI guarantee."/>
+  <link rel="canonical" href="https://axon.ai/pricing"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* ── PRICING PAGE ─────────────────────────────────────────────────────── */
+    .pricing-hero{
+      padding:calc(62px + clamp(36px,5vw,64px)) 0 clamp(36px,4vw,56px);
+      background:var(--gray-50);border-bottom:var(--border);
+    }
+    .pricing-hero-inner{max-width:640px}
+    .pricing-hero h1{font-size:clamp(2rem,4vw,2.9rem);font-weight:900;letter-spacing:-.04em;color:var(--gray-900);margin-bottom:14px;line-height:1.1}
+    .pricing-hero p{font-size:1.05rem;color:var(--gray-500);line-height:1.75;margin-bottom:0}
+
+    /* guarantee strip */
+    .guarantee-strip{
+      display:flex;align-items:center;justify-content:center;gap:28px;
+      background:var(--white);border-bottom:var(--border);
+      padding:14px 24px;flex-wrap:wrap;
+    }
+    .guarantee-pill{
+      display:flex;align-items:center;gap:7px;
+      font-size:.82rem;font-weight:600;color:var(--gray-600);
+    }
+    .guarantee-pill svg{color:var(--blue-700)}
+
+    /* plans grid */
+    .plans-section{padding:clamp(40px,5vw,72px) 0}
+    .plans-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      align-items:start;
+    }
+    .plan-card{
+      border:var(--border);border-radius:var(--radius-xl);
+      background:var(--white);padding:28px 24px;
+      position:relative;
+    }
+    .plan-card--featured{
+      border-color:var(--blue-700);
+      box-shadow:0 0 0 3px rgba(29,78,216,.08), var(--shadow-lg);
+    }
+    .plan-card--website{
+      background:var(--gray-50);
+    }
+    .plan-badge{
+      position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+      background:var(--blue-700);color:var(--white);
+      font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
+      padding:4px 14px;border-radius:100px;white-space:nowrap;
+    }
+    .plan-badge--new{background:#059669}
+    .plan-name{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:8px}
+    .plan-price{font-size:2.4rem;font-weight:900;letter-spacing:-.05em;color:var(--gray-900);line-height:1;margin-bottom:4px}
+    .plan-price span{font-size:1rem;font-weight:500;color:var(--gray-400);letter-spacing:0}
+    .plan-price--small{font-size:1.7rem}
+    .plan-users{font-size:.8rem;color:var(--gray-400);margin-bottom:16px;font-weight:500}
+    .plan-tagline{font-size:.9rem;color:var(--gray-600);line-height:1.6;margin-bottom:20px;min-height:56px}
+    .plan-divider{height:1px;background:var(--gray-100);margin-bottom:16px}
+    .plan-includes-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:10px}
+    .plan-features{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+    .plan-feature{display:flex;align-items:flex-start;gap:9px;font-size:.85rem;color:var(--gray-600);line-height:1.5}
+    .plan-feature svg{flex-shrink:0;margin-top:2px;color:var(--blue-700)}
+    .plan-feature--gray svg{color:var(--gray-300)}
+    .plan-btn{
+      display:block;text-align:center;
+      padding:12px;border-radius:var(--radius);
+      font-size:.9rem;font-weight:700;
+      transition:all var(--t);
+    }
+    .plan-btn--primary{background:var(--blue-700);color:var(--white)}
+    .plan-btn--primary:hover{background:var(--blue-800)}
+    .plan-btn--outline{border:2px solid var(--gray-200);color:var(--gray-700)}
+    .plan-btn--outline:hover{border-color:var(--gray-400);color:var(--gray-900)}
+
+    /* module picker box */
+    .plan-module-note{
+      background:var(--blue-50);border:1px solid var(--blue-100);
+      border-radius:var(--radius);padding:10px 12px;
+      font-size:.78rem;color:var(--blue-700);font-weight:600;
+      margin-bottom:16px;line-height:1.5;
+    }
+
+    /* comparison table */
+    .compare-section{
+      padding:clamp(32px,4vw,56px) 0;
+      background:var(--gray-50);border-top:var(--border);border-bottom:var(--border);
+    }
+    .compare-wrap{overflow-x:auto}
+    .compare-table{
+      width:100%;border-collapse:collapse;
+      min-width:640px;
+    }
+    .compare-table th{
+      padding:12px 16px;font-size:.72rem;font-weight:800;
+      text-transform:uppercase;letter-spacing:.08em;
+      text-align:center;color:var(--gray-400);
+      border-bottom:var(--border);background:var(--gray-50);
+      white-space:nowrap;
+    }
+    .compare-table th:first-child{text-align:left;color:var(--gray-600);font-size:.75rem}
+    .compare-table th.col-featured{color:var(--blue-700);background:var(--blue-50)}
+    .compare-table td{
+      padding:13px 16px;font-size:.875rem;
+      border-bottom:1px solid var(--gray-100);
+      text-align:center;vertical-align:middle;
+    }
+    .compare-table td:first-child{text-align:left;color:var(--gray-700);font-weight:500}
+    .compare-table tr:last-child td{border-bottom:none}
+    .compare-table tr:hover td{background:#FAFAFA}
+    .compare-table td.col-featured{background:rgba(29,78,216,.03)}
+    .ct-group-header td{
+      background:var(--gray-50);font-size:.7rem;font-weight:800;
+      text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);
+      padding:10px 16px;border-top:var(--border);
+    }
+    .ct-group-header td:not(:first-child){background:var(--gray-50)}
+    .ct-group-header td.col-featured{background:rgba(29,78,216,.04)}
+    .check{color:#16A34A}
+    .dash{color:var(--gray-300)}
+    .partial{color:#D97706}
+
+    /* how it stacks up */
+    .compete-section{padding:clamp(40px,5vw,64px) 0}
+    .compete-table-wrap{overflow-x:auto;margin-top:28px}
+    .compete-table{width:100%;border-collapse:collapse;min-width:560px}
+    .compete-table th{
+      padding:10px 16px;font-size:.7rem;font-weight:800;
+      text-transform:uppercase;letter-spacing:.08em;
+      color:var(--gray-400);border-bottom:var(--border);
+      text-align:left;background:var(--gray-50);
+    }
+    .compete-table td{
+      padding:13px 16px;font-size:.875rem;color:var(--gray-600);
+      border-bottom:1px solid var(--gray-100);vertical-align:middle;
+    }
+    .compete-table td:first-child{font-weight:700;color:var(--gray-900)}
+    .compete-table td.axon-col{color:var(--blue-700);font-weight:700;background:rgba(29,78,216,.03)}
+    .compete-table td.axon-col-head{color:var(--blue-700);font-weight:800;background:rgba(29,78,216,.04)}
+    .compete-note{font-size:.75rem;color:var(--gray-400);margin-top:8px}
+
+    /* pricing faq */
+    .pricing-faq{padding:clamp(40px,5vw,64px) 0}
+    .pricing-faq .faq-list{max-width:720px;margin:0 auto}
+
+    @media(max-width:1024px){.plans-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.plans-grid{grid-template-columns:1fr};.guarantee-strip{gap:14px}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="Axon AI homepage">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+        <circle cx="4"  cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="24" cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="4"  cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+        <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+        <line x1="14" y1="11" x2="5.2"  y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="11" x2="22.8" y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="5.2"  y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      </svg>
+      <span class="logo-text">Axon <strong>AI</strong></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="pricing.html" style="color:var(--gray-900);font-weight:700">Pricing</a></li>
+      <li><a href="website-design.html">Website Design</a></li>
+      <li><a href="index.html#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="index.html#demo" class="nav-link-btn">Book Demo</a>
+      <a href="index.html#demo" class="nav-cta-btn">Get Started
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open navigation menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <line x1="2" y1="6"  x2="20" y2="6"  stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="2" y1="11" x2="20" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="2" y1="16" x2="20" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="tools.html"          onclick="closeMobile()">Tools</a>
+  <a href="pricing.html"        onclick="closeMobile()">Pricing</a>
+  <a href="website-design.html" onclick="closeMobile()">Website Design</a>
+  <a href="index.html#faq"      onclick="closeMobile()">FAQ</a>
+  <a href="index.html#demo"     onclick="closeMobile()" class="mobile-cta">Get Started</a>
+</div>
+
+<!-- HERO -->
+<div class="pricing-hero">
+  <div class="container pricing-hero-inner">
+    <div class="section-eyebrow">Pricing</div>
+    <h1>One flat rate.<br/>Unlimited users.</h1>
+    <p>No per-user fees. No setup fees. No long-term contracts. Pick the modules your shop needs and be running today. Every plan includes the same unlimited-user access and same-day setup.</p>
+  </div>
+</div>
+
+<!-- GUARANTEE STRIP -->
+<div class="guarantee-strip">
+  <div class="guarantee-pill">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    30-day ROI guarantee — every plan
+  </div>
+  <div class="guarantee-pill">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    No contracts — cancel any time
+  </div>
+  <div class="guarantee-pill">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Unlimited users — every plan
+  </div>
+  <div class="guarantee-pill">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Same-day setup — no IT required
+  </div>
+</div>
+
+<!-- PLANS GRID -->
+<section class="plans-section">
+  <div class="container">
+    <div class="plans-grid">
+
+      <!-- STARTER -->
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$99<span>/mo</span></div>
+        <div class="plan-users">Unlimited users &amp; operators</div>
+        <div class="plan-tagline">One module. The one problem costing you the most — solved today.</div>
+        <div class="plan-module-note">
+          Pick any 1 module from all 9 available. Switch modules at any time.
+        </div>
+        <div class="plan-divider"></div>
+        <div class="plan-includes-label">Includes</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Any 1 module of your choice
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Unlimited users and operators
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Same-day setup &amp; onboarding
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Email &amp; chat support
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            QuickBooks data export
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            30-day ROI guarantee
+          </div>
+        </div>
+        <a href="packages/starter/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See What's Included</a>
+        <a href="index.html#demo" class="plan-btn plan-btn--primary">Start With One Module</a>
+      </div>
+
+      <!-- GROWTH -->
+      <div class="plan-card plan-card--featured">
+        <div class="plan-badge plan-badge--new">Most Popular</div>
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">$199<span>/mo</span></div>
+        <div class="plan-users">Unlimited users &amp; operators</div>
+        <div class="plan-tagline">Three connected modules. Eliminate your biggest operational bottlenecks together.</div>
+        <div class="plan-module-note">
+          Pick any 3 modules. Add or swap modules at any time.
+        </div>
+        <div class="plan-divider"></div>
+        <div class="plan-includes-label">Popular combos</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Production Board + Job Costing + Shop Traveler
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Shop Traveler + CoC Generator + Customer Portal
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Job Costing + Shop CRM + Outside Services
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            All Starter features included
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Modules share data with each other
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Priority support response
+          </div>
+        </div>
+        <a href="packages/growth/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See What's Included</a>
+        <a href="index.html#demo" class="plan-btn plan-btn--primary">Pick Your 3 Modules</a>
+      </div>
+
+      <!-- SHOP SUITE -->
+      <div class="plan-card">
+        <div class="plan-badge">Best Value</div>
+        <div class="plan-name">Shop Suite</div>
+        <div class="plan-price">$349<span>/mo</span></div>
+        <div class="plan-users">Unlimited users &amp; operators</div>
+        <div class="plan-tagline">All 9 modules. Complete shop visibility from quote to shipping.</div>
+        <div class="plan-module-note">
+          Every module included. New modules added at no extra cost as they release.
+        </div>
+        <div class="plan-divider"></div>
+        <div class="plan-includes-label">All 9 modules</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Production Board
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Job Costing Feedback Loop
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Shop Traveler
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Customer Status Portal
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Preventive Maintenance Tracker
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Material &amp; Remnant Inventory
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            CoC Generator
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Shop Floor CRM
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Outside Service Tracker
+          </div>
+        </div>
+        <a href="packages/suite/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See Full Details</a>
+        <a href="index.html#demo" class="plan-btn plan-btn--primary">Get the Full Suite</a>
+      </div>
+
+      <!-- WEBSITE DESIGN -->
+      <div class="plan-card plan-card--website">
+        <div class="plan-name">Website Design</div>
+        <div class="plan-price plan-price--small">From $1,500</div>
+        <div class="plan-users">One-time project fee</div>
+        <div class="plan-tagline">A professional website built for your shop. Delivered in 2–3 weeks.</div>
+        <div class="plan-divider"></div>
+        <div class="plan-includes-label">Includes</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Custom design for your shop
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Mobile-first, fast-loading
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            SEO &amp; local search optimization
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            RFQ form → CRM integration
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Google Business profile setup
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Delivered in 2–3 weeks
+          </div>
+          <div class="plan-feature">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Optional $99/mo maintenance
+          </div>
+        </div>
+        <a href="website-design.html" class="plan-btn plan-btn--outline" style="margin-bottom:10px">Learn More</a>
+        <a href="index.html#demo" class="plan-btn plan-btn--primary">Get a Quote</a>
+      </div>
+
+    </div>
+    <p style="text-align:center;color:var(--gray-400);font-size:.82rem;margin-top:20px">
+      Software plans: no setup fees, no per-user fees, cancel any time. Annual billing available — save 2 months.
+    </p>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="compare-section">
+  <div class="container">
+    <div class="section-eyebrow" style="justify-content:center">Compare Plans</div>
+    <h2 class="section-h2" style="text-align:center">What's in each plan</h2>
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:36%">Module / Feature</th>
+            <th>Starter<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">$99/mo</span></th>
+            <th class="col-featured">Growth<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--blue-600)">$199/mo</span></th>
+            <th>Shop Suite<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">$349/mo</span></th>
+            <th>Website Design<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">from $1,500</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- TOOLS -->
+          <tr class="ct-group-header"><td colspan="5">Shop Floor Modules</td></tr>
+          <tr>
+            <td>Digital Production Board</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Job Costing Feedback Loop</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Digital Shop Traveler</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Customer Status Portal</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Preventive Maintenance Tracker</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Material &amp; Remnant Inventory</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>CoC Generator</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Shop Floor CRM</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Outside Service Tracker</td>
+            <td class="partial">Pick 1</td>
+            <td class="col-featured partial">Pick 3</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+
+          <!-- PLATFORM -->
+          <tr class="ct-group-header"><td colspan="5">Platform</td></tr>
+          <tr>
+            <td>Unlimited users &amp; operators</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Works on tablet, phone, desktop</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Offline mode (syncs on reconnect)</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>QuickBooks data export</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>Cross-module data sharing</td>
+            <td><span class="dash">—</span></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+          <tr>
+            <td>New modules included as released</td>
+            <td><span class="dash">—</span></td>
+            <td class="col-featured"><span class="dash">—</span></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><span class="dash">—</span></td>
+          </tr>
+
+          <!-- SUPPORT -->
+          <tr class="ct-group-header"><td colspan="5">Support &amp; Setup</td></tr>
+          <tr>
+            <td>Same-day setup &amp; onboarding</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+          </tr>
+          <tr>
+            <td>Email &amp; chat support</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+          </tr>
+          <tr>
+            <td>Priority support</td>
+            <td><span class="dash">—</span></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+          </tr>
+          <tr>
+            <td>30-day ROI guarantee</td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE STACK UP -->
+<section class="compete-section">
+  <div class="container">
+    <div class="section-eyebrow">Market Context</div>
+    <h2 class="section-h2">What other software costs — and why it matters</h2>
+    <p class="section-p">Legacy ERPs charge per user. A 10-person shop pays $450–$2,000/month before they've implemented anything. Axon is flat-rate — your whole team uses it for one price.</p>
+    <div class="compete-table-wrap">
+      <table class="compete-table">
+        <thead>
+          <tr>
+            <th>Software</th>
+            <th>Model</th>
+            <th>5-Person Shop</th>
+            <th>10-Person Shop</th>
+            <th class="axon-col-head">Axon AI (Suite)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JobBOSS² (ECi)</td>
+            <td>Per user/month</td>
+            <td>$225–$1,000/mo</td>
+            <td>$450–$2,000/mo</td>
+            <td class="axon-col">$349/mo</td>
+          </tr>
+          <tr>
+            <td>ProShop ERP</td>
+            <td>Named users, annual</td>
+            <td>$500–$715/mo</td>
+            <td>$500–$715/mo+</td>
+            <td class="axon-col">$349/mo</td>
+          </tr>
+          <tr>
+            <td>Fulcrum Pro</td>
+            <td>Monthly flat</td>
+            <td>$800+/mo</td>
+            <td>$800+/mo</td>
+            <td class="axon-col">$349/mo</td>
+          </tr>
+          <tr>
+            <td>MRPeasy</td>
+            <td>Per user/month</td>
+            <td>$245–$745/mo</td>
+            <td>$490–$1,490/mo</td>
+            <td class="axon-col">$349/mo</td>
+          </tr>
+          <tr>
+            <td>Fishbowl Manufacturing</td>
+            <td>Cloud subscription</td>
+            <td>$349–$399/mo (2 users)</td>
+            <td>$349–$399/mo + add-ons</td>
+            <td class="axon-col">$349/mo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="compete-note">* Competitor pricing sourced from Capterra, G2, GetApp, and official pricing pages as of June 2026. Prices vary by plan and are shown as monthly estimates. Axon AI pricing is flat-rate, unlimited users.</p>
+  </div>
+</section>
+
+<!-- PRICING FAQ -->
+<section class="pricing-faq section section--gray">
+  <div class="container">
+    <div class="section-eyebrow" style="justify-content:center">Pricing FAQ</div>
+    <h2 class="section-h2" style="text-align:center">Pricing questions, answered</h2>
+    <div class="faq-list pricing-faq" itemscope itemtype="https://schema.org/FAQPage">
+
+      <details class="faq-item" open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">Can I really add unlimited users for one flat price?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Yes, absolutely. Every plan — Starter, Growth, and Shop Suite — includes unlimited users and operators at no extra cost. Your CNC operator, your shipping clerk, your quality manager, and your shop owner can all use it simultaneously. We don't charge by seat because we think it's wrong to penalize shops for having more people using good software.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">On the Growth plan — which 3 modules should I pick?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">The most common combinations: (1) Production Board + Job Costing + Shop Traveler — for shops whose main pain is scheduling chaos, paper, and unknown margins. (2) Shop Traveler + CoC Generator + Customer Portal — for quality-focused shops doing aerospace or defense work. (3) Job Costing + Shop CRM + Outside Services — for shops focused on profitability and customer retention. We'll help you pick the right 3 on your demo call based on your shop's specific problems.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">What is the 30-day ROI guarantee?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Before you start, we agree on a measurable outcome — hours saved per day, margin gap identified, downtime events prevented. At 30 days, we look at it together. If you can't point to clear, real ROI, we refund month one. No negotiation, no paperwork. We've paid it once. Every other shop has been able to point to ROI — usually within the first week.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">Can I upgrade from Starter to Growth or Suite later?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Yes. Most shops start with Starter, prove the ROI on one module in the first month, then upgrade. Upgrading is instant — no new implementation, no downtime. Your data from the first module is already in the system and connects to the new modules immediately. You're only billed the difference for the remainder of your billing cycle.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">Is there a setup fee or implementation cost?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">No setup fee. No implementation cost. No consultants. We configure your shop — machines, op codes, customers, materials — in the same call where we show you the demo. Most shops are fully running on day one. This is specifically designed to be the opposite of a 6-month ERP implementation.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <summary itemprop="name">Is annual billing available?</summary>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Yes. Annual billing saves you 2 months — effectively getting 12 months for the price of 10. Most shops switch to annual once they've confirmed ROI in the first month or two. Monthly billing is available with no penalty to cancel at any time.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="demo" aria-labelledby="cta-heading">
+  <div class="container">
+    <div class="cta-box">
+      <div class="section-eyebrow">Get Started</div>
+      <h2 id="cta-heading">Tell us which problem hurts most</h2>
+      <p>Book a 30-minute call. We'll match you to the right plan and module based on your shop's biggest pain point — and have you running before the call ends.</p>
+      <form class="demo-form" id="demoForm" novalidate aria-label="Demo request form">
+        <div class="demo-form-grid">
+          <input type="text"  name="name"    placeholder="Your name"         class="form-input" required autocomplete="name"/>
+          <input type="email" name="email"   placeholder="Work email"        class="form-input" required autocomplete="email"/>
+          <input type="text"  name="company" placeholder="Shop name"         class="form-input" autocomplete="organization"/>
+          <input type="text"  name="volume"  placeholder="Biggest pain point" class="form-input"/>
+        </div>
+        <button type="submit" class="btn-submit">Book a 30-Minute Call</button>
+        <p class="form-note">No contracts. No obligation. We'll be honest if we're not the right fit.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo footer-logo" aria-label="Axon AI">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+          <circle cx="4"  cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="24" cy="8"  r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="4"  cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+          <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+          <line x1="14" y1="11" x2="5.2"  y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="11" x2="22.8" y2="9.2"  stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="17" x2="5.2"  y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+          <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        </svg>
+        <span class="logo-text">Axon <strong>AI</strong></span>
+      </a>
+      <p>Software tools for CNC machine shops and metal fabrication.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">Tools</div>
+        <a href="tools.html#scheduling">Production Board</a>
+        <a href="tools.html#costing">Job Costing</a>
+        <a href="tools.html#traveler">Shop Traveler</a>
+        <a href="tools.html#crm">Shop CRM</a>
+        <a href="tools.html">All 9 Tools</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Plans</div>
+        <a href="packages/starter/">Starter — $99/mo</a>
+        <a href="packages/growth/">Growth — $199/mo</a>
+        <a href="packages/suite/">Shop Suite — $349/mo</a>
+        <a href="website-design.html">Website Design</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="index.html">Home</a>
+        <a href="index.html#demo">Book a Demo</a>
+        <a href="mailto:hello@axon.ai">Contact</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar container">
+    <span>&copy; 2026 Axon AI Inc. All rights reserved.</span>
+    <span>Built for the shop floor. Not the corner office.</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -145,8 +145,8 @@
     </a>
     <ul class="nav-links">
       <li><a href="tools.html">Tools</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
       <li><a href="website-design.html">Website Design</a></li>
-      <li><a href="#pricing">Pricing</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <div class="nav-ctas">
@@ -166,8 +166,8 @@
 </nav>
 <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
   <a href="tools.html"           onclick="closeMobile()">Tools</a>
+  <a href="pricing.html"         onclick="closeMobile()">Pricing</a>
   <a href="website-design.html"  onclick="closeMobile()">Website Design</a>
-  <a href="#pricing"             onclick="closeMobile()">Pricing</a>
   <a href="#faq"                 onclick="closeMobile()">FAQ</a>
   <a href="#demo"                onclick="closeMobile()" class="mobile-cta">Get Started</a>
 </div>
@@ -204,7 +204,7 @@
       </div>
     </div>
 
-    <!-- Tool Grid Visual — replaces agent dashboard -->
+    <!-- Tool Grid Visual -->
     <div class="hero-visual" aria-hidden="true">
       <div class="tool-grid-preview">
         <div class="tgp-header">
@@ -666,53 +666,69 @@
     <div class="section-eyebrow">Pricing</div>
     <h2 class="section-h2" id="pricing-heading">Simple, flat pricing. No per-user fees.</h2>
     <p class="section-p">Less than the cost of one hour of shop time per day. Cancel any time. No contracts.</p>
-    <div class="pricing-grid">
+    <div class="pricing-grid" style="grid-template-columns:repeat(4,1fr)">
+
       <div class="pricing-card reveal">
         <div class="pricing-tier">Starter</div>
         <div class="pricing-price">$99<span>/mo</span></div>
-        <div class="pricing-desc">Any single module. Unlimited users. Prove the ROI before committing to more.</div>
+        <div class="pricing-desc">Any 1 module. Prove the ROI before committing to more.</div>
         <ul class="pricing-list">
           <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>1 module of your choice</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Unlimited users and operators</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Same-day setup and onboarding</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Email and chat support</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Unlimited users</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Same-day setup</li>
           <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>30-day ROI guarantee</li>
         </ul>
-        <a href="#demo" class="pricing-btn pricing-btn--outline">Start with One Module</a>
+        <a href="packages/starter/" class="pricing-btn pricing-btn--outline" style="margin-bottom:8px">See Details</a>
+        <a href="#demo" class="pricing-btn pricing-btn--primary">Get Started</a>
       </div>
 
       <div class="pricing-card pricing-card--featured reveal">
-        <div class="pricing-badge">Best Value</div>
-        <div class="pricing-tier">Shop Suite</div>
-        <div class="pricing-price">$299<span>/mo</span></div>
-        <div class="pricing-desc">All 10 modules. Everything your shop needs. Less than one hour of shop rate per day.</div>
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-tier">Growth</div>
+        <div class="pricing-price">$199<span>/mo</span></div>
+        <div class="pricing-desc">Any 3 modules. Connected data. Eliminate your biggest bottlenecks together.</div>
         <ul class="pricing-list">
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>All 10 modules included</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Production board + job costing</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Shop traveler + Shop CRM</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Maintenance + inventory</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>CoC generator + customer portal</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Priority support + onboarding</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>New modules included as released</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Any 3 modules</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Unlimited users</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Modules share data</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Priority support</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>30-day ROI guarantee</li>
         </ul>
+        <a href="packages/growth/" class="pricing-btn pricing-btn--outline" style="margin-bottom:8px">See Details</a>
+        <a href="#demo" class="pricing-btn pricing-btn--primary">Pick 3 Modules</a>
+      </div>
+
+      <div class="pricing-card reveal">
+        <div class="pricing-badge" style="background:var(--gray-700)">Best Value</div>
+        <div class="pricing-tier">Shop Suite</div>
+        <div class="pricing-price">$349<span>/mo</span></div>
+        <div class="pricing-desc">All 9 modules. Complete visibility from quote to shipping.</div>
+        <ul class="pricing-list">
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>All 9 modules</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Unlimited users</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Cross-module data sharing</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>New modules free as released</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Priority support + onboarding</li>
+        </ul>
+        <a href="packages/suite/" class="pricing-btn pricing-btn--outline" style="margin-bottom:8px">See Details</a>
         <a href="#demo" class="pricing-btn pricing-btn--primary">Get the Full Suite</a>
       </div>
 
       <div class="pricing-card reveal">
         <div class="pricing-tier">Website Design</div>
-        <div class="pricing-price">From $1,500</div>
-        <div class="pricing-desc">Professional website built for your shop. SEO-optimized, mobile-first, with RFQ form integrated to your CRM.</div>
+        <div class="pricing-price" style="font-size:1.6rem">From $1,500</div>
+        <div class="pricing-desc">Professional website built for your shop. Delivered in 2–3 weeks.</div>
         <ul class="pricing-list">
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Custom design for your shop</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>SEO and local search optimization</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>RFQ form → CRM integration</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Google Business profile setup</li>
-          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Delivered in 2–3 weeks</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Custom design</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>SEO &amp; local search</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>RFQ form → CRM</li>
+          <li><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6.5" stroke="#1D4ED8" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>Delivered 2–3 weeks</li>
         </ul>
-        <a href="website-design.html" class="pricing-btn pricing-btn--outline">Learn More</a>
+        <a href="website-design.html" class="pricing-btn pricing-btn--outline" style="margin-bottom:8px">Learn More</a>
+        <a href="#demo" class="pricing-btn pricing-btn--primary">Get a Quote</a>
       </div>
     </div>
-    <p class="pricing-note">Software plans: no per-user fees, no setup fees, no long-term contracts. Website design is a one-time project fee + optional $99/mo maintenance.</p>
+    <p class="pricing-note">No setup fees · No per-user fees · No contracts · 30-day ROI guarantee on every plan · <a href="pricing.html" style="color:var(--blue-700);font-weight:600">See full comparison →</a></p>
   </div>
 </section>
 
@@ -813,11 +829,12 @@
         <a href="tools.html">All 10 Tools</a>
       </div>
       <div class="footer-col">
-        <div class="footer-col-title">Services</div>
+        <div class="footer-col-title">Plans</div>
+        <a href="packages/starter/">Starter — $99/mo</a>
+        <a href="packages/growth/">Growth — $199/mo</a>
+        <a href="packages/suite/">Shop Suite — $349/mo</a>
         <a href="website-design.html">Website Design</a>
-        <a href="website-design.html#seo">SEO &amp; Local Search</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#demo">Book a Demo</a>
+        <a href="pricing.html">Full Pricing →</a>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>

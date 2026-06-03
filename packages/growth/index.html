@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Growth Plan — $199/mo | Axon AI for Machine Shops</title>
+  <meta name="description" content="Axon AI Growth Plan: any 3 modules, unlimited users, $199/month. Connect your biggest bottlenecks and get modules that talk to each other."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../styles.css"/>
+  <style>
+    .pkg-hero{padding:calc(62px + clamp(36px,5vw,64px)) 0 clamp(36px,4vw,56px);background:var(--blue-50);border-bottom:1px solid var(--blue-100)}
+    .pkg-hero-inner{max-width:680px}
+    .pkg-price-row{display:flex;align-items:baseline;gap:10px;margin:12px 0 8px}
+    .pkg-price{font-size:3rem;font-weight:900;letter-spacing:-.05em;color:var(--gray-900);line-height:1}
+    .pkg-price span{font-size:1.1rem;font-weight:500;color:var(--gray-400)}
+    .pkg-users{font-size:.9rem;color:var(--blue-700);font-weight:700;background:var(--white);border:1px solid var(--blue-200);padding:4px 12px;border-radius:100px}
+    .pkg-desc{font-size:1.05rem;color:var(--gray-600);line-height:1.75;margin:16px 0 24px}
+    .combos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+    .combo-card{border:var(--border);border-radius:var(--radius-lg);background:var(--white);padding:22px 20px;transition:all var(--t)}
+    .combo-card:hover{border-color:var(--blue-700);box-shadow:0 0 0 3px rgba(29,78,216,.07)}
+    .combo-card--popular{border-color:var(--blue-700);box-shadow:0 0 0 3px rgba(29,78,216,.08)}
+    .combo-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-700);margin-bottom:10px}
+    .combo-name{font-size:1rem;font-weight:800;color:var(--gray-900);margin-bottom:10px;line-height:1.3}
+    .combo-modules{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+    .combo-module{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--gray-700)}
+    .combo-module svg{flex-shrink:0;color:var(--blue-700)}
+    .combo-outcome{font-size:.8rem;color:var(--gray-500);line-height:1.6;padding-top:12px;border-top:var(--border)}
+    .all-modules-section{margin-top:48px}
+    .all-modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+    .am-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border:var(--border);border-radius:var(--radius-lg);background:var(--white)}
+    .am-icon{width:36px;height:36px;border-radius:var(--radius);background:var(--gray-100);border:var(--border);display:flex;align-items:center;justify-content:center;color:var(--gray-600);flex-shrink:0}
+    .am-name{font-size:.875rem;font-weight:700;color:var(--gray-900)}
+    .am-roi{font-size:.72rem;color:var(--blue-700);font-weight:600;margin-top:2px}
+    .data-share-box{background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius-lg);padding:24px 28px;margin-top:32px}
+    .data-share-box h3{font-size:1rem;font-weight:800;color:var(--blue-900);margin-bottom:8px}
+    .data-share-box p{font-size:.9rem;color:var(--blue-800);line-height:1.65}
+    @media(max-width:900px){.combos-grid{grid-template-columns:1fr 1fr}.all-modules-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.combos-grid{grid-template-columns:1fr}.all-modules-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="../../index.html" class="logo">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="3" fill="#1D4ED8"/><circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+        <line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      </svg>
+      <span class="logo-text">Axon <strong>AI</strong></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../../tools.html">Tools</a></li>
+      <li><a href="../../pricing.html">Pricing</a></li>
+      <li><a href="../../website-design.html">Website Design</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="../../index.html#demo" class="nav-cta-btn">Get Started <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</nav>
+
+<div class="pkg-hero">
+  <div class="container pkg-hero-inner">
+    <a href="../../pricing.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--blue-600);font-weight:600;margin-bottom:16px;text-decoration:none">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      All Plans
+    </a>
+    <div class="section-eyebrow">Growth Plan — Most Popular</div>
+    <div class="pkg-price-row">
+      <div class="pkg-price">$199<span>/mo</span></div>
+      <div class="pkg-users">Unlimited users</div>
+    </div>
+    <p class="pkg-desc">Three connected modules. Eliminate your biggest operational bottlenecks together. Modules share data — job costing pulls from the production board, traveler connects to CoC. Pick the 3 that fit your shop.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="../../index.html#demo" class="btn-primary">Pick Your 3 Modules</a>
+      <a href="../../pricing.html" class="btn-outline">Compare All Plans</a>
+    </div>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Popular Combinations</div>
+    <h2 class="section-h2">The 3-module combos shops choose most</h2>
+    <p class="section-p">You pick any 3 from all 9 modules — but here are the combinations that deliver the fastest, most connected ROI based on what shops actually need.</p>
+
+    <div class="combos-grid">
+
+      <div class="combo-card combo-card--popular">
+        <div class="combo-label">Most Popular — Operations</div>
+        <div class="combo-name">Schedule, Track, Cost</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Production Board
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Job Costing Feedback Loop
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Shop Traveler
+          </div>
+        </div>
+        <div class="combo-outcome">Best for shops whose main pain is scheduling conflicts, paper chaos, and unknown margins. These 3 together eliminate the most common reasons a job goes late and loses money.</div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-label">Quality &amp; Compliance Shops</div>
+        <div class="combo-name">Paperless Quality Pack</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Shop Traveler
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            CoC Generator
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Customer Status Portal
+          </div>
+        </div>
+        <div class="combo-outcome">Built for AS9100 and IATF shops. Traveler builds the audit trail, CoC auto-generates at ship, portal keeps customers informed. Cuts doc prep by 3+ hrs/day.</div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-label">Revenue &amp; Profitability</div>
+        <div class="combo-name">Margin &amp; Pipeline Pack</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Job Costing Feedback Loop
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Shop Floor CRM
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Outside Service Tracker
+          </div>
+        </div>
+        <div class="combo-outcome">For shops focused on understanding their real numbers. Costing reveals margin leaks, CRM shows customer profitability, Outside Services stops jobs disappearing at vendors.</div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-label">Material Control</div>
+        <div class="combo-name">Stock &amp; Uptime Pack</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Material &amp; Remnant Inventory
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Preventive Maintenance Tracker
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Digital Production Board
+          </div>
+        </div>
+        <div class="combo-outcome">Eliminate the two biggest hidden cost leaks: buying material you already own, and unplanned machine downtime. Board shows you what's affected when a machine goes down.</div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-label">Customer First</div>
+        <div class="combo-name">Customer Experience Pack</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Customer Status Portal
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Shop Floor CRM
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            CoC Generator
+          </div>
+        </div>
+        <div class="combo-outcome">For shops focused on customer retention and getting more from existing accounts. Portal stops status calls, CRM tracks quote pipeline, CoC delivers a professional shipment package every time.</div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-label">Build Your Own</div>
+        <div class="combo-name">Any 3 You Need</div>
+        <div class="combo-modules">
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Module of your choice
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Module of your choice
+          </div>
+          <div class="combo-module">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="3.5,7 6,9.5 10.5,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Module of your choice
+          </div>
+        </div>
+        <div class="combo-outcome">Every shop is different. Tell us your 3 biggest pain points on the demo call and we'll build your custom combo. You can swap modules at any time with no fee.</div>
+      </div>
+
+    </div>
+
+    <div class="data-share-box">
+      <h3>Modules share data with each other</h3>
+      <p>On the Growth plan, your modules aren't siloed. Job Costing pulls actual clock-in data from the Shop Traveler. The CoC Generator reads material certs from Inventory. The Production Board flags jobs that have overdue Outside Services. The more modules you connect, the more visibility you get — without entering anything twice.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:40px">
+      <p style="color:var(--gray-500);font-size:.9rem;margin-bottom:16px">Want to go all 9? The Shop Suite at $349/mo includes every module plus new ones as they release.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="../../index.html#demo" class="btn-primary">Pick My 3 Modules</a>
+        <a href="../../packages/suite/" class="btn-outline">See Shop Suite</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="../../index.html" class="logo footer-logo"><svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="3" fill="#1D4ED8"/><circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".4"/><circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/><line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/><line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/></svg><span class="logo-text">Axon <strong>AI</strong></span></a>
+      <p>Software tools for CNC machine shops and metal fabrication.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">Plans</div><a href="../../packages/starter/">Starter — $99/mo</a><a href="../../packages/growth/">Growth — $199/mo</a><a href="../../packages/suite/">Shop Suite — $349/mo</a></div>
+      <div class="footer-col"><div class="footer-col-title">Tools</div><a href="../../tools.html">All 9 Tools</a><a href="../../pricing.html">Pricing</a><a href="../../index.html#demo">Book Demo</a></div>
+    </div>
+  </div>
+  <div class="footer-bar container"><span>&copy; 2026 Axon AI Inc.</span><span>Built for the shop floor. Not the corner office.</span></div>
+</footer>
+<script src="../../app.js"></script>
+</body>
+</html>

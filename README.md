@@ -1,32 +1,36 @@
 # Axon AI — Website
 
-Marketing website for **Axon AI**, the AI operations layer for precision manufacturing.
-
-## Agent responsibilities
-
-| Agent | Owns |
-|-------|------|
-| **CMO** | Brand voice, copy, messaging, hero section |
-| **DIR_BRAND** | Visual identity, logo, color system |
-| **DIR_CONTENT** | Features copy, case studies, blog posts |
-| **DIR_DEMAND** | CTAs, form, landing page conversion |
-| **CTO / VP_ENG** | Code, performance, deployment |
+Marketing website for **Axon AI** — modular software tools and website design for CNC machine shops and metal fabrication shops.
 
 ## Stack
 
 - Pure HTML + CSS + JS — no framework, zero dependencies
-- Deployed on Vercel (connect repo → auto-deploy on push)
-- Canva for design assets (logo, social graphics, mockups)
+- Deployed on Vercel (KartarC/axon-ai-website → auto-deploy on push)
+- Supabase: `public.website_leads` table for form submissions
+- Admin dashboard: `/admin.html` (password-protected)
+
+## Pages
+
+- `index.html` — Home
+- `tools.html` — All 9 tool modules with live mockups
+- `website-design.html` — Website design service
+- `admin.html` — Lead management dashboard
 
 ## To deploy
 
-1. Push to GitHub (see `push-to-github.sh`)
-2. Connect repo to Vercel → deploy
+1. Push to GitHub (`git push origin main`)
+2. Vercel auto-deploys on push
 3. Custom domain: `axonai.com` or `axon.ai`
 
 ## Brand
 
-- **Primary:** `#00D4FF` (electric cyan)
-- **Background:** `#0A0F1E` (deep navy)
-- **Font:** Inter (headings + body) + JetBrains Mono (accents)
-- **Tagline:** "The AI operations layer for precision manufacturing."
+- **Primary:** `#1D4ED8` (blue)
+- **Background:** `#FFFFFF` (white)
+- **Font:** Inter
+- **Tagline:** "Replace the whiteboard, the clipboard, and the spreadsheet."
+
+## Environment variables (Vercel)
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ADMIN_SECRET`
