@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accept Invite — Axon AI</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../styles.css"/>
+  <link rel="stylesheet" href="./_shared/app.css"/>
+  <style>
+    body { background:var(--gray-50); display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .invite-wrap { width:100%; max-width:420px; padding:24px; }
+    .invite-logo { display:flex; align-items:center; gap:9px; justify-content:center; margin-bottom:32px; }
+    .invite-logo-text { font-size:1.1rem; font-weight:900; color:var(--gray-900); }
+    .invite-card { background:var(--white); border:var(--border); border-radius:var(--radius-xl); padding:32px; box-shadow:var(--shadow); }
+    .invite-welcome { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--blue-700); margin-bottom:8px; }
+    .invite-title { font-size:1.3rem; font-weight:800; color:var(--gray-900); margin:0 0 6px; letter-spacing:-.03em; }
+    .invite-sub { font-size:.875rem; color:var(--gray-500); margin:0 0 24px; line-height:1.6; }
+    .invite-shop {
+      display:flex; align-items:center; gap:10px;
+      background:var(--blue-50); border:1px solid var(--blue-100);
+      border-radius:var(--radius); padding:12px 14px;
+      margin-bottom:24px;
+    }
+    .invite-shop-name { font-size:.9rem; font-weight:700; color:var(--blue-700); }
+    .invite-shop-role { font-size:.75rem; color:var(--blue-600); text-transform:capitalize; }
+    .invite-field { margin-bottom:16px; }
+    .invite-label { display:block; font-size:.78rem; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+    .invite-input {
+      width:100%; box-sizing:border-box; padding:11px 14px;
+      border:1.5px solid var(--gray-200); border-radius:var(--radius);
+      font-size:.9rem; font-family:inherit; color:var(--gray-900);
+      outline:none; transition:border-color var(--t);
+    }
+    .invite-input:focus { border-color:var(--blue-700); box-shadow:0 0 0 3px rgba(29,78,216,.1); }
+    .pw-hint { font-size:.72rem; color:var(--gray-400); margin-top:4px; }
+    .invite-btn {
+      width:100%; padding:13px; margin-top:8px;
+      background:var(--gray-900); color:var(--white);
+      border:none; border-radius:var(--radius);
+      font-size:.95rem; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:all var(--t);
+    }
+    .invite-btn:hover:not(:disabled) { background:var(--gray-700); }
+    .invite-btn:disabled { opacity:.6; cursor:not-allowed; }
+    .invite-error { margin-top:14px; padding:10px 14px; background:#FFF1F2; border:1px solid #FECACA; border-radius:var(--radius); font-size:.82rem; color:#DC2626; display:none; }
+
+    /* Loading / invalid states */
+    .state-loading { text-align:center; padding:40px; color:var(--gray-400); }
+    .state-invalid { text-align:center; padding:32px; }
+    .state-invalid h2 { font-size:1.1rem; font-weight:800; color:var(--gray-900); margin:12px 0 8px; }
+    .state-invalid p { font-size:.875rem; color:var(--gray-500); margin:0 0 20px; }
+  </style>
+</head>
+<body>
+<div class="invite-wrap">
+  <div class="invite-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
+      <circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".4"/>
+      <circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".4"/>
+      <circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+      <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
+      <line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      <line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+      <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+    </svg>
+    <span class="invite-logo-text">Axon <strong>AI</strong></span>
+  </div>
+
+  <div class="invite-card" id="inviteCard">
+    <div class="state-loading">
+      <div class="spinner"></div>
+      <div style="margin-top:12px">Loading your invite…</div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./accept-invite.js"></script>
+</body>
+</html>

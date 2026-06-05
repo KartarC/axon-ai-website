@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Production Board — Axon AI</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../styles.css"/>
+  <link rel="stylesheet" href="../../_shared/app.css"/>
+  <style>
+    /* ── Board layout ───────────────────────────── */
+    .board-header {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:20px; gap:16px; flex-wrap:wrap;
+    }
+    .board-filters {
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .board-filter-select {
+      padding:7px 12px; border:1.5px solid var(--gray-200); border-radius:var(--radius);
+      font-size:.82rem; font-family:inherit; color:var(--gray-700);
+      background:var(--white); cursor:pointer; outline:none;
+    }
+    .board-filter-select:focus { border-color:var(--blue-700); }
+
+    .board-canvas {
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:14px;
+      min-height:500px;
+      align-items:start;
+    }
+    .board-col {
+      background:var(--gray-50); border:var(--border);
+      border-radius:var(--radius-lg); overflow:hidden;
+    }
+    .board-col-head {
+      padding:12px 16px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:var(--border);
+      font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em;
+      background:var(--white);
+    }
+    .board-col-head--queue   .col-label { color:var(--gray-500); }
+    .board-col-head--setup   .col-label { color:#C2410C; }
+    .board-col-head--running .col-label { color:var(--blue-700); }
+    .board-col-head--complete .col-label { color:#15803D; }
+    .col-count {
+      font-size:.68rem; font-weight:700; padding:2px 7px;
+      border-radius:100px; background:var(--gray-100); color:var(--gray-500);
+    }
+    .board-col-cards {
+      padding:10px;
+      min-height:80px;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .board-col-cards.drag-over { background:var(--blue-50); border-radius:var(--radius); }
+
+    /* ── Job card ───────────────────────────────── */
+    .job-card {
+      background:var(--white); border:var(--border);
+      border-radius:var(--radius-lg); padding:14px;
+      cursor:grab; transition:all var(--t);
+      border-left:3px solid transparent;
+      user-select:none;
+    }
+    .job-card:hover { box-shadow:var(--shadow); transform:translateY(-1px); }
+    .job-card.dragging { opacity:.5; transform:rotate(1deg); }
+    .job-card--rush    { border-left-color:#DC2626; }
+    .job-card--high    { border-left-color:#D97706; }
+    .job-card--normal  { border-left-color:var(--gray-200); }
+    .job-card--low     { border-left-color:var(--gray-100); }
+
+    .jc-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:6px; }
+    .jc-job-num { font-size:.78rem; font-weight:800; color:var(--gray-900); }
+    .jc-part { font-size:.82rem; color:var(--gray-600); margin-bottom:8px; line-height:1.4; font-weight:600; }
+    .jc-meta { font-size:.72rem; color:var(--gray-400); margin-bottom:8px; line-height:1.5; }
+    .jc-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .jc-btn {
+      padding:4px 10px; border-radius:6px; border:1.5px solid var(--gray-200);
+      font-size:.7rem; font-weight:700; cursor:pointer;
+      background:var(--white); color:var(--gray-600);
+      transition:all var(--t); font-family:inherit;
+    }
+    .jc-btn:hover { border-color:var(--blue-700); color:var(--blue-700); background:var(--blue-50); }
+    .jc-btn--green:hover { border-color:#16A34A; color:#16A34A; background:#F0FDF4; }
+    .jc-btn--red:hover { border-color:#DC2626; color:#DC2626; background:#FFF1F2; }
+
+    /* ── Modals ─────────────────────────────────── */
+    #newJobModal, #qrModal { display:none; }
+    .qr-img { display:block; margin:16px auto; border-radius:var(--radius); border:var(--border); padding:12px; }
+    .qr-url { font-size:.72rem; color:var(--gray-400); word-break:break-all; text-align:center; margin-top:8px; }
+
+    @media(max-width:960px) { .board-canvas { grid-template-columns:1fr 1fr } }
+    @media(max-width:600px) { .board-canvas { grid-template-columns:1fr } }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <nav id="app-nav"></nav>
+  <main class="app-main">
+    <button class="mobile-nav-btn" id="mobileNavBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="2" y1="4.5" x2="16" y2="4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="2" y1="13.5" x2="16" y2="13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="board-header">
+      <div>
+        <h1 class="page-title">Production Board</h1>
+        <p class="page-subtitle">Drag jobs between columns. Click the status badge to update.</p>
+      </div>
+      <div class="board-filters">
+        <select class="board-filter-select" id="machineFilter">
+          <option value="">All machines</option>
+        </select>
+        <button class="btn-app btn-app--secondary btn-app--sm" id="refreshBtn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M13 2v4H9M1 12V8h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.2 5a6 6 0 0 1 10.1-1.3M12.8 9a6 6 0 0 1-10.1 1.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Refresh
+        </button>
+        <button class="btn-app btn-app--primary btn-app--sm" id="newJobBtn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          New Job
+        </button>
+      </div>
+    </div>
+
+    <div class="stat-row" id="statRow">
+      <div class="stat-pill"><div class="stat-pill-num" id="statTotal">—</div><div class="stat-pill-label">Total active</div></div>
+      <div class="stat-pill"><div class="stat-pill-num" id="statRunning">—</div><div class="stat-pill-label">Running now</div></div>
+      <div class="stat-pill"><div class="stat-pill-num" id="statOverdue">—</div><div class="stat-pill-label">Past due date</div></div>
+      <div class="stat-pill"><div class="stat-pill-num" id="statRush">—</div><div class="stat-pill-label">Rush jobs</div></div>
+    </div>
+
+    <div class="board-canvas" id="boardCanvas">
+      <div class="page-loading" style="grid-column:1/-1"><div class="spinner"></div> Loading board…</div>
+    </div>
+  </main>
+</div>
+
+<!-- New Job Modal -->
+<div class="modal-backdrop" id="newJobModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Job to Board</div>
+      <button class="modal-close" id="closeNewJob">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="newJobForm" novalidate>
+        <div class="form-row-2">
+          <div class="form-row">
+            <label class="form-label">Job Number *</label>
+            <input class="form-input" id="fJobNum" placeholder="J-2026-0001" required/>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="fPriority">
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="rush">Rush</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Part Name *</label>
+          <input class="form-input" id="fPartName" placeholder="Aluminum Housing" required/>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row">
+            <label class="form-label">Quantity</label>
+            <input class="form-input" type="number" id="fQty" value="1" min="1"/>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Due Date</label>
+            <input class="form-input" type="date" id="fDue"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Material</label>
+          <input class="form-input" id="fMaterial" placeholder="6061-T6 Aluminum"/>
+        </div>
+        <div class="form-row-2">
+          <div class="form-row">
+            <label class="form-label">Machine</label>
+            <select class="form-select" id="fMachine">
+              <option value="">Unassigned</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Operation</label>
+            <input class="form-input" id="fOperation" value="Machining" placeholder="Milling, Turning…"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Est. Hours</label>
+          <input class="form-input" type="number" id="fHours" step="0.5" placeholder="4.0"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="fNotes" rows="2" style="resize:vertical" placeholder="Special instructions, notes…"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px">
+          <button type="button" class="btn-app btn-app--secondary" id="cancelNewJob">Cancel</button>
+          <button type="submit" class="btn-app btn-app--primary" id="saveJobBtn">Add to Board</button>
+        </div>
+        <div id="jobFormError" style="display:none;margin-top:12px;padding:10px;background:#FFF1F2;border:1px solid #FECACA;border-radius:var(--radius);font-size:.82rem;color:#DC2626"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- QR Code Modal -->
+<div class="modal-backdrop" id="qrModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Operator QR Code</div>
+      <button class="modal-close" id="closeQr">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center">
+      <p style="font-size:.875rem;color:var(--gray-500);margin:0 0 4px">Print or display this QR code at the machine.</p>
+      <p style="font-size:.78rem;color:var(--gray-400);margin:0 0 16px">Operators scan with any phone — no app or login needed.</p>
+      <div id="qrJobLabel" style="font-weight:800;font-size:1rem;color:var(--gray-900);margin-bottom:12px"></div>
+      <img id="qrImg" class="qr-img" width="220" height="220" alt="QR code"/>
+      <div id="qrUrl" class="qr-url"></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+        <button class="btn-app btn-app--secondary" id="closeQrBtn">Close</button>
+        <button class="btn-app btn-app--primary" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3.5 4.5V2h7v2.5M3.5 10H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.5M3.5 8h7v4h-7V8z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Print
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./index.js"></script>
+</body>
+</html>

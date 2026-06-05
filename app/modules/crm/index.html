@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Module — Axon AI</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../../styles.css"/>
+  <link rel="stylesheet" href="../../_shared/app.css"/>
+</head>
+<body>
+<div class="app-layout">
+  <nav id="app-nav"></nav>
+  <main class="app-main">
+    <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;text-align:center;flex-direction:column;gap:16px">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style="color:#D1D5DB">
+        <rect x="4" y="4" width="48" height="48" rx="12" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 28h16M28 20v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--gray-900)" id="moduleName">Coming Soon</div>
+      <div style="font-size:.9rem;color:var(--gray-400);max-width:320px;line-height:1.7">This module is in active development and will be available in the next sprint.</div>
+      <a href="/app/dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--blue-700);font-size:.875rem;font-weight:700;text-decoration:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Dashboard
+      </a>
+    </div>
+  </main>
+</div>
+<script type="module">
+  import { requireAuth } from '../../_shared/auth.js'
+  import { renderNav }   from '../../_shared/nav.js'
+  const session = requireAuth()
+  if (session) renderNav(window.location.pathname)
+</script>
+</body>
+</html>

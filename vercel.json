@@ -5,9 +5,15 @@
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" }
       ]
     }
+  ],
+  "rewrites": [
+    { "source": "/app",               "destination": "/app/index.html" },
+    { "source": "/app/accept-invite", "destination": "/app/accept-invite.html" },
+    { "source": "/app/axon-admin",    "destination": "/app/axon-admin/index.html" },
+    { "source": "/app/operator/job",  "destination": "/app/operator/job.html" }
   ]
 }

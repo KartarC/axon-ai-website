@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Axon AI App</title>
+  <meta name="robots" content="noindex"/>
+  <script>
+    // Redirect to dashboard if session exists, else to login
+    const token = sessionStorage.getItem('axon_access_token')
+    window.location.replace(token ? '/app/dashboard.html' : '/app/login.html')
+  </script>
+</head>
+<body></body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Axon AI Admin</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../styles.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    body{font-family:Inter,sans-serif;background:var(--gray-50);margin:0;color:var(--gray-900)}
+    :root{
+      --white:#fff;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+      --gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;
+      --gray-800:#1F2937;--gray-900:#111827;
+      --blue-50:#EFF6FF;--blue-100:#DBEAFE;--blue-600:#2563EB;--blue-700:#1D4ED8;
+      --border:1px solid var(--gray-200);--radius:10px;--radius-lg:14px;
+      --shadow:0 4px 16px rgba(0,0,0,.08);
+    }
+
+    /* Gate */
+    #gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .gate-card{background:var(--white);border:var(--border);border-radius:20px;padding:36px;width:100%;max-width:360px;box-shadow:var(--shadow)}
+    .gate-title{font-size:1.2rem;font-weight:800;margin:0 0 8px}
+    .gate-sub{font-size:.875rem;color:var(--gray-500);margin:0 0 24px}
+    .gate-input{width:100%;padding:11px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .18s}
+    .gate-input:focus{border-color:var(--blue-700)}
+    .gate-btn{width:100%;padding:12px;margin-top:10px;background:var(--gray-900);color:var(--white);border:none;border-radius:var(--radius);font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit}
+    .gate-btn:hover{background:var(--gray-700)}
+    .gate-error{margin-top:10px;padding:9px 12px;background:#FFF1F2;border:1px solid #FECACA;border-radius:var(--radius);font-size:.82rem;color:#DC2626;display:none}
+
+    /* Main */
+    #mainPanel{display:none}
+    header{background:var(--gray-900);color:var(--white);padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+    .hdr-title{font-size:1rem;font-weight:800;letter-spacing:-.02em}
+    .hdr-badge{font-size:.68rem;font-weight:700;background:rgba(255,255,255,.1);padding:3px 10px;border-radius:100px;color:rgba(255,255,255,.7)}
+
+    .admin-wrap{max-width:1100px;margin:0 auto;padding:28px}
+    .admin-title{font-size:1.4rem;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
+    .admin-sub{font-size:.875rem;color:var(--gray-500);margin-bottom:28px}
+
+    .top-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+    .search-input{padding:9px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.875rem;font-family:inherit;outline:none;width:260px;transition:border-color .18s}
+    .search-input:focus{border-color:var(--blue-700)}
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--radius);font-size:.875rem;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .18s}
+    .btn-dark{background:var(--gray-900);color:var(--white)}
+    .btn-dark:hover{background:var(--gray-700)}
+    .btn-outline{background:var(--white);color:var(--gray-700);border:var(--border)}
+    .btn-outline:hover{border-color:var(--gray-400);color:var(--gray-900)}
+    .btn-blue{background:var(--blue-700);color:var(--white)}
+    .btn-blue:hover{background:#1e40af}
+
+    /* Accounts table */
+    .accounts-table-wrap{background:var(--white);border:var(--border);border-radius:var(--radius-lg);overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    th{padding:11px 16px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);background:var(--gray-50);border-bottom:var(--border);text-align:left}
+    td{padding:13px 16px;font-size:.875rem;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--gray-50)}
+
+    .plan-badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:.68rem;font-weight:800}
+    .plan-badge--starter{background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0}
+    .plan-badge--growth {background:#EFF6FF;color:var(--blue-700);border:1px solid var(--blue-100)}
+    .plan-badge--suite  {background:var(--gray-100);color:var(--gray-700);border:var(--border)}
+
+    .status-badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:.68rem;font-weight:700}
+    .status-badge--active    {background:#F0FDF4;color:#15803D}
+    .status-badge--suspended {background:#FFF1F2;color:#DC2626}
+
+    .module-count{font-size:.78rem;color:var(--gray-400)}
+
+    .action-link{color:var(--blue-700);font-size:.82rem;font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+    .action-link:hover{text-decoration:underline}
+    .action-link--red{color:#DC2626}
+
+    /* Create account modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{background:var(--white);border-radius:20px;box-shadow:0 12px 40px rgba(0,0,0,.12);width:100%;max-width:500px;animation:slide-up .2s ease}
+    @keyframes slide-up{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0}
+    .modal-title{font-size:1.05rem;font-weight:800}
+    .modal-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:var(--gray-100);border-radius:50%;cursor:pointer;font-size:.9rem;color:var(--gray-500)}
+    .modal-body{padding:16px 24px 24px}
+    .form-row{margin-bottom:15px}
+    .form-label{display:block;font-size:.78rem;font-weight:700;color:var(--gray-700);margin-bottom:6px}
+    .form-input,.form-select{width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.875rem;font-family:inherit;outline:none;transition:border-color .18s;box-sizing:border-box}
+    .form-input:focus,.form-select:focus{border-color:var(--blue-700)}
+    .modules-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+    .module-check{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--gray-600);cursor:pointer;padding:6px 8px;border:var(--border);border-radius:8px;transition:all .15s}
+    .module-check:hover{border-color:var(--blue-700);background:var(--blue-50);color:var(--blue-700)}
+    .module-check input{accent-color:var(--blue-700)}
+    .form-error{margin-top:12px;padding:9px 12px;background:#FFF1F2;border:1px solid #FECACA;border-radius:var(--radius);font-size:.82rem;color:#DC2626;display:none}
+    .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+    /* Invite modal */
+    .invite-result{background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius);padding:14px;margin-top:14px;display:none}
+    .invite-url{font-size:.78rem;word-break:break-all;color:var(--blue-700);margin-top:4px}
+  </style>
+</head>
+<body>
+
+<!-- Gate -->
+<div id="gate">
+  <div class="gate-card">
+    <div style="font-size:.9rem;font-weight:900;color:#1D4ED8;margin-bottom:16px">Axon AI</div>
+    <h1 class="gate-title">Admin Panel</h1>
+    <p class="gate-sub">Enter your admin secret to continue.</p>
+    <input class="gate-input" type="password" id="secretInput" placeholder="Admin secret" autocomplete="current-password"/>
+    <button class="gate-btn" id="gateBtn">Access Admin Panel →</button>
+    <div class="gate-error" id="gateError">Invalid secret. Try again.</div>
+  </div>
+</div>
+
+<!-- Main panel -->
+<div id="mainPanel">
+  <header>
+    <div class="hdr-title">Axon AI · Admin Panel</div>
+    <span class="hdr-badge">Internal only</span>
+  </header>
+
+  <div class="admin-wrap">
+    <div class="admin-title">Shop Accounts</div>
+    <div class="admin-sub">Manage all customer accounts, modules, and invites.</div>
+
+    <div class="top-bar">
+      <input class="search-input" type="search" id="searchInput" placeholder="Search accounts…"/>
+      <button class="btn btn-dark" id="createAccountBtn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        New Account
+      </button>
+      <button class="btn btn-outline" id="refreshBtn">Refresh</button>
+    </div>
+
+    <div class="accounts-table-wrap">
+      <table id="accountsTable">
+        <thead>
+          <tr>
+            <th>Shop Name</th>
+            <th>Plan</th>
+            <th>Modules</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="accountsTbody">
+          <tr><td colspan="6" style="text-align:center;color:var(--gray-400);padding:32px">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Create Account Modal -->
+<div class="modal-backdrop" id="createModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create New Account</div>
+      <button class="modal-close" id="closeCreate">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="createForm" novalidate>
+        <div class="form-row">
+          <label class="form-label">Shop Name *</label>
+          <input class="form-input" id="cName" placeholder="Precision Parts Inc." required/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Plan</label>
+          <select class="form-select" id="cPlan">
+            <option value="starter">Starter — $99/mo (1 module)</option>
+            <option value="growth">Growth — $199/mo (3 modules)</option>
+            <option value="suite">Shop Suite — $349/mo (all 9)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Enabled Modules</label>
+          <div class="modules-check-grid" id="modulesGrid"></div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Owner Email (for invite)</label>
+          <input class="form-input" type="email" id="cEmail" placeholder="owner@theirshop.com"/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Notes (internal)</label>
+          <input class="form-input" id="cNotes" placeholder="Converted Jun 2026, 8 machines…"/>
+        </div>
+        <div class="form-error" id="createError"></div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="cancelCreate">Cancel</button>
+          <button type="submit" class="btn btn-dark" id="createBtn">Create Account & Send Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Invite Modal -->
+<div class="modal-backdrop" id="inviteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Send Invite</div>
+      <button class="modal-close" id="closeInvite">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.875rem;color:var(--gray-500);margin:0 0 16px" id="inviteSubtitle"></p>
+      <form id="inviteForm" novalidate>
+        <div class="form-row">
+          <label class="form-label">Email address</label>
+          <input class="form-input" type="email" id="iEmail" placeholder="owner@theirshop.com" required/>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Role</label>
+          <select class="form-select" id="iRole">
+            <option value="owner">Owner</option>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+          </select>
+        </div>
+        <div class="form-error" id="inviteError"></div>
+        <div class="invite-result" id="inviteResult">
+          <div style="font-size:.82rem;font-weight:700;color:var(--blue-700)">Invite sent!</div>
+          <div class="invite-url" id="inviteUrlDisplay"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" id="cancelInvite">Close</button>
+          <button type="submit" class="btn btn-blue" id="sendInviteBtn">Send Invite Email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_MODULES = [
+  'production-board','job-costing','shop-traveler','customer-portal',
+  'maintenance','materials','coc','crm','outside-service'
+]
+const MODULE_NAMES = {
+  'production-board':'Production Board','job-costing':'Job Costing',
+  'shop-traveler':'Shop Traveler','customer-portal':'Customer Portal',
+  'maintenance':'PM Tracker','materials':'Material Inventory',
+  'coc':'CoC Generator','crm':'Shop CRM','outside-service':'Outside Services'
+}
+
+let adminSecret = ''
+let accounts = []
+let activeAccountId = null
+
+// ── Gate ─────────────────────────────────────────────────────
+document.getElementById('gateBtn').addEventListener('click', tryLogin)
+document.getElementById('secretInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin() })
+
+async function tryLogin() {
+  const secret = document.getElementById('secretInput').value.trim()
+  if (!secret) return
+
+  // Test the secret by calling the accounts API
+  const res = await fetch(`/api/axon-admin/accounts?secret=${encodeURIComponent(secret)}`)
+  if (!res.ok) { document.getElementById('gateError').style.display = 'block'; return }
+
+  adminSecret = secret
+  document.getElementById('gate').style.display = 'none'
+  document.getElementById('mainPanel').style.display = 'block'
+  accounts = await res.json()
+  renderTable(accounts)
+  buildModulesGrid()
+}
+
+// ── Table ────────────────────────────────────────────────────
+function renderTable(data) {
+  const tbody = document.getElementById('accountsTbody')
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--gray-400);padding:32px">No accounts yet.</td></tr>`
+    return
+  }
+  tbody.innerHTML = data.map(a => `
+    <tr>
+      <td><div style="font-weight:700">${esc(a.name)}</div><div style="font-size:.72rem;color:var(--gray-400)">${esc(a.slug)}</div></td>
+      <td><span class="plan-badge plan-badge--${a.plan}">${a.plan}</span></td>
+      <td><div class="module-count">${(a.modules||[]).length} / 9</div><div style="font-size:.72rem;color:var(--gray-400);margin-top:2px">${(a.modules||[]).slice(0,3).map(m => MODULE_NAMES[m]||m).join(', ')}${(a.modules||[]).length > 3 ? '…' : ''}</div></td>
+      <td><span class="status-badge status-badge--${a.status||'active'}">${a.status||'active'}</span></td>
+      <td style="color:var(--gray-400);font-size:.78rem">${fmtDate(a.created_at)}</td>
+      <td>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="action-link" onclick="openInvite('${a.id}','${esc(a.name)}')">Invite User</button>
+          <button class="action-link" onclick="editModules('${a.id}')">Edit Modules</button>
+          ${a.status === 'active'
+            ? `<button class="action-link action-link--red" onclick="toggleStatus('${a.id}','suspended')">Suspend</button>`
+            : `<button class="action-link" onclick="toggleStatus('${a.id}','active')">Activate</button>`}
+        </div>
+      </td>
+    </tr>
+  `).join('')
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase()
+  renderTable(accounts.filter(a => a.name.toLowerCase().includes(q) || a.slug.toLowerCase().includes(q)))
+})
+
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  const res = await fetch(`/api/axon-admin/accounts?secret=${adminSecret}`)
+  accounts = await res.json()
+  renderTable(accounts)
+})
+
+// ── Create account ────────────────────────────────────────────
+document.getElementById('createAccountBtn').addEventListener('click', () => { document.getElementById('createModal').style.display = 'flex' })
+document.getElementById('closeCreate').addEventListener('click', () => { document.getElementById('createModal').style.display = 'none' })
+document.getElementById('cancelCreate').addEventListener('click', () => { document.getElementById('createModal').style.display = 'none' })
+
+function buildModulesGrid() {
+  document.getElementById('modulesGrid').innerHTML = ALL_MODULES.map(m => `
+    <label class="module-check">
+      <input type="checkbox" name="module" value="${m}"/>
+      ${MODULE_NAMES[m] || m}
+    </label>`).join('')
+}
+
+document.getElementById('createForm').addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const btn = document.getElementById('createBtn')
+  btn.disabled = true; btn.textContent = 'Creating…'
+
+  const name    = document.getElementById('cName').value.trim()
+  const plan    = document.getElementById('cPlan').value
+  const email   = document.getElementById('cEmail').value.trim()
+  const notes   = document.getElementById('cNotes').value.trim()
+  const modules = [...document.querySelectorAll('#modulesGrid input:checked')].map(el => el.value)
+
+  if (!name) { showFormError('createError', 'Shop name is required'); btn.disabled=false; btn.textContent='Create Account & Send Invite'; return }
+
+  try {
+    // Create account
+    const res = await fetch('/api/axon-admin/accounts', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
+      body: JSON.stringify({ name, plan, modules, notes }),
+    })
+    const account = await res.json()
+    if (!res.ok) throw new Error(account.error || 'Failed to create account')
+
+    // Send invite if email provided
+    if (email) {
+      const invRes = await fetch('/api/axon-admin/invite', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
+        body: JSON.stringify({ email, account_id: account.id, role: 'owner' }),
+      })
+      const invData = await invRes.json()
+      if (!invRes.ok) throw new Error(invData.error || 'Account created but invite failed')
+    }
+
+    accounts.unshift(account)
+    renderTable(accounts)
+    document.getElementById('createModal').style.display = 'none'
+    document.getElementById('createForm').reset()
+    buildModulesGrid()
+
+  } catch (err) {
+    showFormError('createError', err.message)
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account & Send Invite'
+  }
+})
+
+// ── Invite modal ──────────────────────────────────────────────
+document.getElementById('closeInvite').addEventListener('click', () => { document.getElementById('inviteModal').style.display = 'none' })
+document.getElementById('cancelInvite').addEventListener('click', () => { document.getElementById('inviteModal').style.display = 'none' })
+
+function openInvite(accountId, shopName) {
+  activeAccountId = accountId
+  document.getElementById('inviteSubtitle').textContent = `Invite a team member to ${shopName}`
+  document.getElementById('inviteResult').style.display = 'none'
+  document.getElementById('inviteForm').reset()
+  document.getElementById('inviteModal').style.display = 'flex'
+}
+
+document.getElementById('inviteForm').addEventListener('submit', async (e) => {
+  e.preventDefault()
+  const btn = document.getElementById('sendInviteBtn')
+  btn.disabled = true; btn.textContent = 'Sending…'
+
+  const email = document.getElementById('iEmail').value.trim()
+  const role  = document.getElementById('iRole').value
+
+  try {
+    const res = await fetch('/api/axon-admin/invite', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
+      body: JSON.stringify({ email, account_id: activeAccountId, role }),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Invite failed')
+
+    document.getElementById('inviteUrlDisplay').textContent = data.invite_url
+    document.getElementById('inviteResult').style.display = 'block'
+    document.getElementById('inviteError').style.display = 'none'
+  } catch (err) {
+    showFormError('inviteError', err.message)
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send Invite Email'
+  }
+})
+
+// ── Toggle status ────────────────────────────────────────────
+async function toggleStatus(accountId, status) {
+  if (!confirm(`Set account status to "${status}"?`)) return
+  await fetch(`/api/axon-admin/accounts?id=${accountId}`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
+    body: JSON.stringify({ status }),
+  })
+  const idx = accounts.findIndex(a => a.id === accountId)
+  if (idx !== -1) accounts[idx].status = status
+  renderTable(accounts)
+}
+
+function editModules(accountId) {
+  // Future: inline module editor
+  alert('Module editing coming soon. For now, use the Supabase dashboard to edit accounts.modules directly.')
+}
+
+function showFormError(id, msg) {
+  const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'
+}
+function fmtDate(d) { if (!d) return ''; const dt = new Date(d); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+</script>
+</body>
+</html>
