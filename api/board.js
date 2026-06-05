@@ -1,4 +1,35 @@
 // api/board.js — consolidated production board handler
+
+// Fire-and-forget: auto-log labor cost when operation completes
+async function tryAutoLogCost(ctx, entryId, entry) {
+  if (!entry.started_at || !entry.machine_id) return
+  const completedAt = entry.completed_at || new Date().toISOString()
+  const hours = (new Date(completedAt) - new Date(entry.started_at)) / 3_600_000
+  if (hours <= 0) return
+
+  // Get machine hourly rate
+  const machines = await sb('GET', `machines?id=eq.${entry.machine_id}&select=name,hourly_rate`)
+  if (!machines?.length || !machines[0].hourly_rate) return
+
+  // Don't duplicate
+  const existing = await sb('GET', `job_cost_entries?board_entry_id=eq.${entryId}&source=eq.auto`)
+  if (existing?.length) return
+
+  const roundedHours = Math.round(hours * 100) / 100
+  await sb('POST', 'job_cost_entries', {
+    account_id:     ctx.account.id,
+    job_id:         entry.job_id,
+    type:           'labor',
+    description:    `${entry.operation} — ${machines[0].name}`,
+    quantity:       roundedHours,
+    unit_cost:      machines[0].hourly_rate,
+    board_entry_id: entryId,
+    source:         'auto',
+    recorded_by:    ctx.user.id,
+  })
+}
+
+
 // GET    (no id, no action) → list all board entries
 // POST   (no id, no action) → create board entry
 // PATCH  ?id=X              → update entry (status, machine, notes)
@@ -58,6 +89,12 @@ export default async function handler(req, res) {
     if (updates.status === 'complete') updates.completed_at = new Date().toISOString()
 
     const [updated] = await sb('PATCH', `board_entries?id=eq.${id}`, updates)
+
+    // Auto-log labor cost if job-costing module enabled and operation just completed
+    if (updates.status === 'complete' && ctx.account.modules.includes('job-costing')) {
+      tryAutoLogCost(ctx, id, updated).catch(e => console.warn('Auto-log cost failed:', e.message))
+    }
+
     return res.status(200).json(updated)
   }
 

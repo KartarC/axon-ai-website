@@ -3,36 +3,122 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Module — Axon AI</title>
+  <title>Job Costing — Axon AI</title>
   <meta name="robots" content="noindex"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="../../../styles.css"/>
   <link rel="stylesheet" href="../../_shared/app.css"/>
+  <style>
+    .costing-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+    @media(max-width:900px){.costing-stats{grid-template-columns:1fr 1fr}}
+    @media(max-width:500px){.costing-stats{grid-template-columns:1fr}}
+    .cstat{background:var(--white);border:var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+    .cstat-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:6px}
+    .cstat-value{font-size:1.8rem;font-weight:900;color:var(--gray-900);letter-spacing:-.04em;line-height:1}
+    .cstat-sub{font-size:.75rem;color:var(--gray-400);margin-top:5px}
+    .cstat--green .cstat-value{color:#15803D}
+    .cstat--red .cstat-value{color:#DC2626}
+    .filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+    .filter-tabs{display:flex;gap:2px;background:var(--gray-100);border-radius:var(--radius);padding:3px}
+    .filter-tab{padding:6px 14px;border:none;background:none;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--gray-500);cursor:pointer;font-family:inherit;transition:all .15s}
+    .filter-tab.active{background:var(--white);color:var(--gray-900);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .filter-search{flex:1;min-width:180px;padding:8px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius);font-size:.875rem;font-family:inherit;outline:none}
+    .filter-search:focus{border-color:var(--blue-700)}
+    .jobs-table-wrap{background:var(--white);border:var(--border);border-radius:var(--radius-lg);overflow:hidden;overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th{padding:10px 16px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);background:var(--gray-50);border-bottom:var(--border);text-align:left;white-space:nowrap}
+    th.num{text-align:right}
+    td{padding:12px 16px;font-size:.875rem;border-bottom:1px solid var(--gray-100);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr.clickable:hover td{background:#fafafa;cursor:pointer}
+    .job-num{font-weight:800;color:var(--gray-900)}
+    .job-part{font-size:.78rem;color:var(--gray-500);display:block;margin-top:1px}
+    .num-cell{text-align:right;font-variant-numeric:tabular-nums}
+    .margin-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:700}
+    .margin-pill--green{background:#F0FDF4;color:#15803D}
+    .margin-pill--amber{background:#FFFBEB;color:#D97706}
+    .margin-pill--red{background:#FFF1F2;color:#DC2626}
+    .variance-over{color:#DC2626;font-weight:700}
+    .variance-ok{color:#15803D;font-weight:700}
+    .set-quote-btn{font-size:.75rem;color:var(--blue-700);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;text-decoration:underline}
+    #quoteModal{display:none}
+  </style>
 </head>
 <body>
 <div class="app-layout">
   <nav id="app-nav"></nav>
   <main class="app-main">
-    <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;text-align:center;flex-direction:column;gap:16px">
-      <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style="color:#D1D5DB">
-        <rect x="4" y="4" width="48" height="48" rx="12" stroke="currentColor" stroke-width="2"/>
-        <path d="M20 28h16M28 20v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-      <div style="font-size:1.1rem;font-weight:800;color:var(--gray-900)" id="moduleName">Coming Soon</div>
-      <div style="font-size:.9rem;color:var(--gray-400);max-width:320px;line-height:1.7">This module is in active development and will be available in the next sprint.</div>
-      <a href="/app/dashboard.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--blue-700);font-size:.875rem;font-weight:700;text-decoration:none">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back to Dashboard
-      </a>
+    <button class="mobile-nav-btn" id="mobileNavBtn">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="2" y1="4.5" x2="16" y2="4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="2" y1="13.5" x2="16" y2="13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+
+    <div class="page-header">
+      <div><h1 class="page-title">Job Costing</h1><p class="page-subtitle">Actual vs. quoted cost per job. Click any row for full breakdown and cost entry.</p></div>
+      <button class="btn-app btn-app--secondary btn-app--sm" id="refreshBtn">Refresh</button>
+    </div>
+
+    <div class="costing-stats">
+      <div class="cstat"><div class="cstat-label">Total Quoted</div><div class="cstat-value" id="sQuoted">—</div><div class="cstat-sub">Active jobs with quotes</div></div>
+      <div class="cstat"><div class="cstat-label">Total Actual</div><div class="cstat-value" id="sActual">—</div><div class="cstat-sub">Labor + material + overhead</div></div>
+      <div class="cstat cstat--green"><div class="cstat-label">Avg Margin</div><div class="cstat-value" id="sMargin">—</div><div class="cstat-sub">Across all quoted jobs</div></div>
+      <div class="cstat cstat--red"><div class="cstat-label">Over Budget</div><div class="cstat-value" id="sOver">—</div><div class="cstat-sub">Jobs exceeding cost target</div></div>
+    </div>
+
+    <div class="filter-bar">
+      <input class="filter-search" type="search" id="searchInput" placeholder="Search job, part, or customer..."/>
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="over">Over budget</button>
+        <button class="filter-tab" data-filter="on">On budget</button>
+        <button class="filter-tab" data-filter="no-quote">No quote set</button>
+      </div>
+    </div>
+
+    <div class="jobs-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Job</th><th>Customer</th>
+            <th class="num">Quoted</th><th class="num">Actual</th>
+            <th class="num">Variance</th><th class="num">Margin</th>
+            <th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="jobsTbody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-400)">
+            <div class="spinner" style="margin:0 auto 10px"></div>Loading...
+          </td></tr>
+        </tbody>
+      </table>
     </div>
   </main>
 </div>
-<script type="module">
-  import { requireAuth } from '../../_shared/auth.js'
-  import { renderNav }   from '../../_shared/nav.js'
-  const session = requireAuth()
-  if (session) renderNav(window.location.pathname)
-</script>
+
+<!-- Set Quote Modal -->
+<div class="modal-backdrop" id="quoteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Set Job Quote</div>
+      <button class="modal-close" id="closeQuote">x</button>
+    </div>
+    <div class="modal-body">
+      <p id="quoteJobLabel" style="font-size:.875rem;color:var(--gray-500);margin:0 0 16px"></p>
+      <form id="quoteForm" novalidate>
+        <input type="hidden" id="quoteJobId"/>
+        <div class="form-row"><label class="form-label">Quoted Price ($) *</label><input class="form-input" type="number" id="qPrice" step="0.01" min="0" placeholder="2400.00" required/></div>
+        <div class="form-row"><label class="form-label">Target Margin (%)</label><input class="form-input" type="number" id="qMargin" step="0.5" min="0" max="100" value="40"/></div>
+        <div class="form-row"><label class="form-label">Notes</label><input class="form-input" id="qNotes" placeholder="Quote notes..."/></div>
+        <div id="quoteError" style="display:none;margin-top:10px;padding:10px;background:#FFF1F2;border:1px solid #FECACA;border-radius:var(--radius);font-size:.82rem;color:#DC2626"></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">
+          <button type="button" class="btn-app btn-app--secondary" id="cancelQuote">Cancel</button>
+          <button type="submit" class="btn-app btn-app--primary" id="saveQuoteBtn">Save Quote</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./index.js"></script>
 </body>
 </html>
