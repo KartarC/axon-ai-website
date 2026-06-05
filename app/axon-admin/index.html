@@ -258,7 +258,7 @@ async function tryLogin() {
   if (!secret) return
 
   // Test the secret by calling the accounts API
-  const res = await fetch(`/api/axon-admin/accounts?secret=${encodeURIComponent(secret)}`)
+  const res = await fetch(`/api/axon-admin?resource=accounts?secret=${encodeURIComponent(secret)}`)
   if (!res.ok) { document.getElementById('gateError').style.display = 'block'; return }
 
   adminSecret = secret
@@ -302,7 +302,7 @@ document.getElementById('searchInput').addEventListener('input', e => {
 })
 
 document.getElementById('refreshBtn').addEventListener('click', async () => {
-  const res = await fetch(`/api/axon-admin/accounts?secret=${adminSecret}`)
+  const res = await fetch(`/api/axon-admin?resource=accounts?secret=${adminSecret}`)
   accounts = await res.json()
   renderTable(accounts)
 })
@@ -335,7 +335,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
 
   try {
     // Create account
-    const res = await fetch('/api/axon-admin/accounts', {
+    const res = await fetch('/api/axon-admin?resource=accounts', {
       method:'POST',
       headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
       body: JSON.stringify({ name, plan, modules, notes }),
@@ -345,7 +345,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
 
     // Send invite if email provided
     if (email) {
-      const invRes = await fetch('/api/axon-admin/invite', {
+      const invRes = await fetch('/api/axon-admin?resource=invite', {
         method:'POST',
         headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
         body: JSON.stringify({ email, account_id: account.id, role: 'owner' }),
@@ -388,7 +388,7 @@ document.getElementById('inviteForm').addEventListener('submit', async (e) => {
   const role  = document.getElementById('iRole').value
 
   try {
-    const res = await fetch('/api/axon-admin/invite', {
+    const res = await fetch('/api/axon-admin?resource=invite', {
       method:'POST',
       headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
       body: JSON.stringify({ email, account_id: activeAccountId, role }),
@@ -409,7 +409,7 @@ document.getElementById('inviteForm').addEventListener('submit', async (e) => {
 // ── Toggle status ────────────────────────────────────────────
 async function toggleStatus(accountId, status) {
   if (!confirm(`Set account status to "${status}"?`)) return
-  await fetch(`/api/axon-admin/accounts?id=${accountId}`, {
+  await fetch(`/api/axon-admin?resource=accounts?id=${accountId}`, {
     method:'PATCH',
     headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
     body: JSON.stringify({ status }),

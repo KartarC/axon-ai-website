@@ -180,7 +180,7 @@ if (!token) {
 
 async function loadJob() {
   try {
-    const res  = await fetch(`/api/operator/job?token=${encodeURIComponent(token)}`)
+    const res  = await fetch(`/api/operator?token=${encodeURIComponent(token)}`)
     const data = await res.json()
     if (!res.ok) return showError(data.error || 'Job not found.')
     currentData = data
@@ -316,7 +316,7 @@ async function doAction(action) {
   document.querySelectorAll('[data-action]').forEach(b => b.disabled = true)
 
   try {
-    const res  = await fetch(`/api/operator/job?token=${encodeURIComponent(token)}`, {
+    const res  = await fetch(`/api/operator?token=${encodeURIComponent(token)}`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ action }),

@@ -31,7 +31,7 @@ async function loadBoard() {
   try {
     ;[entries, machines] = await Promise.all([
       apiGet('/api/board'),
-      apiGet('/api/machines'),
+      apiGet('/api/machines'),  // uses flat /api/machines route
     ])
     populateMachineFilter()
     populateMachineSelect()
@@ -186,7 +186,7 @@ function attachCardListeners() {
       const newCol = colMap[action] || action
 
       try {
-        await apiPatch(`/api/board/${entryId}`, { status: action, board_col: newCol })
+        await apiPatch(`/api/board?id=${entryId}`, { status: action, board_col: newCol })
         const idx = entries.findIndex(e => e.id === entryId)
         if (idx !== -1) {
           entries[idx].status    = action
@@ -237,7 +237,7 @@ function attachDragListeners() {
       renderBoard()
 
       try {
-        await apiPost('/api/board/move', { id: dragId, board_col: newCol })
+        await apiPost('/api/board?action=move', { id: dragId, board_col: newCol })
         toastSuccess(`Moved to ${newCol}`)
       } catch (err) {
         toastError('Move failed: ' + err.message)
@@ -302,7 +302,7 @@ document.getElementById('newJobForm').addEventListener('submit', async (e) => {
 
   try {
     // Create job
-    const job = await apiPost('/api/jobs', {
+    const job = await apiPost('/api/jobs', {  // POST /api/jobs (flat route)
       job_number: jobNum,
       part_name:  partName,
       quantity:   parseInt(document.getElementById('fQty').value) || 1,
@@ -313,7 +313,7 @@ document.getElementById('newJobForm').addEventListener('submit', async (e) => {
 
     // Create board entry
     const machineId = document.getElementById('fMachine').value || null
-    const entry = await apiPost('/api/board', {
+    const entry = await apiPost('/api/board', {  // POST /api/board (flat route)
       job_id:     job.id,
       machine_id: machineId,
       operation:  document.getElementById('fOperation').value.trim() || 'Machining',

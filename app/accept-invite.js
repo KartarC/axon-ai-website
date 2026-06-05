@@ -14,7 +14,7 @@ if (!token) {
 
 async function loadInvite() {
   try {
-    const res  = await fetch(`/api/auth/accept-invite?token=${encodeURIComponent(token)}`)
+    const res  = await fetch(`/api/auth?action=accept-invite&token=${encodeURIComponent(token)}`)
     const data = await res.json()
 
     if (!res.ok) {
@@ -71,7 +71,7 @@ function renderForm({ email, role, account_name, plan }) {
     hideErr()
 
     try {
-      const res  = await fetch('/api/auth/accept-invite', {
+      const res  = await fetch('/api/auth?action=accept-invite', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ token, password: pw }),
@@ -82,7 +82,7 @@ function renderForm({ email, role, account_name, plan }) {
 
       if (data.auto_login && data.access_token) {
         // Get session context
-        const sessRes  = await fetch('/api/auth/session', {
+        const sessRes  = await fetch('/api/auth?action=session', {
           headers: { Authorization: `Bearer ${data.access_token}` },
         })
         const sessData = await sessRes.json()

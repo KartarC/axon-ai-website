@@ -42,7 +42,7 @@ form.addEventListener('submit', async (e) => {
     }
 
     // Step 2: Get account context
-    const sessionRes = await fetch('/api/auth/session', {
+    const sessionRes = await fetch('/api/auth?action=session', {
       headers: { Authorization: `Bearer ${authData.access_token}` },
     })
     const sessionData = await sessionRes.json()
