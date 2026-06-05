@@ -1,6 +1,6 @@
 // api/operator.js — public QR operator endpoint (no auth required)
-// GET  ?token=X → return job + board entry data
-// POST ?token=X → { action: 'start'|'pause'|'complete' } → update status
+// GET  ?token=X → return job + board entry data + traveler steps
+// POST ?token=X → { action: 'start'|'pause'|'complete'|'complete_step' }
 const { sb, cors } = require('./_lib/supabase')
 
 export default async function handler(req, res) {
@@ -20,6 +20,13 @@ export default async function handler(req, res) {
     `board_entries?job_id=eq.${job.id}&order=op_sequence.asc&select=id,operation,op_sequence,status,board_col,est_hours,notes,machines(name,machine_no)`
   )
   const currentEntry = entries?.find(e => ['queue','setup','running','paused'].includes(e.status)) || entries?.[entries.length - 1]
+
+  // Fetch traveler steps (if any)
+  const travelerSteps = await sb('GET',
+    `traveler_steps?job_id=eq.${job.id}&order=sort_order.asc,step_number.asc` +
+    `&select=id,step_number,title,instructions,status,requires_dimension,dimension_label,dimension_unit,dimension_value,flag_note,completed_at`
+  )
+  const currentTravelerStep = travelerSteps?.find(s => ['pending','in_progress'].includes(s.status)) || null
 
   // ── GET: return sanitized job data ───────────────────────
   if (req.method === 'GET') {
@@ -41,14 +48,38 @@ export default async function handler(req, res) {
         op_sequence: e.op_sequence, operation: e.operation,
         status:      e.status,      machine:   e.machines?.name || null,
       })),
+      traveler: {
+        steps:        (travelerSteps || []),
+        current_step: currentTravelerStep,
+        total:        (travelerSteps || []).length,
+        done:         (travelerSteps || []).filter(s => s.status === 'complete').length,
+      },
     })
   }
 
   // ── POST: operator status update ─────────────────────────
   if (req.method === 'POST') {
     const { action, entry_id } = req.body || {}
+    // ── Traveler step completion (no board action needed) ────
+    if (action === 'complete_step') {
+      const { step_id, dimension_value, flag_note, flag } = req.body || {}
+      if (!step_id) return res.status(400).json({ error: 'step_id required' })
+
+      const stepRows = await sb('GET', `traveler_steps?id=eq.${step_id}&job_id=eq.${job.id}`)
+      if (!stepRows?.length) return res.status(404).json({ error: 'Step not found' })
+
+      const updates = {
+        status:          flag ? 'flagged' : 'complete',
+        completed_at:    new Date().toISOString(),
+        dimension_value: dimension_value || null,
+        flag_note:       flag_note || null,
+      }
+      await sb('PATCH', `traveler_steps?id=eq.${step_id}`, updates)
+      return res.status(200).json({ ok: true, status: updates.status })
+    }
+
     const validActions = ['start','pause','complete']
-    if (!action || !validActions.includes(action)) return res.status(400).json({ error: 'action must be start, pause, or complete' })
+    if (!action || !validActions.includes(action)) return res.status(400).json({ error: 'action must be start, pause, complete, or complete_step' })
 
     const targetId = entry_id || currentEntry?.id
     if (!targetId) return res.status(404).json({ error: 'No active board entry found for this job' })

@@ -190,7 +190,7 @@ async function loadJob() {
   }
 }
 
-function render({ job, current_entry, all_steps }) {
+function render({ job, current_entry, all_steps, traveler }) {
   const statusLabels = { queue:'In Queue', setup:'Setup in Progress', running:'Running', paused:'Paused', complete:'Complete' }
   const status = current_entry?.status || 'queue'
   const statusLabel = statusLabels[status] || status
@@ -238,7 +238,7 @@ function render({ job, current_entry, all_steps }) {
 
     ${all_steps && all_steps.length > 1 ? `
       <div class="steps-card">
-        <div class="steps-title">All operations</div>
+        <div class="steps-title">Operations</div>
         ${all_steps.map((s, i) => {
           const isDone    = s.status === 'complete'
           const isCurrent = s.status !== 'complete' && all_steps.slice(0, i).every(p => p.status === 'complete')
@@ -253,6 +253,48 @@ function render({ job, current_entry, all_steps }) {
               </div>
               ${isDone ? `<div class="step-done-tag">Done</div>` : ''}
             </div>`
+        }).join('')}
+      </div>
+    ` : ''}
+
+    ${traveler && traveler.total > 0 ? `
+      <div class="steps-card" style="margin-top:12px">
+        <div class="steps-title">Work Order — ${traveler.done}/${traveler.total} steps complete</div>
+        <div style="height:4px;background:#E5E7EB;border-radius:2px;overflow:hidden;margin-bottom:12px">
+          <div style="height:100%;width:${Math.round(traveler.done/traveler.total*100)}%;background:${traveler.done===traveler.total?'#16A34A':'#1D4ED8'};border-radius:2px;transition:width .3s"></div>
+        </div>
+        ${traveler.current_step ? `
+          <div style="background:#EFF6FF;border:1px solid #DBEAFE;border-radius:10px;padding:14px;margin-bottom:12px">
+            <div style="font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#1D4ED8;margin-bottom:4px">Current Step ${traveler.current_step.step_number}</div>
+            <div style="font-size:1rem;font-weight:800;color:#111827;margin-bottom:6px">${esc(traveler.current_step.title)}</div>
+            ${traveler.current_step.instructions ? `<div style="font-size:.82rem;color:#4B5563;line-height:1.6">${esc(traveler.current_step.instructions)}</div>` : ''}
+            ${traveler.current_step.requires_dimension ? `
+              <div style="margin-top:10px">
+                <label style="font-size:.72rem;font-weight:700;color:#1D4ED8;display:block;margin-bottom:4px">${esc(traveler.current_step.dimension_label || 'Dimension')} (${esc(traveler.current_step.dimension_unit || 'in')})</label>
+                <input id="dimInput" type="text" inputmode="decimal" placeholder="Enter measured value" style="width:100%;padding:10px 14px;border:1.5px solid #DBEAFE;border-radius:8px;font-size:1rem;font-family:inherit;outline:none;box-sizing:border-box"/>
+              </div>
+            ` : ''}
+            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+              <button class="action-btn btn-complete" style="flex:1;padding:14px;font-size:.9rem" onclick="completeStep('${traveler.current_step.id}', ${traveler.current_step.requires_dimension})">
+                ✓ Complete Step
+              </button>
+              <button onclick="flagStep('${traveler.current_step.id}')" style="padding:14px 16px;border-radius:12px;border:2px solid #FECACA;background:#FFF1F2;color:#DC2626;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">
+                Flag Issue
+              </button>
+            </div>
+          </div>
+        ` : ''}
+        ${traveler.steps.map(s => {
+          const cls = s.status === 'complete' ? 'done' : s.status === 'flagged' ? 'current' : 'pending'
+          return `<div class="step-row">
+            <div class="step-num step-num--${cls}">${s.status==='complete'?'✓':s.status==='flagged'?'!':s.step_number}</div>
+            <div class="step-info">
+              <div class="step-op">${esc(s.title)}</div>
+              ${s.dimension_value ? `<div class="step-mach">${esc(s.dimension_label||'Dim')}: ${esc(s.dimension_value)} ${esc(s.dimension_unit||'')}</div>` : ''}
+              ${s.flag_note ? `<div class="step-mach" style="color:#DC2626">⚠ ${esc(s.flag_note)}</div>` : ''}
+            </div>
+            ${s.status==='complete'?`<div class="step-done-tag">Done</div>`:''}
+          </div>`
         }).join('')}
       </div>
     ` : ''}
@@ -309,6 +351,35 @@ function attachActionListeners() {
       }
     })
   })
+}
+
+async function completeStep(stepId, requiresDim) {
+  let dimValue = null
+  if (requiresDim) {
+    dimValue = document.getElementById('dimInput')?.value?.trim()
+    if (!dimValue) { alert('Please enter the measured dimension before completing.'); return }
+  }
+  try {
+    const res = await fetch(`/api/operator?token=${encodeURIComponent(token)}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'complete_step', step_id: stepId, dimension_value: dimValue }),
+    })
+    if (!res.ok) { const d = await res.json(); throw new Error(d.error) }
+    await loadJob()
+  } catch (e) { alert('Failed: ' + e.message) }
+}
+
+async function flagStep(stepId) {
+  const note = prompt('Describe the issue:')
+  if (!note) return
+  try {
+    const res = await fetch(`/api/operator?token=${encodeURIComponent(token)}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'complete_step', step_id: stepId, flag: true, flag_note: note }),
+    })
+    if (!res.ok) { const d = await res.json(); throw new Error(d.error) }
+    await loadJob()
+  } catch (e) { alert('Failed: ' + e.message) }
 }
 
 async function doAction(action) {
