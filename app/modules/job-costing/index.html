@@ -42,6 +42,12 @@
     .variance-over{color:#DC2626;font-weight:700}
     .variance-ok{color:#15803D;font-weight:700}
     .set-quote-btn{font-size:.75rem;color:var(--blue-700);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;text-decoration:underline}
+    /* Budget alert row states */
+    tr.row--at-risk td{background:#FFFBEB}
+    tr.row--over td{background:#FFF1F2}
+    tr.row--at-risk:hover td{background:#FFF3CD}
+    tr.row--over:hover td{background:#FFE4E6}
+    .budget-icon{font-size:.8rem;margin-left:5px;vertical-align:middle;cursor:default}
     #quoteModal{display:none}
   </style>
 </head>
@@ -69,6 +75,7 @@
       <input class="filter-search" type="search" id="searchInput" placeholder="Search job, part, or customer..."/>
       <div class="filter-tabs" id="filterTabs">
         <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="at-risk">⚠ At Risk</button>
         <button class="filter-tab" data-filter="over">Over budget</button>
         <button class="filter-tab" data-filter="on">On budget</button>
         <button class="filter-tab" data-filter="no-quote">No quote set</button>

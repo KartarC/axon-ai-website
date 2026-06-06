@@ -41,6 +41,40 @@ function render() {
   const actualMargin = quotedPrice > 0 ? ((quotedPrice - totalActual) / quotedPrice) * 100 : null
   const marginCls   = actualMargin === null ? '' : actualMargin >= targetMgn ? 'cs-margin--green' : actualMargin >= targetMgn - 10 ? 'cs-margin--amber' : 'cs-margin--red'
 
+  // ── Budget alert (computed client-side) ─────────────────────
+  let budget_alert = null
+  if (quote && !['complete','cancelled','shipped'].includes(j.status)) {
+    const targetCost = quotedPrice * (1 - targetMgn / 100)
+    if (totalActual >= quotedPrice)                              budget_alert = 'over'
+    else if (targetCost > 0 && totalActual >= targetCost * 0.80) budget_alert = 'at_risk'
+    else                                                          budget_alert = 'ok'
+  }
+
+  const budgetBanner = budget_alert === 'over'
+    ? `<div style="margin-bottom:16px;padding:12px 16px;background:#FFF1F2;border:1.5px solid #FECACA;border-radius:var(--radius);display:flex;align-items:center;gap:10px">
+        <span style="font-size:1.1rem">🔴</span>
+        <div>
+          <div style="font-weight:800;color:#DC2626;font-size:.875rem">Over Budget</div>
+          <div style="font-size:.8rem;color:#EF4444;margin-top:2px">
+            Actual costs (${fmt$(totalActual)}) have exceeded the quoted price (${fmt$(quotedPrice)}).
+            Add no further costs without reviewing the quote.
+          </div>
+        </div>
+      </div>`
+    : budget_alert === 'at_risk'
+    ? `<div style="margin-bottom:16px;padding:12px 16px;background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:var(--radius);display:flex;align-items:center;gap:10px">
+        <span style="font-size:1.1rem">⚠️</span>
+        <div>
+          <div style="font-weight:800;color:#D97706;font-size:.875rem">Budget At Risk</div>
+          <div style="font-size:.8rem;color:#92400E;margin-top:2px">
+            Actual costs (${fmt$(totalActual)}) are approaching the target cost ceiling
+            (${fmt$(quotedPrice * (1 - targetMgn / 100))} for ${targetMgn}% margin).
+            Review remaining operations before adding more costs.
+          </div>
+        </div>
+      </div>`
+    : ''
+
   const costByType = {
     labor:    entries.filter(e => e.type === 'labor').reduce((s, e) => s + parseFloat(e.total_cost || 0), 0),
     material: entries.filter(e => e.type === 'material').reduce((s, e) => s + parseFloat(e.total_cost || 0), 0),
@@ -52,6 +86,7 @@ function render() {
   const priorityText   = { rush:'#DC2626',  high:'#D97706',  normal:'var(--gray-600)', low:'var(--gray-400)' }
 
   document.getElementById('pageContent').innerHTML = `
+    ${budgetBanner}
     <div class="page-header">
       <div>
         <h1 class="page-title">${esc(j.job_number)} — ${esc(j.part_name)}</h1>
@@ -203,16 +238,25 @@ function render() {
     const btn = document.getElementById('addCostBtn')
     btn.disabled = true; btn.textContent = '...'
     try {
-      await apiPost('/api/costing', {
-        job_id:    jobId,
-        type:      document.getElementById('acType').value,
+      const result = await apiPost('/api/costing', {
+        job_id:      jobId,
+        type:        document.getElementById('acType').value,
         description: document.getElementById('acDesc').value.trim(),
-        quantity:  parseFloat(document.getElementById('acQty').value),
-        unit_cost: parseFloat(document.getElementById('acUnitCost').value),
+        quantity:    parseFloat(document.getElementById('acQty').value),
+        unit_cost:   parseFloat(document.getElementById('acUnitCost').value),
       })
-      toastSuccess('Cost entry added')
       document.getElementById('acDesc').value = ''
       document.getElementById('acUnitCost').value = ''
+
+      // Immediate budget alert toast — fires before the reload
+      if (result?.budget_alert === 'over') {
+        toastError('🔴 Over Budget — costs now exceed the quoted price. Review immediately.')
+      } else if (result?.budget_alert === 'at_risk') {
+        toastError('⚠️ Budget At Risk — costs are approaching the target cost ceiling.')
+      } else {
+        toastSuccess('Cost entry added')
+      }
+
       await loadAll()
     } catch (err) {
       const el = document.getElementById('addCostError')

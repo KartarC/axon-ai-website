@@ -34,20 +34,35 @@ export default async function handler(req, res) {
       const target   = parseFloat(j.job_quotes?.[0]?.target_margin || 0)
       const variance = quoted > 0 ? actual - (quoted * (1 - target / 100)) : null
       const margin   = quoted > 0 ? ((quoted - actual) / quoted) * 100 : null
+
+      // ── Budget alert ────────────────────────────────────────
+      // null  = no quote set
+      // 'ok'  = within budget
+      // 'at_risk' = actual ≥ 80% of cost allowance (still completable, but manager should act)
+      // 'over'    = actual ≥ quoted price (costs have consumed the entire quote)
+      let budget_alert = null
+      if (j.job_quotes?.length && !['complete','cancelled','shipped'].includes(j.status)) {
+        const targetCost = quoted * (1 - target / 100)   // max allowed cost
+        if (actual >= quoted)                              budget_alert = 'over'
+        else if (targetCost > 0 && actual >= targetCost * 0.80) budget_alert = 'at_risk'
+        else                                               budget_alert = 'ok'
+      }
+
       return {
-        id:          j.id,
-        job_number:  j.job_number,
-        part_name:   j.part_name,
-        due_date:    j.due_date,
-        priority:    j.priority,
-        status:      j.status,
-        customer:    j.customers?.name || null,
-        quoted_price: quoted,
-        actual_cost:  Math.round(actual * 100) / 100,
-        variance:     variance !== null ? Math.round(variance * 100) / 100 : null,
-        margin_pct:   margin  !== null ? Math.round(margin  * 100) / 100 : null,
+        id:            j.id,
+        job_number:    j.job_number,
+        part_name:     j.part_name,
+        due_date:      j.due_date,
+        priority:      j.priority,
+        status:        j.status,
+        customer:      j.customers?.name || null,
+        quoted_price:  quoted,
+        actual_cost:   Math.round(actual * 100) / 100,
+        variance:      variance !== null ? Math.round(variance * 100) / 100 : null,
+        margin_pct:    margin   !== null ? Math.round(margin   * 100) / 100 : null,
         target_margin: target,
-        has_quote:    !!j.job_quotes?.length,
+        has_quote:     !!j.job_quotes?.length,
+        budget_alert,
         cost_by_type: {
           labor:    entries.filter(e => e.type === 'labor').reduce((s, e) => s + parseFloat(e.total_cost || 0), 0),
           material: entries.filter(e => e.type === 'material').reduce((s, e) => s + parseFloat(e.total_cost || 0), 0),
@@ -146,7 +161,25 @@ export default async function handler(req, res) {
       source:      'manual',
       recorded_by: ctx.user.id,
     })
-    return res.status(201).json(entry)
+
+    // ── Check budget alert after insert ──────────────────────
+    // Return alert status so the UI can react immediately without a full reload
+    let budget_alert = null
+    try {
+      const [jobQuote]   = await sb('GET', `job_quotes?job_id=eq.${jid}&account_id=eq.${ctx.account.id}`) || []
+      const allEntries   = await sb('GET', `job_cost_entries?job_id=eq.${jid}&account_id=eq.${ctx.account.id}&select=total_cost`)
+      if (jobQuote) {
+        const quoted     = parseFloat(jobQuote.quoted_price || 0)
+        const target     = parseFloat(jobQuote.target_margin || 40)
+        const actualNow  = (allEntries || []).reduce((s, e) => s + parseFloat(e.total_cost || 0), 0)
+        const targetCost = quoted * (1 - target / 100)
+        if (actualNow >= quoted)                               budget_alert = 'over'
+        else if (targetCost > 0 && actualNow >= targetCost * 0.80) budget_alert = 'at_risk'
+        else                                                   budget_alert = 'ok'
+      }
+    } catch (_) { /* non-critical — don't fail the POST */ }
+
+    return res.status(201).json({ entry, budget_alert })
   }
 
   // ── PATCH: update entry ──────────────────────────────────

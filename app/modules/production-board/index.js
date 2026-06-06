@@ -13,9 +13,10 @@ document.getElementById('mobileNavBtn')?.addEventListener('click', () => {
 })
 
 // ── State ────────────────────────────────────────────────────
-let entries  = []
-let machines = []
+let entries       = []
+let machines      = []
 let filterMachine = ''
+let budgetAlerts  = {}  // { [job_id]: 'ok' | 'at_risk' | 'over' }
 
 const COLS = [
   { id: 'queue',    label: 'Queue' },
@@ -29,10 +30,28 @@ const SITE_URL = window.location.origin
 // ── Load data ─────────────────────────────────────────────────
 async function loadBoard() {
   try {
-    ;[entries, machines] = await Promise.all([
+    const fetches = [
       apiGet('/api/board'),
-      apiGet('/api/machines'),  // uses flat /api/machines route
-    ])
+      apiGet('/api/machines'),
+    ]
+    // Load budget alerts if the account has job-costing module
+    const hasCosting = session.account.modules?.includes('job-costing')
+    if (hasCosting) fetches.push(apiGet('/api/costing?action=summary'))
+
+    const results = await Promise.all(fetches)
+    entries  = results[0] || []
+    machines = results[1] || []
+
+    // Build job_id → budget_alert map from costing summary
+    budgetAlerts = {}
+    if (hasCosting && results[2]) {
+      for (const j of results[2]) {
+        if (j.budget_alert && j.budget_alert !== 'ok') {
+          budgetAlerts[j.id] = j.budget_alert
+        }
+      }
+    }
+
     populateMachineFilter()
     populateMachineSelect()
     renderBoard()
@@ -107,6 +126,14 @@ function renderCard(entry) {
   }
   const sc = statusColors[entry.status] || statusColors.queue
 
+  // Budget warning indicator (from costing summary, if module enabled)
+  const budgetAlert = budgetAlerts[job.id]
+  const budgetDot = budgetAlert === 'over'
+    ? `<span title="Over budget — costs exceed quoted price" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#DC2626;margin-left:5px;vertical-align:middle;flex-shrink:0"></span>`
+    : budgetAlert === 'at_risk'
+    ? `<span title="Budget at risk — costs approaching ceiling" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#D97706;margin-left:5px;vertical-align:middle;flex-shrink:0"></span>`
+    : ''
+
   return `
     <div class="job-card job-card--${pri}"
          draggable="true"
@@ -118,7 +145,7 @@ function renderCard(entry) {
 
       <div class="jc-top">
         <div>
-          <div class="jc-job-num">${escHtml(job.job_number || '—')}</div>
+          <div class="jc-job-num" style="display:flex;align-items:center">${escHtml(job.job_number || '—')}${budgetDot}</div>
           ${pri === 'rush' ? `<span class="badge badge--rush" style="margin-top:4px">RUSH</span>` : ''}
           ${pri === 'high' ? `<span class="badge badge--high" style="margin-top:4px">High</span>` : ''}
         </div>

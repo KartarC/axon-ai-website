@@ -24,22 +24,27 @@ async function loadData() {
 
 // ── Stats ──────────────────────────────────────────────────
 function renderStats() {
-  const withQuote = allJobs.filter(j => j.has_quote)
+  const withQuote   = allJobs.filter(j => j.has_quote)
   const totalQuoted = withQuote.reduce((s, j) => s + j.quoted_price, 0)
   const totalActual = allJobs.reduce((s, j) => s + j.actual_cost, 0)
   const margins     = withQuote.filter(j => j.margin_pct !== null).map(j => j.margin_pct)
   const avgMargin   = margins.length ? margins.reduce((a, b) => a + b, 0) / margins.length : null
-  const overCount   = withQuote.filter(j => j.margin_pct !== null && j.margin_pct < j.target_margin).length
+
+  // "At Risk" = at_risk OR over (any job that needs attention)
+  const alertCount  = allJobs.filter(j => j.budget_alert === 'at_risk' || j.budget_alert === 'over').length
 
   document.getElementById('sQuoted').textContent = totalQuoted > 0 ? fmt$(totalQuoted) : '—'
   document.getElementById('sActual').textContent = totalActual > 0 ? fmt$(totalActual) : '—'
   document.getElementById('sMargin').textContent = avgMargin !== null ? avgMargin.toFixed(1) + '%' : '—'
-  document.getElementById('sOver').textContent   = overCount
+  document.getElementById('sOver').textContent   = alertCount
 
-  // Colour avg margin stat
+  // Colour cards
   const marginCard = document.getElementById('sMargin').closest('.cstat')
-  marginCard.classList.toggle('cstat--red', avgMargin !== null && avgMargin < 20)
+  marginCard.classList.toggle('cstat--red',   avgMargin !== null && avgMargin < 20)
   marginCard.classList.toggle('cstat--green', avgMargin !== null && avgMargin >= 20)
+
+  const alertCard = document.getElementById('sOver').closest('.cstat')
+  alertCard.classList.toggle('cstat--red', alertCount > 0)
 }
 
 // ── Table ──────────────────────────────────────────────────
@@ -53,6 +58,7 @@ function renderTable() {
         (j.customer || '').toLowerCase().includes(q)
       if (!match) return false
     }
+    if (activeFilter === 'at-risk')  return j.budget_alert === 'at_risk' || j.budget_alert === 'over'
     if (activeFilter === 'over')     return j.has_quote && j.margin_pct !== null && j.margin_pct < j.target_margin
     if (activeFilter === 'on')       return j.has_quote && j.margin_pct !== null && j.margin_pct >= j.target_margin
     if (activeFilter === 'no-quote') return !j.has_quote
@@ -81,6 +87,14 @@ function renderTable() {
     const sc          = statusColors[j.status] || statusColors.open
     const stLabel     = statusText[j.status]   || j.status
 
+    // Budget alert icon + row class
+    const alertIcon = j.budget_alert === 'over'
+      ? `<span class="budget-icon" title="Over budget — costs have exceeded the quoted price">🔴</span>`
+      : j.budget_alert === 'at_risk'
+      ? `<span class="budget-icon" title="At risk — costs are tracking toward the budget limit">⚠️</span>`
+      : ''
+    const rowCls = j.budget_alert === 'over' ? 'row--over' : j.budget_alert === 'at_risk' ? 'row--at-risk' : ''
+
     let varianceStr = '—', marginStr = '—'
     if (j.has_quote && j.margin_pct !== null) {
       const cost_target = j.quoted_price * (1 - j.target_margin / 100)
@@ -97,8 +111,8 @@ function renderTable() {
       ? `<button class="set-quote-btn" data-id="${j.id}" data-num="${esc(j.job_number)}" data-part="${esc(j.part_name)}" data-price="${j.quoted_price}" data-margin="${j.target_margin}">Edit quote</button>`
       : `<button class="set-quote-btn" data-id="${j.id}" data-num="${esc(j.job_number)}" data-part="${esc(j.part_name)}">Set quote</button>`
 
-    return `<tr class="clickable" data-job-id="${j.id}">
-      <td><span class="job-num">${esc(j.job_number)}</span><span class="job-part">${esc(j.part_name)}</span></td>
+    return `<tr class="clickable ${rowCls}" data-job-id="${j.id}">
+      <td><span class="job-num">${esc(j.job_number)}${alertIcon}</span><span class="job-part">${esc(j.part_name)}</span></td>
       <td style="color:var(--gray-500)">${esc(j.customer || '—')}</td>
       <td class="num-cell">${quotedStr}</td>
       <td class="num-cell">${actualStr}</td>
