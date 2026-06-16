@@ -1,4 +1,4 @@
-// Axon AI — App shell nav renderer
+// Billet — App shell nav renderer
 import { getSession, logout } from './auth.js'
 import { getVisibleModules } from './modules.js'
 
@@ -27,7 +27,7 @@ export function renderNav(activePath = '') {
           <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
           <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
         </svg>
-        <span class="anav-logo-text"><strong>Axon</strong> AI</span>
+        <span class="anav-logo-text">Billet</span>
       </a>
 
       <div class="anav-account">

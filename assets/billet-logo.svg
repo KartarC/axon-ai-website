@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" role="img" aria-label="Billet">
+  <polygon points="10,24 38,24 48,14 20,14" fill="#F59E0B"/>
+  <polygon points="38,24 48,14 48,34 38,44" fill="#1F2937"/>
+  <rect x="10" y="24" width="28" height="20" fill="#374151"/>
+  <text x="62" y="41" font-family="Archivo, Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="-1" fill="#1F2937">Billet</text>
+</svg>

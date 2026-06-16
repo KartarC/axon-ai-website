@@ -122,11 +122,11 @@ function requireRole(ctx, roles, res) {
   return true
 }
 
-// ── Require Axon admin (ADMIN_SECRET header) ─────────────────
+// ── Require Billet admin (ADMIN_SECRET header) ─────────────────
 function requireAxonAdmin(req, res) {
   const secret = req.headers['x-admin-secret'] || req.query?.secret
   if (!secret || secret !== process.env.ADMIN_SECRET) {
-    res.status(403).json({ error: 'Axon admin access required' })
+    res.status(403).json({ error: 'Billet admin access required' })
     return false
   }
   return true

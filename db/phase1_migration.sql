@@ -1,5 +1,5 @@
 -- ============================================================
--- Axon AI — Phase 1 Database Migration
+-- Billet — Phase 1 Database Migration
 -- Run this in the Supabase SQL Editor (project emdgtyaggcbqaxsdrsaa)
 -- ============================================================
 
@@ -154,7 +154,7 @@ RETURNS text LANGUAGE sql STABLE SECURITY DEFINER AS $$
   LIMIT 1;
 $$;
 
--- Returns true if the current user is an Axon AI admin
+-- Returns true if the current user is an Billet admin
 CREATE OR REPLACE FUNCTION public.is_axon_admin()
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT EXISTS (SELECT 1 FROM public.axon_admins WHERE user_id = auth.uid());

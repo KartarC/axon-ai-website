@@ -48,7 +48,7 @@ content.innerHTML = `
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="6" y="8" width="36" height="32" rx="4" stroke="#D1D5DB" stroke-width="2"/><path d="M16 24h16M24 16v16" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
       <h3>No modules enabled yet</h3>
-      <p>Contact your Axon AI account manager to activate your modules.</p>
+      <p>Contact your Billet account manager to activate your modules.</p>
     </div>
   `}
 

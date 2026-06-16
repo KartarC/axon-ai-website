@@ -31,7 +31,7 @@ function renderForm({ email, role, account_name, plan }) {
   const planLabel = { starter:'Starter', growth:'Growth', suite:'Suite' }[plan] || plan
   card.innerHTML = `
     <div class="invite-welcome">You're invited</div>
-    <h1 class="invite-title">Welcome to Axon AI</h1>
+    <h1 class="invite-title">Welcome to Billet</h1>
     <p class="invite-sub">Set a password for <strong>${escHtml(email)}</strong> to access your shop's tools.</p>
 
     <div class="invite-shop">
@@ -120,7 +120,7 @@ function showInvalid(msg) {
       </svg>
       <h2>Invite not valid</h2>
       <p>${escHtml(msg)}</p>
-      <a href="mailto:hello@axon.ai" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
+      <a href="mailto:hello@billet.app" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
     </div>
   `
 }

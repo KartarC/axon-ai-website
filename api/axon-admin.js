@@ -1,4 +1,4 @@
-// api/axon-admin.js — consolidated Axon AI internal admin
+// api/axon-admin.js — consolidated Billet internal admin
 // All routes require X-Admin-Secret header or ?secret= query param
 // ?resource=accounts → GET list / POST create / PATCH ?id=X
 // ?resource=invite   → POST send invite
@@ -6,7 +6,7 @@ const { sb, authAdmin, requireAxonAdmin, cors } = require('./_lib/supabase')
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const SITE_URL       = process.env.SITE_URL || 'https://axon-ai-website-three.vercel.app'
-const FROM_EMAIL     = 'Axon AI <onboarding@axon.ai>'
+const FROM_EMAIL     = 'Billet <onboarding@billet.app>'
 
 async function sendInviteEmail(to, shopName, inviteUrl) {
   if (!RESEND_API_KEY) { console.warn('RESEND_API_KEY not set — skipping email'); return }
@@ -15,14 +15,14 @@ async function sendInviteEmail(to, shopName, inviteUrl) {
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: FROM_EMAIL, to: [to],
-      subject: `You're invited to Axon AI — ${shopName}`,
+      subject: `You're invited to Billet — ${shopName}`,
       html: `<!DOCTYPE html><html><body style="font-family:Inter,sans-serif;background:#f9fafb;padding:40px 20px">
         <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:12px;padding:40px;border:1px solid #e5e7eb">
-          <div style="font-size:1.1rem;font-weight:900;color:#1D4ED8;margin-bottom:20px">Axon AI</div>
+          <div style="font-size:1.1rem;font-weight:900;color:#1D4ED8;margin-bottom:20px">Billet</div>
           <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 12px">You're invited to ${shopName}</h2>
-          <p style="color:#4b5563;line-height:1.7;margin:0 0 24px">Your Axon AI account is ready. Click below to set your password and start using your shop tools.</p>
+          <p style="color:#4b5563;line-height:1.7;margin:0 0 24px">Your Billet account is ready. Click below to set your password and start using your shop tools.</p>
           <a href="${inviteUrl}" style="display:inline-block;background:#111827;color:#fff;padding:14px 28px;border-radius:8px;font-weight:700;text-decoration:none">Set Password &amp; Get Started →</a>
-          <p style="color:#9ca3af;font-size:.8rem;margin-top:24px">Link expires in 7 days. Questions? hello@axon.ai</p>
+          <p style="color:#9ca3af;font-size:.8rem;margin-top:24px">Link expires in 7 days. Questions? hello@billet.app</p>
         </div></body></html>`,
     }),
   })

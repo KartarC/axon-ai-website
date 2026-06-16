@@ -1,4 +1,4 @@
-# Axon AI — Pricing Research & Strategy Log
+# Billet — Pricing Research & Strategy Log
 
 ---
 

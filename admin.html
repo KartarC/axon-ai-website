@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Axon AI — Lead Dashboard</title>
+  
+  <link rel="icon" href="/favicon.svg"/>
+<title>Billet — Lead Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -176,7 +178,7 @@
         <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
         <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
       </svg>
-      <span>Axon AI</span>
+      <span>Billet</span>
     </div>
     <h1>Lead Dashboard</h1>
     <p>Enter your admin password to view demo requests</p>
@@ -201,7 +203,7 @@
         <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
         <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
       </svg>
-      Axon AI
+      Billet
     </div>
     <span class="topbar-badge">Lead Dashboard</span>
     <div class="topbar-right">
@@ -427,11 +429,11 @@ async function cycleStatus(id, current) {
 
 // ── MAILTO ──────────────────────────────────────────────────────────────────
 function buildMailto(lead) {
-  const subject = encodeURIComponent(`Re: Demo Request — Axon AI${lead.company ? ' | ' + lead.company : ''}`)
+  const subject = encodeURIComponent(`Re: Demo Request — Billet${lead.company ? ' | ' + lead.company : ''}`)
   const body = encodeURIComponent(
 `Hi ${lead.name.split(' ')[0]},
 
-Thanks for requesting a demo of Axon AI. I'd love to show you how we can automate your RFQ-to-quote process and get you to measurable ROI within 30 days.
+Thanks for requesting a demo of Billet. I'd love to show you how we can automate your RFQ-to-quote process and get you to measurable ROI within 30 days.
 
 Would any of the following times work for a 30-minute call?
 
@@ -443,7 +445,7 @@ Looking forward to connecting.
 
 Best,
 [Your name]
-Axon AI
+Billet
 `
   )
   return `mailto:${lead.email}?subject=${subject}&body=${body}`

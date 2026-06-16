@@ -1,6 +1,6 @@
-# Axon AI — Website
+# Billet — Website
 
-Marketing website for **Axon AI** — modular software tools and website design for CNC machine shops and metal fabrication shops.
+Marketing website for **Billet** — modular software tools and website design for CNC machine shops and metal fabrication shops.
 
 ## Stack
 
@@ -20,7 +20,7 @@ Marketing website for **Axon AI** — modular software tools and website design 
 
 1. Push to GitHub (`git push origin main`)
 2. Vercel auto-deploys on push
-3. Custom domain: `axonai.com` or `axon.ai`
+3. Custom domain: `axonai.com` or `billet.app`
 
 ## Brand
 

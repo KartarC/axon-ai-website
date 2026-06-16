@@ -1,4 +1,4 @@
-// Axon AI — Toast notification utility
+// Billet — Toast notification utility
 
 let container = null
 

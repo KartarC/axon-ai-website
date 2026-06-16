@@ -1,4 +1,4 @@
-// Axon AI — Module registry and feature flag helpers
+// Billet — Module registry and feature flag helpers
 export const MODULES = {
   'production-board': {
     slug:  'production-board',

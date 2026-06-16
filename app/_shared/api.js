@@ -1,4 +1,4 @@
-// Axon AI — API fetch wrapper with JWT + auto-refresh
+// Billet — API fetch wrapper with JWT + auto-refresh
 import { getSession, refreshToken, clearSession } from './auth.js'
 
 let isRefreshing = false

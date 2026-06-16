@@ -1,4 +1,4 @@
-// Axon AI — Auth utilities (browser ES module)
+// Billet — Auth utilities (browser ES module)
 // Handles session storage, JWT management, and page guards
 
 const STORAGE_KEYS = {
