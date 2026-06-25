@@ -148,8 +148,55 @@ function openQuoteModal(jobId, jobNum, partName, price, margin) {
   document.getElementById('qMargin').value       = margin || 40
   document.getElementById('qNotes').value        = ''
   document.getElementById('quoteError').style.display = 'none'
+  // reset AI suggestion UI
+  const box = document.getElementById('aiSuggestBox')
+  box.style.display = 'none'; box.innerHTML = ''
+  resetAiBtn()
   document.getElementById('quoteModal').style.display = 'flex'
 }
+
+// ── AI Quote Suggestor ─────────────────────────────────────
+function resetAiBtn() {
+  const btn = document.getElementById('aiSuggestBtn')
+  btn.disabled = false
+  document.getElementById('aiSuggestLabel').textContent = 'Suggest price with AI'
+}
+
+document.getElementById('aiSuggestBtn').addEventListener('click', async () => {
+  const btn  = document.getElementById('aiSuggestBtn')
+  const box  = document.getElementById('aiSuggestBox')
+  const jobId = document.getElementById('quoteJobId').value
+  btn.disabled = true
+  document.getElementById('aiSuggestLabel').textContent = 'Analyzing past jobs…'
+
+  try {
+    const r = await apiPost('/api/quote-suggest', { job_id: jobId })
+    const s = r.suggestion
+    const confCls = `ai-conf--${(s.confidence || 'medium')}`
+    const comps = (r.comparables || []).slice(0, 4).map(c =>
+      `<div class="ai-comp"><span>${esc(c.job_number)} · ${esc(c.material)} · qty ${c.quantity}</span><span>${fmt$(c.quoted)} → ${c.margin_pct}%</span></div>`
+    ).join('')
+
+    box.innerHTML = `
+      <div class="ai-price">${fmt$(s.suggested_price)}<span class="ai-conf ${confCls}">${esc(s.confidence || 'medium')} confidence</span></div>
+      <div class="ai-range">Range ${fmt$(s.suggested_low)}–${fmt$(s.suggested_high)} · target margin ${s.target_margin}% · ${r.basis_detail === 'cold_start' ? 'cold-start estimate' : 'based on your history'}</div>
+      <div class="ai-rationale">${esc(s.rationale || '')}</div>
+      ${comps ? `<div class="ai-comps">${comps}</div>` : ''}
+      <button type="button" class="ai-apply" id="aiApplyBtn">Use this quote</button>`
+    box.style.display = 'block'
+
+    document.getElementById('aiApplyBtn').addEventListener('click', () => {
+      document.getElementById('qPrice').value  = s.suggested_price
+      document.getElementById('qMargin').value = s.target_margin
+      toastSuccess('AI suggestion applied — review and save')
+    })
+  } catch (e) {
+    box.innerHTML = `<div style="font-size:.82rem;color:#DC2626">${esc(e.message || 'AI suggestion failed')}</div>`
+    box.style.display = 'block'
+  } finally {
+    resetAiBtn()
+  }
+})
 
 document.getElementById('closeQuote').addEventListener('click',  () => { document.getElementById('quoteModal').style.display = 'none' })
 document.getElementById('cancelQuote').addEventListener('click', () => { document.getElementById('quoteModal').style.display = 'none' })
