@@ -1,6 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" role="img" aria-label="Billet">
-  <polygon points="10,24 38,24 48,14 20,14" fill="#F59E0B"/>
-  <polygon points="38,24 48,14 48,34 38,44" fill="#111827"/>
-  <rect x="10" y="24" width="28" height="20" fill="#4B5563"/>
-  <text x="62" y="41" font-family="Archivo, Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="-1" fill="#FAFAF9">Billet</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 56" role="img" aria-label="Billet">
+  <defs><clipPath id="c"><rect x="6" y="8" width="40" height="40" rx="11"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect x="6" y="8" width="40" height="40" fill="#374151"/>
+    <polygon points="34,8 46,8 46,20" fill="#F59E0B"/>
+  </g>
+  <text x="26" y="38" font-family="Archivo, Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
+  <text x="58" y="39" font-family="Archivo, Arial, Helvetica, sans-serif" font-size="33" font-weight="800" letter-spacing="-1.2" fill="#FAFAF9">Billet</text>
 </svg>

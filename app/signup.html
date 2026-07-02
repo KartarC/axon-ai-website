@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.svg"/>
+  <title>Start your free trial — Billet</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../styles.css"/>
+  <link rel="stylesheet" href="./_shared/app.css"/>
+  <style>
+    body { background:var(--gray-50); display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .su-wrap { width:100%; max-width:420px; padding:24px; }
+    .su-logo { display:flex; align-items:center; gap:9px; justify-content:center; margin-bottom:24px; text-decoration:none; }
+    .su-logo-text { font-size:1.15rem; font-weight:900; color:var(--gray-900); letter-spacing:-.03em; }
+    .su-card { background:var(--white); border:var(--border); border-radius:var(--radius-xl); padding:32px; box-shadow:var(--shadow); }
+    .su-title { font-size:1.35rem; font-weight:900; color:var(--gray-900); margin:0 0 4px; letter-spacing:-.03em; }
+    .su-sub { font-size:.875rem; color:var(--gray-500); margin:0 0 8px; }
+    .su-trialbar { display:flex; align-items:center; gap:8px; font-size:.78rem; font-weight:700; color:#15803D; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:100px; padding:6px 12px; margin:0 0 20px; }
+    .su-field { margin-bottom:14px; }
+    .su-row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:420px){ .su-row2{ grid-template-columns:1fr } }
+    .su-label { display:block; font-size:.78rem; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+    .su-input {
+      width:100%; box-sizing:border-box; padding:11px 14px;
+      border:1.5px solid var(--gray-200); border-radius:var(--radius);
+      font-size:.9rem; font-family:inherit; color:var(--gray-900);
+      outline:none; transition:border-color var(--t);
+    }
+    .su-input:focus { border-color:var(--blue-700); box-shadow:0 0 0 3px rgba(29,78,216,.1); }
+    .su-hint { font-size:.72rem; color:var(--gray-400); margin-top:4px; }
+    .su-btn {
+      width:100%; padding:13px; margin-top:8px;
+      background:var(--gray-900); color:var(--white);
+      border:none; border-radius:var(--radius);
+      font-size:.95rem; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:all var(--t);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .su-btn:hover:not(:disabled) { background:var(--gray-700); }
+    .su-btn:disabled { opacity:.6; cursor:not-allowed; }
+    .su-error { margin-top:14px; padding:10px 14px; background:#FFF1F2; border:1px solid #FECACA; border-radius:var(--radius); font-size:.82rem; color:#DC2626; display:none; }
+    .su-legal { font-size:.72rem; color:var(--gray-400); margin-top:14px; text-align:center; line-height:1.5; }
+    .su-footer { text-align:center; margin-top:20px; font-size:.82rem; color:var(--gray-500); }
+    .su-footer a { color:var(--blue-700); font-weight:600; }
+  </style>
+</head>
+<body>
+<div class="su-wrap">
+  <a href="/" class="su-logo">
+    <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
+      <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
+      <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
+    </svg>
+    <span class="su-logo-text">Billet</span>
+  </a>
+
+  <div class="su-card">
+    <h1 class="su-title">Start your free trial</h1>
+    <p class="su-sub">Your whole shop, running in a few minutes.</p>
+    <div class="su-trialbar">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-6" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      14 days free · all 9 tools · unlimited users · no card
+    </div>
+
+    <form id="signupForm" novalidate>
+      <div class="su-field">
+        <label class="su-label" for="shop">Shop name</label>
+        <input class="su-input" id="shop" name="shop" placeholder="Precision Metalworks Ltd." required/>
+      </div>
+      <div class="su-field">
+        <label class="su-label" for="name">Your name</label>
+        <input class="su-input" id="name" name="name" autocomplete="name" placeholder="Jamie Chen" required/>
+      </div>
+      <div class="su-field">
+        <label class="su-label" for="email">Work email</label>
+        <input class="su-input" type="email" id="email" name="email" autocomplete="email" placeholder="you@yourshop.com" required/>
+      </div>
+      <div class="su-field">
+        <label class="su-label" for="password">Password</label>
+        <input class="su-input" type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" required/>
+        <div class="su-hint">Minimum 8 characters.</div>
+      </div>
+      <button class="su-btn" type="submit" id="signupBtn">
+        Create my shop
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="su-error" id="signupError"></div>
+    </form>
+    <div class="su-legal">By creating a shop you agree to our terms. Your trial converts to a paid plan only if you choose to continue.</div>
+  </div>
+
+  <div class="su-footer">
+    Already have a shop? <a href="/app/login.html">Sign in</a>
+  </div>
+</div>
+
+<script type="module" src="./signup.js"></script>
+</body>
+</html>

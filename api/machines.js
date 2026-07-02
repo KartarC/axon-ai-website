@@ -20,16 +20,19 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin','manager'], res)) return
-    const { name, machine_no, type = 'mill', sort_order = 0 } = req.body || {}
+    const { name, machine_no, type = 'mill', sort_order = 0, hourly_rate } = req.body || {}
     if (!name) return res.status(400).json({ error: 'name required' })
-    const [machine] = await sb('POST', 'machines', { account_id: ctx.account.id, name: name.trim(), machine_no: machine_no || null, type, sort_order })
+    const [machine] = await sb('POST', 'machines', {
+      account_id: ctx.account.id, name: name.trim(), machine_no: machine_no || null, type, sort_order,
+      hourly_rate: hourly_rate != null && hourly_rate !== '' ? parseFloat(hourly_rate) : null,
+    })
     return res.status(201).json(machine)
   }
 
   if (req.method === 'PATCH') {
     if (!id) return res.status(400).json({ error: 'id required' })
     if (!requireRole(ctx, ['owner','admin','manager'], res)) return
-    const allowed = ['name','machine_no','type','status','sort_order']
+    const allowed = ['name','machine_no','type','status','sort_order','hourly_rate']
     const updates = {}
     for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }
     const [updated] = await sb('PATCH', `machines?id=eq.${id}&account_id=eq.${ctx.account.id}`, updates)

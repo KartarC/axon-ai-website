@@ -67,7 +67,7 @@ async function validateToken(token) {
 async function getAccountContext(userId) {
   const rows = await sb(
     'GET',
-    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone)`,
+    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone,trial_ends_at,onboarded)`,
   )
   if (!rows || rows.length === 0) return null
   const row = rows[0]

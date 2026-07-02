@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.svg"/>
+  <title>Set up your shop — Billet</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../styles.css"/>
+  <link rel="stylesheet" href="./_shared/app.css"/>
+  <style>
+    body { background:var(--gray-50); min-height:100vh; }
+    .ob-wrap { max-width:640px; margin:0 auto; padding:40px 24px 60px; }
+    .ob-logo { display:flex; align-items:center; gap:9px; justify-content:center; margin-bottom:22px; text-decoration:none; }
+    .ob-logo-text { font-size:1.1rem; font-weight:900; color:var(--gray-900); letter-spacing:-.03em; }
+    .ob-steps { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:24px; }
+    .ob-dot { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:800; background:var(--gray-200); color:var(--gray-500); }
+    .ob-dot.active { background:var(--gray-900); color:#fff; }
+    .ob-dot.done { background:#16A34A; color:#fff; }
+    .ob-line { width:36px; height:2px; background:var(--gray-200); }
+    .ob-card { background:var(--white); border:var(--border); border-radius:var(--radius-xl); padding:30px; box-shadow:var(--shadow); }
+    .ob-h { font-size:1.3rem; font-weight:900; color:var(--gray-900); letter-spacing:-.03em; margin:0 0 4px; }
+    .ob-p { font-size:.875rem; color:var(--gray-500); margin:0 0 20px; }
+    .ob-presets { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+    .ob-chip { display:inline-flex; align-items:center; gap:6px; padding:8px 13px; border:1.5px solid var(--gray-200); background:var(--white); border-radius:100px; font-size:.8rem; font-weight:600; color:var(--gray-700); cursor:pointer; font-family:inherit; transition:all .15s; }
+    .ob-chip:hover { border-color:var(--blue-700); background:var(--blue-50); color:var(--blue-700); }
+    .mrow { display:grid; grid-template-columns:1fr 130px 90px 32px; gap:8px; align-items:center; margin-bottom:8px; }
+    .mrow input, .mrow select { padding:9px 11px; border:1.5px solid var(--gray-200); border-radius:var(--radius); font-size:.85rem; font-family:inherit; outline:none; width:100%; box-sizing:border-box; }
+    .mrow input:focus, .mrow select:focus { border-color:var(--blue-700); }
+    .mrow .rm { border:none; background:var(--gray-100); border-radius:6px; height:34px; cursor:pointer; color:var(--gray-500); font-size:1rem; }
+    .mrow-head { font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--gray-400); }
+    .ob-empty { font-size:.82rem; color:var(--gray-400); padding:14px 0; text-align:center; }
+    .ob-actions { display:flex; justify-content:space-between; align-items:center; margin-top:22px; gap:12px; }
+    .ob-btn { padding:12px 22px; background:var(--gray-900); color:#fff; border:none; border-radius:var(--radius); font-size:.9rem; font-weight:700; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:8px; }
+    .ob-btn:hover:not(:disabled){ background:var(--gray-700); } .ob-btn:disabled{ opacity:.6; cursor:not-allowed; }
+    .ob-link { background:none; border:none; color:var(--gray-500); font-size:.85rem; font-weight:600; cursor:pointer; font-family:inherit; }
+    .ob-link:hover { color:var(--gray-900); }
+    .ob-choice { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:8px; }
+    @media(max-width:520px){ .ob-choice{ grid-template-columns:1fr } .mrow{ grid-template-columns:1fr 1fr; } }
+    .ob-opt { border:1.5px solid var(--gray-200); border-radius:var(--radius-lg); padding:18px; cursor:pointer; transition:all .15s; text-align:left; background:var(--white); font-family:inherit; }
+    .ob-opt:hover { border-color:var(--blue-700); background:var(--blue-50); }
+    .ob-opt-t { font-size:.95rem; font-weight:800; color:var(--gray-900); margin-bottom:4px; }
+    .ob-opt-d { font-size:.8rem; color:var(--gray-500); line-height:1.5; }
+    .ob-done { text-align:center; padding:16px 0; }
+    .ob-done-ic { width:56px; height:56px; border-radius:50%; background:#F0FDF4; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+    .ob-err { margin-top:12px; padding:10px 14px; background:#FFF1F2; border:1px solid #FECACA; border-radius:var(--radius); font-size:.82rem; color:#DC2626; display:none; }
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+<div class="ob-wrap">
+  <a href="/" class="ob-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
+      <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
+      <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
+    </svg>
+    <span class="ob-logo-text">Billet</span>
+  </a>
+
+  <div class="ob-steps">
+    <div class="ob-dot active" id="dot1">1</div><div class="ob-line"></div>
+    <div class="ob-dot" id="dot2">2</div><div class="ob-line"></div>
+    <div class="ob-dot" id="dot3">3</div>
+  </div>
+
+  <div class="ob-card">
+    <!-- STEP 1 — machines -->
+    <section data-step="1">
+      <h1 class="ob-h">Add your machines</h1>
+      <p class="ob-p">Tap a preset to add it, then set the shop rate. You can change these anytime.</p>
+      <div class="ob-presets" id="presets"></div>
+      <div class="mrow mrow-head"><span>Machine name</span><span>Type</span><span>$/hr</span><span></span></div>
+      <div id="machineRows"></div>
+      <div class="ob-empty hidden" id="mEmpty">No machines yet — add one above, or skip for now.</div>
+      <div class="ob-err" id="err1"></div>
+      <div class="ob-actions">
+        <button class="ob-link" id="skip1">Skip for now</button>
+        <button class="ob-btn" id="next1">Continue <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </section>
+
+    <!-- STEP 2 — first data -->
+    <section data-step="2" class="hidden">
+      <h1 class="ob-h">Get your board going</h1>
+      <p class="ob-p">Start with a few sample jobs so you can see the tools working, or jump straight in with your own.</p>
+      <div class="ob-choice">
+        <button class="ob-opt" id="optSample">
+          <div class="ob-opt-t">Load sample jobs</div>
+          <div class="ob-opt-d">Adds 3 example jobs to your production board so nothing is empty on day one.</div>
+        </button>
+        <button class="ob-opt" id="optBlank">
+          <div class="ob-opt-t">Start empty</div>
+          <div class="ob-opt-d">Skip the samples — you'll add your real jobs from the board.</div>
+        </button>
+      </div>
+      <div class="ob-err" id="err2"></div>
+      <div class="ob-actions">
+        <button class="ob-link" id="back2">Back</button>
+        <span></span>
+      </div>
+    </section>
+
+    <!-- STEP 3 — done -->
+    <section data-step="3" class="hidden">
+      <div class="ob-done">
+        <div class="ob-done-ic"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M6 13l5 5 9-11" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h1 class="ob-h">Your shop is ready</h1>
+        <p class="ob-p" id="doneMsg">You're all set. Your 14-day trial has every tool unlocked.</p>
+        <button class="ob-btn" id="finish" style="margin:0 auto">Go to my dashboard <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script type="module" src="./onboarding.js"></script>
+</body>
+</html>

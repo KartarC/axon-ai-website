@@ -8,7 +8,10 @@ export function renderNav(activePath = '') {
 
   const modules = getVisibleModules(session.account)
   const accountName = session.account.name
-  const planLabel = { starter:'Starter', growth:'Growth', suite:'Suite' }[session.account.plan] || session.account.plan
+  const planLabel = { starter:'Starter', growth:'Growth', suite:'Suite', trial:'Trial' }[session.account.plan] || session.account.plan
+  const trialDaysLeft = (session.account.plan === 'trial' && session.account.trial_ends_at)
+    ? Math.max(0, Math.ceil((new Date(session.account.trial_ends_at) - new Date()) / 86400000))
+    : null
 
   const navEl = document.getElementById('app-nav')
   if (!navEl) return
@@ -16,16 +19,10 @@ export function renderNav(activePath = '') {
   navEl.innerHTML = `
     <div class="anav-inner">
       <a href="/app/dashboard.html" class="anav-logo">
-        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-          <circle cx="14" cy="14" r="3" fill="#1D4ED8"/>
-          <circle cx="4" cy="8" r="2" fill="#1D4ED8" opacity=".4"/>
-          <circle cx="24" cy="8" r="2" fill="#1D4ED8" opacity=".4"/>
-          <circle cx="4" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
-          <circle cx="24" cy="20" r="2" fill="#1D4ED8" opacity=".4"/>
-          <line x1="14" y1="11" x2="5.2" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
-          <line x1="14" y1="11" x2="22.8" y2="9.2" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
-          <line x1="14" y1="17" x2="5.2" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
-          <line x1="14" y1="17" x2="22.8" y2="18.8" stroke="#1D4ED8" stroke-width="1.1" opacity=".5"/>
+        <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
+          <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
+          <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
         </svg>
         <span class="anav-logo-text">Billet</span>
       </a>
@@ -34,6 +31,7 @@ export function renderNav(activePath = '') {
         <span class="anav-shop-name">${escHtml(accountName)}</span>
         <span class="anav-plan-badge">${planLabel}</span>
       </div>
+      ${trialDaysLeft !== null ? `<a href="/pricing.html" style="display:block;margin:0 14px 12px;padding:8px 12px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;font-size:.72rem;font-weight:700;color:#C2410C;text-decoration:none;text-align:center">${trialDaysLeft} day${trialDaysLeft===1?'':'s'} left in trial · Upgrade</a>` : ''}
 
       <ul class="anav-modules">
         <li class="anav-section-label">Modules</li>

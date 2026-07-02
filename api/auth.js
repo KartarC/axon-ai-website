@@ -96,5 +96,80 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, auto_login: true, access_token: loginData.access_token, refresh_token: loginData.refresh_token })
   }
 
+  // ── POST signup: self-serve shop signup (14-day trial, all modules) ──
+  if (action === 'signup' && req.method === 'POST') {
+    const { shop_name, full_name, email, password } = req.body || {}
+    if (!shop_name || !email || !password) return res.status(400).json({ error: 'Shop name, email, and password are required' })
+    if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' })
+    const cleanEmail = String(email).trim().toLowerCase()
+
+    // Reject if a user with this email already exists
+    try {
+      const usersRes = await fetch(
+        `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(cleanEmail)}`,
+        { headers: { Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, apikey: process.env.SUPABASE_SERVICE_ROLE_KEY } }
+      )
+      const usersData = await usersRes.json()
+      if (usersData?.users?.some(u => u.email === cleanEmail))
+        return res.status(409).json({ error: 'An account with this email already exists — try signing in.' })
+    } catch (_) { /* continue; user creation will fail on true duplicates */ }
+
+    // Create the auth user (auto-confirmed — frictionless trial)
+    let authUserId
+    try {
+      const newUser = await authAdmin('POST', 'users', { email: cleanEmail, password, email_confirm: true })
+      authUserId = newUser.id
+    } catch (err) {
+      console.error('Signup auth user error:', err)
+      return res.status(500).json({ error: 'Could not create your login. Try a different email.' })
+    }
+
+    // Create the shop workspace: 14-day trial, all 9 modules unlocked
+    const ALL_MODULES = ['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
+    const slug = String(shop_name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,32) + '-' + Math.random().toString(36).slice(2,7)
+    const trialEnds = new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0,10)
+    let account
+    try {
+      const rows = await sb('POST', 'accounts', {
+        name: shop_name, slug, plan: 'trial', modules: ALL_MODULES,
+        status: 'active', trial_ends_at: trialEnds, onboarded: false,
+      })
+      account = rows[0]
+    } catch (err) {
+      console.error('Signup account error:', err)
+      return res.status(500).json({ error: 'Could not create your shop workspace.' })
+    }
+
+    // Link the signer as owner
+    await sb('POST', 'account_users', {
+      account_id: account.id, user_id: authUserId, role: 'owner',
+      full_name: full_name || cleanEmail.split('@')[0],
+    })
+
+    // Auto-login so the client can go straight into onboarding
+    const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: process.env.SUPABASE_SERVICE_ROLE_KEY },
+      body: JSON.stringify({ email: cleanEmail, password }),
+    })
+    const loginData = await loginRes.json()
+    if (!loginRes.ok) return res.status(201).json({ ok: true, auto_login: false })
+
+    return res.status(201).json({
+      ok: true, auto_login: true,
+      access_token: loginData.access_token, refresh_token: loginData.refresh_token,
+      account, role: 'owner', full_name: full_name || cleanEmail.split('@')[0],
+      user: { id: authUserId, email: cleanEmail },
+    })
+  }
+
+  // ── POST complete-onboarding: mark the shop as onboarded ──
+  if (action === 'complete-onboarding' && req.method === 'POST') {
+    const ctx = await requireAuth(req, res)
+    if (!ctx) return
+    await sb('PATCH', `accounts?id=eq.${ctx.account.id}`, { onboarded: true })
+    return res.status(200).json({ ok: true })
+  }
+
   res.status(400).json({ error: 'Unknown action or method' })
 }
