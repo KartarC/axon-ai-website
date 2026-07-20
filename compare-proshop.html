@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.svg"/>
+  <title>Billet vs ProShop ERP — An Honest Comparison for Machine Shops</title>
+  <meta name="description" content="ProShop alternative for small machine shops: Billet vs ProShop ERP compared on price, implementation time, per-user cost, and AI. Flat pricing from $99/mo, running in minutes — no months-long implementation."/>
+  <link rel="canonical" href="https://billet.app/compare-proshop.html"/>
+  <meta property="og:title" content="Billet vs ProShop ERP — An Honest Comparison"/>
+  <meta property="og:description" content="ProShop is built for regulated aerospace shops. Billet is built for everyone else. Compare price, setup time, and what your shop actually needs."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .cmp-hero{padding:120px 0 56px;background:linear-gradient(180deg,var(--gray-50),#fff)}
+    .cmp-hero h1{font-size:clamp(1.9rem,4.5vw,3rem);font-weight:900;letter-spacing:-.04em;line-height:1.1;margin:0 0 16px}
+    .cmp-hero .sub{font-size:1.05rem;color:var(--gray-500);max-width:640px;line-height:1.7}
+    .fair-note{max-width:820px;margin:26px 0 0;padding:16px 20px;background:var(--blue-50);border:1px solid var(--blue-100);border-radius:14px;font-size:.9rem;color:var(--gray-700);line-height:1.7}
+    .cmp-table-wrap{overflow-x:auto;border:1px solid var(--gray-200);border-radius:16px;background:#fff}
+    table.cmp{width:100%;border-collapse:collapse;min-width:680px}
+    .cmp th{padding:14px 18px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);background:var(--gray-50);border-bottom:1px solid var(--gray-200);text-align:left}
+    .cmp th.bcol{color:var(--blue-700);background:rgba(29,78,216,.04)}
+    .cmp td{padding:15px 18px;font-size:.9rem;border-bottom:1px solid var(--gray-100);vertical-align:top;line-height:1.55}
+    .cmp tr:last-child td{border-bottom:none}
+    .cmp td.bcol{background:rgba(29,78,216,.03);font-weight:600}
+    .cmp td .win{color:#15803D;font-weight:700}
+    .cmp td .lose{color:var(--gray-400)}
+    .pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+    @media(max-width:760px){.pick-grid{grid-template-columns:1fr}}
+    .pick{border:1.5px solid var(--gray-200);border-radius:16px;padding:26px;background:#fff}
+    .pick--billet{border-color:var(--blue-700)}
+    .pick h3{font-size:1.05rem;font-weight:800;margin:0 0 12px}
+    .pick ul{margin:0;padding:0 0 0 2px;list-style:none}
+    .pick li{font-size:.9rem;color:var(--gray-600);padding:5px 0;line-height:1.6}
+    .pick li::before{content:"→ ";font-weight:800;color:var(--gray-300)}
+    .pick--billet li::before{color:var(--blue-700)}
+    .shots{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media(max-width:760px){.shots{grid-template-columns:1fr}}
+    .shot{border:1px solid var(--gray-200);border-radius:14px;overflow:hidden;background:#fff}
+    .shot img{width:100%;display:block}
+    .shot .cap{padding:12px 16px;font-size:.82rem;color:var(--gray-500);border-top:1px solid var(--gray-100)}
+    .shot .cap strong{color:var(--gray-900)}
+    .cta-band{background:var(--gray-900);border-radius:20px;padding:44px;text-align:center;color:#fff}
+    .cta-band h2{font-size:1.6rem;font-weight:900;letter-spacing:-.03em;margin:0 0 10px}
+    .cta-band p{color:rgba(255,255,255,.65);margin:0 0 22px;font-size:.95rem}
+    .src-note{font-size:.75rem;color:var(--gray-400);margin-top:14px;line-height:1.6}
+  </style>
+</head>
+<body>
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
+        <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
+        <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
+      </svg>
+      <span class="logo-text">Billet</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="website-design.html">Website Design</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="/app/signup.html" class="nav-cta-btn">Start Free Trial <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </div>
+</nav>
+
+<section class="cmp-hero">
+  <div class="container">
+    <div class="section-eyebrow">Comparison</div>
+    <h1>Billet vs ProShop ERP</h1>
+    <p class="sub">Both are built for machine shops. They're built for <em>different</em> machine shops. Here's an honest breakdown so you pick the right one — even if it isn't us.</p>
+    <div class="fair-note">
+      <strong>The short version:</strong> ProShop is a deep ERP/QMS/MES suite built for regulated aerospace, defense, and medical shops — AS9100 audits, CUI hosting, government contracts. If that's your world, it's a strong product. <strong>Billet is for the other shops</strong> — small commercial machine &amp; fab shops that need scheduling, costing, and travelers running <em>this week</em>, at a price that doesn't scale with headcount.
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Side by side</h2>
+    <div class="cmp-table-wrap">
+      <table class="cmp">
+        <thead><tr><th style="width:24%"></th><th class="bcol" style="width:38%">Billet</th><th style="width:38%">ProShop ERP</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Built for</strong></td><td class="bcol">Small commercial CNC &amp; fab shops (3–50 people)</td><td>Regulated precision shops — aerospace, defense, medical, space</td></tr>
+          <tr><td><strong>Pricing</strong></td><td class="bcol"><span class="win">Flat $99–$349/mo</span> — unlimited users, price never changes as you hire</td><td>Quote-based; published estimates start around $500–$715+/mo and scale with total employee count*</td></tr>
+          <tr><td><strong>Getting started</strong></td><td class="bcol"><span class="win">Self-serve — sign up, add machines, running in minutes.</span> 14-day free trial, no card</td><td>Sales process + guided implementation, typically weeks to months</td></tr>
+          <tr><td><strong>Scope</strong></td><td class="bcol">9 focused shop tools — production board, job costing, traveler, CRM, maintenance, inventory, CoC, portal, outside services. Pick 1, 3, or all</td><td>Full ERP + QMS + MES suite — deeply integrated, all-in adoption</td></tr>
+          <tr><td><strong>AI</strong></td><td class="bcol">AI quoting from your own job history + automatic over-budget alerts, included in Growth &amp; Suite</td><td>"Chip" AI assistant across quoting, scheduling, and execution</td></tr>
+          <tr><td><strong>Compliance</strong></td><td class="bcol"><span class="lose">Not built for AS9100 / ITAR / CUI work</span> — we're honest about this</td><td><span class="win">AS9100/ISO-friendly QMS, FedRAMP Moderate-assessed hosting for CUI</span></td></tr>
+          <tr><td><strong>Shop-floor access</strong></td><td class="bcol">QR-code operator view — any phone, zero logins to manage</td><td>Operator terminals within the suite</td></tr>
+          <tr><td><strong>Commitment</strong></td><td class="bcol">Monthly, cancel anytime</td><td>Annual agreements typical for ERP implementations</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src-note">* Competitor details from ProShop's public materials and third-party listings (Capterra, SelectHub, GetApp) as of July 2026. Pricing is quote-based and varies — confirm current numbers with ProShop directly. ProShop is a trademark of its owner; Billet is not affiliated with ProShop.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--gray-50)">
+  <div class="container">
+    <h2 class="section-title">Which one is right for you?</h2>
+    <div class="pick-grid">
+      <div class="pick">
+        <h3>Choose ProShop if…</h3>
+        <ul>
+          <li>You hold government or defense contracts with CUI requirements</li>
+          <li>You're pursuing or maintaining AS9100 / ISO certification</li>
+          <li>You have an implementation budget and months of runway</li>
+          <li>You want one deeply-integrated ERP for everything</li>
+        </ul>
+      </div>
+      <div class="pick pick--billet">
+        <h3>Choose Billet if…</h3>
+        <ul>
+          <li>You're a commercial job shop — no CUI, no audit requirements</li>
+          <li>You want to replace the whiteboard and spreadsheets <strong>this week</strong></li>
+          <li>You'd rather pay $99–$349 flat than $500+ scaling with headcount</li>
+          <li>You want to start with one tool (scheduling or costing) and grow</li>
+          <li>You run fab equipment too — lasers, waterjets, press brakes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow">Real product</div>
+    <h2 class="section-title">This is Billet, running a real shop</h2>
+    <p class="section-p">Live screenshots from a working shop on Billet — not mockups.</p>
+    <div class="shots">
+      <div class="shot"><img src="assets/screens/production-board.png" alt="Billet production board — drag-and-drop kanban of jobs across queue, setup, running, and complete columns" loading="lazy"/><div class="cap"><strong>Production Board.</strong> Every job, every machine, one screen. Budget-risk dots warn before a job loses money.</div></div>
+      <div class="shot"><img src="assets/screens/job-costing.png" alt="Billet job costing dashboard with quoted vs actual costs, margins, and over-budget alerts" loading="lazy"/><div class="cap"><strong>Job Costing.</strong> Quoted vs actual per job, live margins, and automatic at-risk / over-budget flags.</div></div>
+      <div class="shot"><img src="assets/screens/shop-traveler.png" alt="Billet digital shop traveler with step-by-step work order, dimension recording, and flagged issue" loading="lazy"/><div class="cap"><strong>Digital Traveler.</strong> Paperless work orders with dimension capture and issue flags — full audit trail.</div></div>
+      <div class="shot"><img src="assets/screens/job-detail-budget.png" alt="Billet job detail page showing an over-budget alert banner and full cost breakdown" loading="lazy"/><div class="cap"><strong>Over-budget alerts.</strong> The moment costs cross your quote, everyone who needs to know, knows.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>See it with your own jobs — free for 14 days</h2>
+      <p>Self-serve signup. All 9 tools. Unlimited users. No card, no sales call, no implementation.</p>
+      <a href="/app/signup.html" class="btn-primary" style="background:#F59E0B;color:#1F2937;font-weight:800">Start Free Trial</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="/" class="logo footer-logo"><svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none">
+        <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
+        <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
+        <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
+      </svg><span class="logo-text">Billet</span></a>
+      <p>Software tools for CNC machine shops and metal fabrication.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col"><div class="footer-col-title">Plans</div><a href="packages/starter/">Starter — $99/mo</a><a href="packages/growth/">Growth — $199/mo</a><a href="packages/suite/">Shop Suite — $349/mo</a></div>
+      <div class="footer-col"><div class="footer-col-title">Compare</div><a href="compare-proshop.html">Billet vs ProShop</a><a href="tools.html">All 9 Tools</a><a href="pricing.html">Pricing</a></div>
+    </div>
+  </div>
+  <div class="footer-bar container"><span>&copy; 2026 Billet Technologies Inc.</span><span>Built for the shop floor. Not the corner office.</span></div>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
