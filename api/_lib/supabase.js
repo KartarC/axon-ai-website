@@ -15,7 +15,7 @@ async function sb(method, path, body, extraHeaders = {}) {
     'Content-Type': 'application/json',
     ...extraHeaders,
   }
-  if (method === 'POST' || method === 'PUT') {
+  if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
     headers['Prefer'] = 'return=representation'
   }
   const res = await fetch(url, {
