@@ -15,5 +15,8 @@
     { "source": "/app/accept-invite", "destination": "/app/accept-invite.html" },
     { "source": "/app/axon-admin",    "destination": "/app/axon-admin/index.html" },
     { "source": "/app/operator/job",  "destination": "/app/operator/job.html" }
+  ],
+  "crons": [
+    { "path": "/api/billing?action=cron", "schedule": "0 13 * * *" }
   ]
 }

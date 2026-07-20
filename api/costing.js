@@ -7,6 +7,7 @@
 // POST ?action=quote              → set/update job quote
 // POST ?action=auto-log           → auto-log labor from completed board entry
 const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
+const { sendEmail, getOwnerEmail, overBudgetEmail } = require('./_lib/email')
 
 export default async function handler(req, res) {
   cors(res)
@@ -163,7 +164,8 @@ export default async function handler(req, res) {
     })
 
     // ── Check budget alert after insert ──────────────────────
-    // Return alert status so the UI can react immediately without a full reload
+    // Return alert status so the UI can react immediately without a full reload.
+    // If THIS entry pushed the job over the quoted price, email the owner once.
     let budget_alert = null
     try {
       const [jobQuote]   = await sb('GET', `job_quotes?job_id=eq.${jid}&account_id=eq.${ctx.account.id}`) || []
@@ -176,6 +178,20 @@ export default async function handler(req, res) {
         if (actualNow >= quoted)                               budget_alert = 'over'
         else if (targetCost > 0 && actualNow >= targetCost * 0.80) budget_alert = 'at_risk'
         else                                                   budget_alert = 'ok'
+
+        // Transition detection: over now, but wasn't before this entry
+        const entryTotal   = parseFloat(entry?.total_cost || 0)
+        const actualBefore = actualNow - entryTotal
+        if (budget_alert === 'over' && actualBefore < quoted && quoted > 0) {
+          const [job] = await sb('GET', `jobs?id=eq.${jid}&select=job_number,part_name`) || []
+          getOwnerEmail(ctx.account.id).then(email => {
+            if (email && job) {
+              const proto = req.headers['x-forwarded-proto'] || 'https'
+              const host  = req.headers['x-forwarded-host'] || req.headers.host
+              return sendEmail({ to: email, ...overBudgetEmail(ctx.account.name, job.job_number, job.part_name, actualNow, quoted, `${proto}://${host}`) })
+            }
+          }).catch(() => {})
+        }
       }
     } catch (_) { /* non-critical — don't fail the POST */ }
 

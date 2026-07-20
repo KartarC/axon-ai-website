@@ -31,7 +31,7 @@ export function renderNav(activePath = '') {
         <span class="anav-shop-name">${escHtml(accountName)}</span>
         <span class="anav-plan-badge">${planLabel}</span>
       </div>
-      ${trialDaysLeft !== null ? `<a href="/pricing.html" style="display:block;margin:0 14px 12px;padding:8px 12px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;font-size:.72rem;font-weight:700;color:#C2410C;text-decoration:none;text-align:center">${trialDaysLeft} day${trialDaysLeft===1?'':'s'} left in trial · Upgrade</a>` : ''}
+      ${trialDaysLeft !== null ? `<a href="/app/billing.html" style="display:block;margin:0 14px 12px;padding:8px 12px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;font-size:.72rem;font-weight:700;color:#C2410C;text-decoration:none;text-align:center">${trialDaysLeft} day${trialDaysLeft===1?'':'s'} left in trial · Upgrade</a>` : ''}
 
       <ul class="anav-modules">
         <li class="anav-section-label">Modules</li>

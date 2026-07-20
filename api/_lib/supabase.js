@@ -67,7 +67,7 @@ async function validateToken(token) {
 async function getAccountContext(userId) {
   const rows = await sb(
     'GET',
-    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone,trial_ends_at,onboarded)`,
+    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone,trial_ends_at,onboarded,stripe_customer_id)`,
   )
   if (!rows || rows.length === 0) return null
   const row = rows[0]
@@ -79,8 +79,9 @@ async function getAccountContext(userId) {
 }
 
 // ── Require auth middleware ───────────────────────────────────
-// Returns { user, role, account } or sends 401 and returns null
-async function requireAuth(req, res) {
+// Returns { user, role, account } or sends 401/402/403 and returns null.
+// opts.allowExpired: skip the trial-expiry gate (used by billing + session endpoints)
+async function requireAuth(req, res, opts = {}) {
   const authHeader = req.headers['authorization'] || ''
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
   if (!token) {
@@ -100,6 +101,14 @@ async function requireAuth(req, res) {
   if (ctx.account.status !== 'active') {
     res.status(403).json({ error: 'Account suspended' })
     return null
+  }
+  // Trial-expiry gate: expired trials get 402 so the frontend routes to billing
+  if (!opts.allowExpired && ctx.account.plan === 'trial' && ctx.account.trial_ends_at) {
+    const today = new Date().toISOString().slice(0, 10)
+    if (ctx.account.trial_ends_at < today) {
+      res.status(402).json({ error: 'Your free trial has ended — choose a plan to continue.', code: 'trial_expired' })
+      return null
+    }
   }
   return { user, role: ctx.role, account: ctx.account, full_name: ctx.full_name }
 }

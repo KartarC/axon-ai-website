@@ -209,10 +209,11 @@ function render() {
           <div class="cs-target">Target: ${targetMgn}% · ${actualMargin >= targetMgn ? 'On track' : (actualMargin - targetMgn).toFixed(1) + '% below target'}</div>
           ` : ''}
 
-          <div style="margin-top:16px">
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
             <button class="btn-app btn-app--secondary" style="width:100%" id="setQuoteSideBtn">
               ${quote ? 'Edit Quote' : 'Set Quote'}
             </button>
+            ${quote ? `<a class="btn-app btn-app--primary" style="width:100%;text-align:center;text-decoration:none;box-sizing:border-box" href="/app/quote-doc.html?id=${jobId}" target="_blank">Quote PDF ↗</a>` : ''}
           </div>
         </div>
       </div>

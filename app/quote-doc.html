@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.svg"/>
+  <title>Quote — Billet</title>
+  <meta name="robots" content="noindex"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing:border-box; }
+    body { font-family:Inter,Arial,sans-serif; background:#F3F4F6; margin:0; color:#111827; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; background:#1F2937; }
+    .toolbar .t { color:#FAFAF9; font-weight:800; font-size:.9rem; }
+    .toolbar button { padding:9px 18px; background:#F59E0B; color:#1F2937; border:none; border-radius:8px; font-weight:800; font-size:.85rem; cursor:pointer; font-family:inherit; }
+    .sheet { background:#fff; max-width:800px; margin:28px auto; padding:56px 60px; box-shadow:0 4px 24px rgba(0,0,0,.08); min-height:900px; }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:44px; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-mark { width:40px; height:40px; border-radius:10px; background:#1F2937; position:relative; display:flex; align-items:center; justify-content:center; color:#FAFAF9; font-weight:800; font-size:22px; }
+    .brand-mark::after { content:""; position:absolute; top:3px; right:3px; width:9px; height:9px; border-radius:3px; background:#F59E0B; }
+    .shop-name { font-size:1.15rem; font-weight:900; letter-spacing:-.02em; }
+    .doc-type { text-align:right; }
+    .doc-type h1 { margin:0; font-size:1.9rem; font-weight:900; letter-spacing:-.04em; color:#1F2937; }
+    .doc-meta { font-size:.78rem; color:#6B7280; margin-top:4px; }
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:36px; }
+    .col h3 { font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#9CA3AF; margin:0 0 8px; }
+    .col p { margin:0; font-size:.9rem; line-height:1.7; }
+    table { width:100%; border-collapse:collapse; margin-bottom:8px; }
+    th { text-align:left; font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#9CA3AF; padding:10px 12px; border-bottom:2px solid #1F2937; }
+    th.num, td.num { text-align:right; }
+    td { padding:14px 12px; font-size:.9rem; border-bottom:1px solid #E5E7EB; }
+    .total-row td { border-bottom:none; padding-top:18px; }
+    .total-label { font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#6B7280; }
+    .total-val { font-size:1.5rem; font-weight:900; letter-spacing:-.03em; }
+    .terms { margin-top:44px; padding-top:20px; border-top:1px solid #E5E7EB; }
+    .terms h3 { font-size:.68rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#9CA3AF; margin:0 0 8px; }
+    .terms p { font-size:.78rem; color:#6B7280; line-height:1.7; margin:0; }
+    .foot { margin-top:40px; font-size:.72rem; color:#9CA3AF; text-align:center; }
+    #loading { text-align:center; padding:80px 20px; color:#6B7280; }
+    @media print {
+      body { background:#fff; }
+      .toolbar { display:none; }
+      .sheet { box-shadow:none; margin:0; max-width:none; padding:24px 8px; min-height:0; }
+    }
+  </style>
+</head>
+<body>
+<div class="toolbar">
+  <span class="t">Quote preview</span>
+  <button onclick="window.print()">Download PDF / Print</button>
+</div>
+
+<div id="loading">Loading quote…</div>
+<div class="sheet" id="sheet" style="display:none">
+  <div class="head">
+    <div class="brand">
+      <div class="brand-mark">B</div>
+      <div>
+        <div class="shop-name" id="shopName"></div>
+        <div style="font-size:.72rem;color:#9CA3AF">Powered by Billet</div>
+      </div>
+    </div>
+    <div class="doc-type">
+      <h1>QUOTE</h1>
+      <div class="doc-meta" id="docMeta"></div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col"><h3>Prepared for</h3><p id="custBlock"></p></div>
+    <div class="col"><h3>Quote details</h3><p id="detailBlock"></p></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Price</th></tr></thead>
+    <tbody>
+      <tr>
+        <td id="lineDesc"></td>
+        <td class="num" id="lineQty"></td>
+        <td class="num" id="linePrice" style="font-weight:700"></td>
+      </tr>
+      <tr class="total-row">
+        <td></td>
+        <td class="num total-label">Total</td>
+        <td class="num total-val" id="totalVal"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="terms">
+    <h3>Terms</h3>
+    <p id="termsText">Quote valid for 30 days from the date above. Lead time confirmed on order. Material price fluctuations may require re-quote after validity period. Payment terms: Net 30 upon approval.</p>
+  </div>
+
+  <div class="foot" id="footLine"></div>
+</div>
+
+<script type="module">
+  import { requireAuth } from './_shared/auth.js'
+  import { apiGet }      from './_shared/api.js'
+
+  const session = requireAuth()
+  const jobId = new URLSearchParams(location.search).get('id')
+  if (!jobId) { document.getElementById('loading').textContent = 'No job id provided.'; throw new Error('no id') }
+
+  Promise.all([
+    apiGet(`/api/jobs?id=${jobId}`),
+    apiGet(`/api/costing?job_id=${jobId}`),
+  ]).then(([job, costing]) => {
+    const quote = costing?.quote
+    if (!quote) { document.getElementById('loading').textContent = 'This job has no quote set yet — set one in Job Costing first.'; return }
+
+    const today = new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' })
+    document.getElementById('shopName').textContent = session.account.name
+    document.getElementById('docMeta').textContent  = `${job.job_number} · ${today}`
+    document.getElementById('custBlock').innerHTML  =
+      `<strong>${esc(job.customers?.name || 'Customer')}</strong>`
+    document.getElementById('detailBlock').innerHTML =
+      `Part: <strong>${esc(job.part_name)}</strong><br/>` +
+      `${job.material ? 'Material: ' + esc(job.material) + '<br/>' : ''}` +
+      `${job.revision ? 'Rev: ' + esc(job.revision) + '<br/>' : ''}` +
+      `${job.due_date ? 'Target delivery: ' + job.due_date : ''}`
+    document.getElementById('lineDesc').innerHTML =
+      `<strong>${esc(job.part_name)}</strong>${job.material ? `<br/><span style="color:#6B7280;font-size:.8rem">${esc(job.material)}${job.revision ? ' · Rev ' + esc(job.revision) : ''}</span>` : ''}`
+    document.getElementById('lineQty').textContent   = job.quantity || 1
+    const price = parseFloat(quote.quoted_price || 0)
+    document.getElementById('linePrice').textContent = fmt$(price)
+    document.getElementById('totalVal').textContent  = fmt$(price)
+    if (quote.notes) document.getElementById('termsText').textContent = quote.notes + ' — Quote valid 30 days. Payment terms: Net 30.'
+    document.getElementById('footLine').textContent  = `${session.account.name} · Generated with Billet · ${today}`
+
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('sheet').style.display = 'block'
+    document.title = `Quote ${job.job_number} — ${session.account.name}`
+  }).catch(e => {
+    document.getElementById('loading').textContent = 'Failed to load: ' + e.message
+  })
+
+  function fmt$(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+  function esc(s)  { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+</script>
+</body>
+</html>

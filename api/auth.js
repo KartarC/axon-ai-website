@@ -3,6 +3,7 @@
 // GET  ?action=accept-invite&token=X → validate invite token, return invite info
 // POST ?action=accept-invite    → { token, password } → activate account
 const { sb, authAdmin, requireAuth, cors } = require('./_lib/supabase')
+const { sendEmail, welcomeEmail } = require('./_lib/email')
 
 export default async function handler(req, res) {
   cors(res)
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
 
   // ── GET session ──────────────────────────────────────────
   if (action === 'session' && req.method === 'GET') {
-    const ctx = await requireAuth(req, res)
+    const ctx = await requireAuth(req, res, { allowExpired: true })
     if (!ctx) return
     return res.status(200).json({
       user:      { id: ctx.user.id, email: ctx.user.email },
@@ -145,6 +146,11 @@ export default async function handler(req, res) {
       account_id: account.id, user_id: authUserId, role: 'owner',
       full_name: full_name || cleanEmail.split('@')[0],
     })
+
+    // Welcome email (fire-and-forget — never blocks signup)
+    const proto = req.headers['x-forwarded-proto'] || 'https'
+    const host  = req.headers['x-forwarded-host'] || req.headers.host
+    sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, `${proto}://${host}`) }).catch(() => {})
 
     // Auto-login so the client can go straight into onboarding
     const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {

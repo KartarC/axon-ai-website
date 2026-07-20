@@ -48,6 +48,12 @@ export async function apiFetch(path, options = {}) {
     return apiFetch(path, options)
   }
 
+  // Trial expired — route to the upgrade page (unless we're already on it)
+  if (res.status === 402 && !location.pathname.includes('/app/billing')) {
+    window.location.href = '/app/billing.html?expired=1'
+    throw new Error('Trial expired')
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: 'Request failed' }))
     throw new Error(err.error || `HTTP ${res.status}`)
