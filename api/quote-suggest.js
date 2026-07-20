@@ -96,9 +96,10 @@ export default async function handler(req, res) {
 
   const targetFam = materialFamily(target.material)
   const priced = (history || [])
-    .filter(j => j.job_quotes?.length && j.job_number !== target.job_number)
+    .map(j => ({ ...j, _q: Array.isArray(j.job_quotes) ? j.job_quotes[0] : j.job_quotes }))
+    .filter(j => j._q && j.job_number !== target.job_number)
     .map(j => {
-      const quoted = parseFloat(j.job_quotes[0].quoted_price || 0)
+      const quoted = parseFloat(j._q.quoted_price || 0)
       const actual = (j.job_cost_entries || []).reduce((s, e) => s + parseFloat(e.total_cost || 0), 0)
       return {
         job_number: j.job_number, part_name: j.part_name, material: j.material,

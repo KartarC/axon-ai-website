@@ -31,8 +31,10 @@ export default async function handler(req, res) {
     const result = (jobs || []).map(j => {
       const entries  = j.job_cost_entries || []
       const actual   = entries.reduce((sum, e) => sum + parseFloat(e.total_cost || 0), 0)
-      const quoted   = parseFloat(j.job_quotes?.[0]?.quoted_price || 0)
-      const target   = parseFloat(j.job_quotes?.[0]?.target_margin || 0)
+      // PostgREST returns one-to-one embeds as an object (unique FK), older shapes as array — handle both
+      const jq       = Array.isArray(j.job_quotes) ? j.job_quotes[0] : j.job_quotes
+      const quoted   = parseFloat(jq?.quoted_price || 0)
+      const target   = parseFloat(jq?.target_margin || 0)
       const variance = quoted > 0 ? actual - (quoted * (1 - target / 100)) : null
       const margin   = quoted > 0 ? ((quoted - actual) / quoted) * 100 : null
 
@@ -42,7 +44,7 @@ export default async function handler(req, res) {
       // 'at_risk' = actual ≥ 80% of cost allowance (still completable, but manager should act)
       // 'over'    = actual ≥ quoted price (costs have consumed the entire quote)
       let budget_alert = null
-      if (j.job_quotes?.length && !['complete','cancelled','shipped'].includes(j.status)) {
+      if (jq && !['complete','cancelled','shipped'].includes(j.status)) {
         const targetCost = quoted * (1 - target / 100)   // max allowed cost
         if (actual >= quoted)                              budget_alert = 'over'
         else if (targetCost > 0 && actual >= targetCost * 0.80) budget_alert = 'at_risk'
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
         variance:      variance !== null ? Math.round(variance * 100) / 100 : null,
         margin_pct:    margin   !== null ? Math.round(margin   * 100) / 100 : null,
         target_margin: target,
-        has_quote:     !!j.job_quotes?.length,
+        has_quote:     !!jq,
         budget_alert,
         cost_by_type: {
           labor:    entries.filter(e => e.type === 'labor').reduce((s, e) => s + parseFloat(e.total_cost || 0), 0),
