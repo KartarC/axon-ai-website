@@ -1,0 +1,81 @@
+/* Hallmark · theme rollout: custom "machined amber-on-graphite" system
+ * Loaded AFTER styles.css on all marketing pages — retokens the legacy
+ * stylesheet to the homepage's design system without structural rewrites.
+ * display: Archivo · body: Inter · mono: IBM Plex Mono */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+:root{
+  /* accent: blue → machined amber (text-safe deep bronze for links,
+     bright amber reserved for solid CTA fills) */
+  --blue-50:  #FBF4E4;
+  --blue-100: #F6E7C4;
+  --blue-600: #935F06;
+  --blue-700: #7E5205;
+  --blue-800: #664204;
+
+  /* graphite alignment */
+  --gray-800: #1F2937;
+  --gray-900: #171E29;
+
+  /* machined = squarer corners, quieter elevation */
+  --radius-sm: 3px;
+  --radius:    5px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --shadow-sm: 0 1px 2px rgba(23,30,41,.06);
+  --shadow:    0 2px 8px rgba(23,30,41,.07);
+  --shadow-lg: 0 6px 24px rgba(23,30,41,.09);
+
+  --accent-solid: #F59E0B; /* bright amber — fills only, never body text */
+  --font-display: 'Archivo', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', Consolas, monospace;
+}
+
+/* ── display type ── */
+h1, h2, h3,
+.hero h1, .section-h2, .section-title, .page-title,
+.pkg-price, .price, .cmp-hero h1{
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+h1, .hero h1, .cmp-hero h1{ font-weight: 900; }
+.logo-text, .footer-logo-text, .wordmark{
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -.03em;
+}
+
+/* ── mono spec details ── */
+.section-eyebrow, .feature-card-tag, .hero-pill, .hm-label,
+.plan-badge, .cs-label, .footer-bar{
+  font-family: var(--font-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: .72rem;
+  font-weight: 500;
+}
+.section-eyebrow{ color: var(--blue-700); }
+
+/* ── CTAs: bright amber fill + graphite ink ── */
+.btn-primary, .nav-cta-btn, .pricing-btn--primary, .btn-submit, .mobile-cta{
+  background: var(--accent-solid) !important;
+  color: #1F2937 !important;
+  border: none;
+  font-weight: 700;
+}
+.btn-primary:hover, .nav-cta-btn:hover, .pricing-btn--primary:hover, .btn-submit:hover{
+  background: #B45309 !important;
+  color: #FAFAF9 !important;
+}
+
+/* ── footer: colophon voice ── */
+.footer-bar{ color: var(--gray-500); }
+.footer-bar span{ letter-spacing: .06em; }
+
+/* ── kill decorative gradients where legacy styles used them ── */
+.hero, .cta-section, .cmp-hero{ background-image: none; }
+
+/* featured-plan badge: green → bright amber (accent family only) */
+.plan-badge--new{ background: var(--accent-solid); color: #1F2937; }

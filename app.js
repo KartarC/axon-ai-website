@@ -1,19 +1,21 @@
 /* ── NAV SCROLL ─────────────────────────────────────────────────────────── */
 const nav = document.getElementById('nav')
-window.addEventListener('scroll', () => {
+if (nav) window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 10)
 }, { passive: true })
 
 /* ── MOBILE NAV ─────────────────────────────────────────────────────────── */
 const hamburger = document.getElementById('hamburger')
 const mobileMenu = document.getElementById('mobileMenu')
-hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'))
-window.closeMobile = () => mobileMenu.classList.remove('open')
-document.addEventListener('click', (e) => {
-  if (!nav.contains(e.target) && !mobileMenu.contains(e.target)) {
-    mobileMenu.classList.remove('open')
-  }
-})
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'))
+  document.addEventListener('click', (e) => {
+    if (nav && !nav.contains(e.target) && !mobileMenu.contains(e.target)) {
+      mobileMenu.classList.remove('open')
+    }
+  })
+}
+window.closeMobile = () => mobileMenu && mobileMenu.classList.remove('open')
 
 /* ── SCROLL REVEAL ──────────────────────────────────────────────────────── */
 const revealObs = new IntersectionObserver((entries) => {
