@@ -3,768 +3,347 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  
   <link rel="icon" href="/favicon.svg"/>
-<title>Pricing — Billet for CNC & Fabrication Shops</title>
-  <meta name="description" content="Simple flat-rate pricing for machine shops. Starter $99/mo, Growth $199/mo, Shop Suite $349/mo — all plans include unlimited users. No per-user fees. No contracts. 30-day ROI guarantee."/>
-  <link rel="canonical" href="https://billet.app/pricing"/>
+
+  <title>Pricing — Billet for CNC &amp; Fabrication Shops</title>
+  <meta name="description" content="Flat-rate machine shop software: $99/mo for one module, $199 for three, $349 for all nine. Unlimited users on every plan. No setup fees, no per-user pricing, cancel anytime."/>
+  <link rel="canonical" href="https://billet.app/pricing.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://billet.app/pricing.html"/>
+  <meta property="og:title" content="Billet Pricing — Flat Rate, Unlimited Users"/>
+  <meta property="og:description" content="$99 / $199 / $349 per month flat. Unlimited users on every plan. No setup fees, cancel anytime."/>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="billet-theme.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+
   <style>
-    /* ── PRICING PAGE ─────────────────────────────────────────────────────── */
-    .pricing-hero{
-      padding:calc(62px + clamp(36px,5vw,64px)) 0 clamp(36px,4vw,56px);
-      background:var(--gray-50);border-bottom:var(--border);
-    }
-    .pricing-hero-inner{max-width:640px}
-    .pricing-hero h1{font-size:clamp(2rem,4vw,2.9rem);font-weight:900;letter-spacing:-.04em;color:var(--gray-900);margin-bottom:14px;line-height:1.1}
-    .pricing-hero p{font-size:1.05rem;color:var(--gray-500);line-height:1.75;margin-bottom:0}
+  /* Hallmark · macrostructure: Workbench (pricing spec-sheet) · nav: N9 · footer: Ft4
+   * theme: custom "machined amber-on-graphite" — shared system with index.html
+   * display: Archivo · body: Inter · mono: IBM Plex Mono */
 
-    /* guarantee strip */
-    .guarantee-strip{
-      display:flex;align-items:center;justify-content:center;gap:28px;
-      background:var(--white);border-bottom:var(--border);
-      padding:14px 24px;flex-wrap:wrap;
-    }
-    .guarantee-pill{
-      display:flex;align-items:center;gap:7px;
-      font-size:.82rem;font-weight:600;color:var(--gray-600);
-    }
-    .guarantee-pill svg{color:var(--blue-700)}
+  :root{
+    --paper:      oklch(97.5% 0.004 85);
+    --paper-2:    oklch(99% 0.002 85);
+    --paper-deep: oklch(24% 0.028 258);
+    --paper-deep-2: oklch(29% 0.03 258);
+    --ink:        oklch(27% 0.03 258);
+    --ink-2:      oklch(45% 0.02 258);
+    --ink-3:      oklch(62% 0.014 258);
+    --ink-inv:    oklch(97% 0.004 85);
+    --ink-inv-2:  oklch(78% 0.01 258);
+    --accent:     oklch(75% 0.155 70);
+    --accent-deep:oklch(58% 0.14 60);
+    --accent-text:oklch(50% 0.12 65);
+    --rule:       oklch(88% 0.008 85);
+    --rule-dark:  oklch(38% 0.025 258);
+    --font-display:'Archivo',Arial,sans-serif;
+    --font-body:'Inter',Arial,sans-serif;
+    --font-mono:'IBM Plex Mono',Consolas,monospace;
+    --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+    --space-6:1.5rem; --space-8:2rem; --space-12:3rem; --space-16:4rem; --space-24:6rem;
+    --text-body:1rem; --text-sm:.875rem; --text-mono:.72rem;
+    --text-display:clamp(2.2rem,5.4vw,3.8rem);
+    --text-h2:clamp(1.5rem,3vw,2.1rem);
+    --ease-out:cubic-bezier(.22,1,.36,1);
+    --dur:180ms;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{overflow-x:clip}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:var(--text-body);line-height:1.65;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;height:auto;display:block}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(1rem,4vw,1.5rem)}
+  .mono{font-family:var(--font-mono);font-size:var(--text-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 
-    /* plans grid */
-    .plans-section{padding:clamp(40px,5vw,72px) 0}
-    .plans-grid{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:16px;
-      align-items:start;
-    }
-    .plan-card{
-      border:var(--border);border-radius:var(--radius-xl);
-      background:var(--white);padding:28px 24px;
-      position:relative;
-    }
-    .plan-card--featured{
-      border-color:var(--blue-700);
-      box-shadow:0 0 0 3px rgba(29,78,216,.08), var(--shadow-lg);
-    }
-    .plan-card--website{
-      background:var(--gray-50);
-    }
-    .plan-badge{
-      position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-      background:var(--blue-700);color:var(--white);
-      font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;
-      padding:4px 14px;border-radius:100px;white-space:nowrap;
-    }
-    .plan-badge--new{background:#059669}
-    .plan-name{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:8px}
-    .plan-price{font-size:2.4rem;font-weight:900;letter-spacing:-.05em;color:var(--gray-900);line-height:1;margin-bottom:4px}
-    .plan-price span{font-size:1rem;font-weight:500;color:var(--gray-400);letter-spacing:0}
-    .plan-price--small{font-size:1.7rem}
-    .plan-users{font-size:.8rem;color:var(--gray-400);margin-bottom:16px;font-weight:500}
-    .plan-tagline{font-size:.9rem;color:var(--gray-600);line-height:1.6;margin-bottom:20px;min-height:56px}
-    .plan-divider{height:1px;background:var(--gray-100);margin-bottom:16px}
-    .plan-includes-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:10px}
-    .plan-features{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
-    .plan-feature{display:flex;align-items:flex-start;gap:9px;font-size:.85rem;color:var(--gray-600);line-height:1.5}
-    .plan-feature svg{flex-shrink:0;margin-top:2px;color:var(--blue-700)}
-    .plan-feature--gray svg{color:var(--gray-300)}
-    .plan-btn{
-      display:block;text-align:center;
-      padding:12px;border-radius:var(--radius);
-      font-size:.9rem;font-weight:700;
-      transition:all var(--t);
-    }
-    .plan-btn--primary{background:var(--blue-700);color:var(--white)}
-    .plan-btn--primary:hover{background:var(--blue-800)}
-    .plan-btn--outline{border:2px solid var(--gray-200);color:var(--gray-700)}
-    .plan-btn--outline:hover{border-color:var(--gray-400);color:var(--gray-900)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:var(--space-6) 0;border-bottom:1px solid var(--rule)}
+  .nav-brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+  .nav-brand .wordmark{font-family:var(--font-display);font-weight:900;font-size:1.2rem;letter-spacing:-.03em;color:var(--ink)}
+  .nav-right{display:flex;align-items:center;gap:var(--space-6)}
+  .nav-link{font-size:var(--text-sm);font-weight:500;color:var(--ink-2);text-decoration:none;padding:.6rem 0}
+  .nav-link:hover{color:var(--ink)}
+  .nav-link[aria-current]{color:var(--ink);border-bottom:2px solid var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:var(--text-sm);text-decoration:none;border:none;cursor:pointer;padding:.72rem 1.25rem;min-height:44px;background:var(--ink);color:var(--ink-inv);transition:background var(--dur) var(--ease-out),transform var(--dur) var(--ease-out)}
+  .btn:hover{background:var(--paper-deep-2)}
+  .btn:active{transform:translateY(1px)}
+  .btn--accent{background:var(--accent);color:var(--ink)}
+  .btn--accent:hover{background:var(--accent-deep);color:var(--ink-inv)}
+  @media(max-width:680px){.nav-link{display:none}}
 
-    /* module picker box */
-    .plan-module-note{
-      background:var(--blue-50);border:1px solid var(--blue-100);
-      border-radius:var(--radius);padding:10px 12px;
-      font-size:.78rem;color:var(--blue-700);font-weight:600;
-      margin-bottom:16px;line-height:1.5;
-    }
+  .hero{padding-block:var(--space-16) var(--space-8)}
+  .hero h1{font-family:var(--font-display);font-weight:900;font-size:var(--text-display);line-height:1.04;letter-spacing:-.035em;margin:0 0 var(--space-4);max-width:18ch;overflow-wrap:anywhere;min-width:0}
+  .hero p{max-width:56ch;color:var(--ink-2);margin:0 0 var(--space-6)}
+  .specline{border-block:1px solid var(--rule);padding:var(--space-3) 0;display:flex;gap:var(--space-8);flex-wrap:wrap}
+  .specline span{white-space:nowrap}
 
-    /* comparison table */
-    .compare-section{
-      padding:clamp(32px,4vw,56px) 0;
-      background:var(--gray-50);border-top:var(--border);border-bottom:var(--border);
-    }
-    .compare-wrap{overflow-x:auto}
-    .compare-table{
-      width:100%;border-collapse:collapse;
-      min-width:640px;
-    }
-    .compare-table th{
-      padding:12px 16px;font-size:.72rem;font-weight:800;
-      text-transform:uppercase;letter-spacing:.08em;
-      text-align:center;color:var(--gray-400);
-      border-bottom:var(--border);background:var(--gray-50);
-      white-space:nowrap;
-    }
-    .compare-table th:first-child{text-align:left;color:var(--gray-600);font-size:.75rem}
-    .compare-table th.col-featured{color:var(--blue-700);background:var(--blue-50)}
-    .compare-table td{
-      padding:13px 16px;font-size:.875rem;
-      border-bottom:1px solid var(--gray-100);
-      text-align:center;vertical-align:middle;
-    }
-    .compare-table td:first-child{text-align:left;color:var(--gray-700);font-weight:500}
-    .compare-table tr:last-child td{border-bottom:none}
-    .compare-table tr:hover td{background:#FAFAFA}
-    .compare-table td.col-featured{background:rgba(29,78,216,.03)}
-    .ct-group-header td{
-      background:var(--gray-50);font-size:.7rem;font-weight:800;
-      text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);
-      padding:10px 16px;border-top:var(--border);
-    }
-    .ct-group-header td:not(:first-child){background:var(--gray-50)}
-    .ct-group-header td.col-featured{background:rgba(29,78,216,.04)}
-    .check{color:#16A34A}
-    .dash{color:var(--gray-300)}
-    .partial{color:#D97706}
+  .plans{padding-block:var(--space-12) var(--space-8);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-6)}
+  @media(max-width:860px){.plans{grid-template-columns:minmax(0,1fr)}}
+  .plan{border:1px solid var(--rule);background:var(--paper-2);padding:var(--space-6);display:flex;flex-direction:column}
+  .plan--hi{border:1px solid var(--accent-deep);outline:1px solid var(--accent-deep)}
+  .plan-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:var(--space-3);margin-bottom:var(--space-4);gap:var(--space-2);flex-wrap:wrap}
+  .plan .price{font-family:var(--font-display);font-weight:900;font-size:2.6rem;letter-spacing:-.03em;line-height:1;margin:0 0 var(--space-1)}
+  .plan .price span{font-size:1rem;font-weight:600;color:var(--ink-3)}
+  .plan .for{color:var(--ink-2);font-size:var(--text-sm);margin:0 0 var(--space-4)}
+  .plan ul{margin:0 0 var(--space-6);padding:0;list-style:none;font-size:var(--text-sm);color:var(--ink-2);flex:1}
+  .plan li{padding:.42rem 0;border-bottom:1px solid var(--rule)}
+  .plan li::before{content:"— ";color:var(--accent-deep);font-weight:700}
+  .plan .btn{justify-content:center}
 
-    /* how it stacks up */
-    .compete-section{padding:clamp(40px,5vw,64px) 0}
-    .compete-table-wrap{overflow-x:auto;margin-top:28px}
-    .compete-table{width:100%;border-collapse:collapse;min-width:560px}
-    .compete-table th{
-      padding:10px 16px;font-size:.7rem;font-weight:800;
-      text-transform:uppercase;letter-spacing:.08em;
-      color:var(--gray-400);border-bottom:var(--border);
-      text-align:left;background:var(--gray-50);
-    }
-    .compete-table td{
-      padding:13px 16px;font-size:.875rem;color:var(--gray-600);
-      border-bottom:1px solid var(--gray-100);vertical-align:middle;
-    }
-    .compete-table td:first-child{font-weight:700;color:var(--gray-900)}
-    .compete-table td.billet-col{color:var(--blue-700);font-weight:700;background:rgba(29,78,216,.03)}
-    .compete-table td.billet-col-head{color:var(--blue-700);font-weight:800;background:rgba(29,78,216,.04)}
-    .compete-note{font-size:.75rem;color:var(--gray-400);margin-top:8px}
+  .svc{border:1px solid var(--rule);border-left:4px solid var(--accent);background:var(--paper-2);padding:var(--space-6);display:flex;justify-content:space-between;gap:var(--space-6);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-16)}
+  .svc h2{font-family:var(--font-display);font-weight:800;font-size:1.25rem;letter-spacing:-.02em;margin:0 0 var(--space-1)}
+  .svc p{margin:0;color:var(--ink-2);font-size:var(--text-sm);max-width:52ch}
+  .svc .price{font-family:var(--font-display);font-weight:900;font-size:1.9rem;white-space:nowrap}
+  .svc .price span{font-size:.9rem;font-weight:600;color:var(--ink-3)}
+  .quiet-link{font-size:var(--text-sm);font-weight:600;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--accent);padding:.4rem 0;white-space:nowrap}
+  .quiet-link:hover{border-bottom-color:var(--ink)}
 
-    /* pricing faq */
-    .pricing-faq{padding:clamp(40px,5vw,64px) 0}
-    .pricing-faq .faq-list{max-width:720px;margin:0 auto}
+  .sect{padding-block:0 var(--space-16)}
+  .sect h2{font-family:var(--font-display);font-weight:800;font-size:var(--text-h2);letter-spacing:-.025em;margin:0 0 var(--space-2)}
+  .sect .sub{color:var(--ink-2);margin:0 0 var(--space-6);max-width:62ch}
+  .tblwrap{overflow-x:auto;border:1px solid var(--rule);background:var(--paper-2)}
+  table{width:100%;border-collapse:collapse;min-width:640px}
+  th{font-family:var(--font-mono);font-size:var(--text-mono);letter-spacing:.07em;text-transform:uppercase;font-weight:600;color:var(--ink-2);text-align:left;padding:.8rem 1rem;border-bottom:2px solid var(--ink)}
+  th.c,td.c{text-align:center}
+  td{padding:.7rem 1rem;font-size:var(--text-sm);border-bottom:1px solid var(--rule);color:var(--ink-2)}
+  td:first-child{color:var(--ink);font-weight:500}
+  tr.grp td{font-family:var(--font-mono);font-size:var(--text-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);background:var(--paper);padding-top:1.1rem}
+  td .y{color:var(--accent-deep);font-weight:700}
+  td .n{color:var(--ink-3)}
+  th.hi,td.hi{background:oklch(96% 0.03 80)}
+  td.win{font-weight:700;color:var(--accent-text)}
+  .fine{font-size:.75rem;color:var(--ink-3);margin-top:var(--space-3);line-height:1.6;max-width:76ch}
 
-    @media(max-width:1024px){.plans-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:600px){.plans-grid{grid-template-columns:1fr};.guarantee-strip{gap:14px}}
+  .faq{padding-block:0 var(--space-16)}
+  .faq h2{font-family:var(--font-display);font-weight:800;font-size:var(--text-h2);letter-spacing:-.025em;margin:0 0 var(--space-6)}
+  .faq details{border-top:1px solid var(--rule)}
+  .faq details:last-of-type{border-bottom:1px solid var(--rule)}
+  .faq summary{cursor:pointer;font-weight:600;padding:var(--space-4) 0;list-style:none;display:flex;justify-content:space-between;gap:var(--space-4);min-height:44px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--font-mono);color:var(--accent-deep);font-size:1.1rem}
+  .faq details[open] summary::after{content:"–"}
+  .faq details p{margin:0 0 var(--space-4);color:var(--ink-2);font-size:var(--text-sm);max-width:70ch}
+
+  .close{padding-block:0 var(--space-24)}
+  .close .inner{border-top:2px solid var(--ink);padding-top:var(--space-12)}
+  .close h2{font-family:var(--font-display);font-weight:900;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin:0 0 var(--space-4);max-width:24ch}
+  .close p{color:var(--ink-2);margin:0 0 var(--space-8);max-width:52ch}
+  .ctas{display:flex;align-items:center;gap:var(--space-6);flex-wrap:wrap}
+
+  .foot{background:var(--paper-deep);color:var(--ink-inv-2);padding:var(--space-8) 0}
+  .foot .grid{display:flex;justify-content:space-between;gap:var(--space-8);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-mono);letter-spacing:.06em}
+  .foot a{color:var(--ink-inv-2);text-decoration:none}
+  .foot a:hover{color:var(--accent)}
+  .foot .cols{display:flex;gap:var(--space-6);flex-wrap:wrap}
+  .foot .line{margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--rule-dark);display:flex;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-mono);letter-spacing:.06em}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{transition-duration:.01ms !important;animation:none !important}
+  }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="logo" aria-label="Billet homepage">
-      <svg class="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+<header class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a href="/" class="nav-brand" aria-label="Billet home">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
         <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
         <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
         <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
       </svg>
-      <span class="logo-text">Billet</span>
+      <span class="wordmark">Billet</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="pricing.html" style="color:var(--gray-900);font-weight:700">Pricing</a></li>
-      <li><a href="website-design.html">Website Design</a></li>
-      <li><a href="index.html#faq">FAQ</a></li>
-    </ul>
-    <div class="nav-ctas">
-      <a href="index.html#demo" class="nav-link-btn">Book Demo</a>
-      <a href="index.html#demo" class="nav-cta-btn">Get Started
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
+    <div class="nav-right">
+      <a class="nav-link" href="tools.html">Tools</a>
+      <a class="nav-link" href="pricing.html" aria-current="page">Pricing</a>
+      <a class="nav-link" href="compare-proshop.html">vs ProShop</a>
+      <a class="btn btn--accent" href="/app/signup.html">Start free trial</a>
     </div>
-    <button class="hamburger" id="hamburger" aria-label="Open navigation menu">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <line x1="2" y1="6"  x2="20" y2="6"  stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <line x1="2" y1="11" x2="20" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <line x1="2" y1="16" x2="20" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>
-    </button>
-  </div>
-</nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="tools.html"          onclick="closeMobile()">Tools</a>
-  <a href="pricing.html"        onclick="closeMobile()">Pricing</a>
-  <a href="website-design.html" onclick="closeMobile()">Website Design</a>
-  <a href="index.html#faq"      onclick="closeMobile()">FAQ</a>
-  <a href="index.html#demo"     onclick="closeMobile()" class="mobile-cta">Get Started</a>
-</div>
+  </nav>
+</header>
 
-<!-- HERO -->
-<div class="pricing-hero">
-  <div class="container pricing-hero-inner">
-    <div class="section-eyebrow">Pricing</div>
-    <h1>One flat rate.<br/>Unlimited users.</h1>
-    <p>No per-user fees. No setup fees. No long-term contracts. Pick the modules your shop needs and be running today. Every plan includes the same unlimited-user access and same-day setup.</p>
-  </div>
-</div>
-
-<!-- GUARANTEE STRIP -->
-<div class="guarantee-strip">
-  <div class="guarantee-pill">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    30-day ROI guarantee — every plan
-  </div>
-  <div class="guarantee-pill">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    No contracts — cancel any time
-  </div>
-  <div class="guarantee-pill">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Unlimited users — every plan
-  </div>
-  <div class="guarantee-pill">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.2"/><polyline points="4.5,7.5 6.5,9.5 10.5,5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Same-day setup — no IT required
-  </div>
-</div>
-
-<!-- PLANS GRID -->
-<section class="plans-section">
-  <div class="container">
-    <div class="plans-grid">
-
-      <!-- STARTER -->
-      <div class="plan-card">
-        <div class="plan-name">Starter</div>
-        <div class="plan-price">$99<span>/mo</span></div>
-        <div class="plan-users">Unlimited users &amp; operators</div>
-        <div class="plan-tagline">One module. The one problem costing you the most — solved today.</div>
-        <div class="plan-module-note">
-          Pick any 1 module from all 9 available. Switch modules at any time.
-        </div>
-        <div class="plan-divider"></div>
-        <div class="plan-includes-label">Includes</div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Any 1 module of your choice
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Unlimited users and operators
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Same-day setup &amp; onboarding
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Email &amp; chat support
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            QuickBooks data export
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            30-day ROI guarantee
-          </div>
-        </div>
-        <a href="packages/starter/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See What's Included</a>
-        <a href="index.html#demo" class="plan-btn plan-btn--primary">Start With One Module</a>
-      </div>
-
-      <!-- GROWTH -->
-      <div class="plan-card plan-card--featured">
-        <div class="plan-badge plan-badge--new">Most Popular</div>
-        <div class="plan-name">Growth</div>
-        <div class="plan-price">$199<span>/mo</span></div>
-        <div class="plan-users">Unlimited users &amp; operators</div>
-        <div class="plan-tagline">Three connected modules. Eliminate your biggest operational bottlenecks together.</div>
-        <div class="plan-module-note">
-          Pick any 3 modules. Add or swap modules at any time.
-        </div>
-        <div class="plan-divider"></div>
-        <div class="plan-includes-label">Popular combos</div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Production Board + Job Costing + Shop Traveler
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Shop Traveler + CoC Generator + Customer Portal
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Job Costing + Shop CRM + Outside Services
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            All Starter features included
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Modules share data with each other
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Priority support response
-          </div>
-        </div>
-        <a href="packages/growth/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See What's Included</a>
-        <a href="index.html#demo" class="plan-btn plan-btn--primary">Pick Your 3 Modules</a>
-      </div>
-
-      <!-- SHOP SUITE -->
-      <div class="plan-card">
-        <div class="plan-badge">Best Value</div>
-        <div class="plan-name">Shop Suite</div>
-        <div class="plan-price">$349<span>/mo</span></div>
-        <div class="plan-users">Unlimited users &amp; operators</div>
-        <div class="plan-tagline">All 9 modules. Complete shop visibility from quote to shipping.</div>
-        <div class="plan-module-note">
-          Every module included. New modules added at no extra cost as they release.
-        </div>
-        <div class="plan-divider"></div>
-        <div class="plan-includes-label">All 9 modules</div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Digital Production Board
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Job Costing Feedback Loop
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Digital Shop Traveler
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Customer Status Portal
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Preventive Maintenance Tracker
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Material &amp; Remnant Inventory
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            CoC Generator
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Shop Floor CRM
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Outside Service Tracker
-          </div>
-        </div>
-        <a href="packages/suite/" class="plan-btn plan-btn--outline" style="margin-bottom:10px">See Full Details</a>
-        <a href="index.html#demo" class="plan-btn plan-btn--primary">Get the Full Suite</a>
-      </div>
-
-      <!-- WEBSITE DESIGN -->
-      <div class="plan-card plan-card--website">
-        <div class="plan-name">Website Design</div>
-        <div class="plan-price plan-price--small">From $1,500</div>
-        <div class="plan-users">One-time project fee</div>
-        <div class="plan-tagline">A professional website built for your shop. Delivered in 2–3 weeks.</div>
-        <div class="plan-divider"></div>
-        <div class="plan-includes-label">Includes</div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Custom design for your shop
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Mobile-first, fast-loading
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            SEO &amp; local search optimization
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            RFQ form → CRM integration
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Google Business profile setup
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Delivered in 2–3 weeks
-          </div>
-          <div class="plan-feature">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><polyline points="4,7 6,9 10,5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Optional $99/mo maintenance
-          </div>
-        </div>
-        <a href="website-design.html" class="plan-btn plan-btn--outline" style="margin-bottom:10px">Learn More</a>
-        <a href="index.html#demo" class="plan-btn plan-btn--primary">Get a Quote</a>
-      </div>
-
+<main>
+  <section class="hero wrap" aria-labelledby="h1">
+    <h1 id="h1">One flat rate. The whole shop uses it.</h1>
+    <p>Per-user ERP pricing punishes you for hiring. Billet is one price whether you're 3 people or 50 — pick the modules you need, be running today.</p>
+    <div class="specline mono" aria-label="Key terms">
+      <span>No setup fees</span>
+      <span>No per-user pricing</span>
+      <span>Cancel anytime</span>
+      <span>14-day free trial · no card</span>
     </div>
-    <p style="text-align:center;color:var(--gray-400);font-size:.82rem;margin-top:20px">
-      Software plans: no setup fees, no per-user fees, cancel any time. Annual billing available — save 2 months.
-    </p>
-  </div>
-</section>
+  </section>
 
-<!-- COMPARISON TABLE -->
-<section class="compare-section">
-  <div class="container">
-    <div class="section-eyebrow" style="justify-content:center">Compare Plans</div>
-    <h2 class="section-h2" style="text-align:center">What's in each plan</h2>
-    <div class="compare-wrap">
-      <table class="compare-table">
+  <section class="wrap" aria-label="Plans">
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-head"><span class="mono">Starter</span><span class="mono">Plan 01</span></div>
+        <div class="price">$99<span>/mo</span></div>
+        <p class="for">One module. The single problem costing you the most, solved this week.</p>
+        <ul>
+          <li>Any 1 of the 9 modules — switch anytime</li>
+          <li>Unlimited users &amp; operators</li>
+          <li>QR operator access, no logins to manage</li>
+          <li>Self-serve setup — running in minutes</li>
+          <li>Email &amp; chat support</li>
+          <li>30-day money-back guarantee</li>
+        </ul>
+        <a class="btn" href="/app/signup.html">Start with one module</a>
+      </div>
+      <div class="plan plan--hi">
+        <div class="plan-head"><span class="mono">Growth — most popular</span><span class="mono">Plan 02</span></div>
+        <div class="price">$199<span>/mo</span></div>
+        <p class="for">Three connected modules. Scheduling + costing + travelers is the usual pick.</p>
+        <ul>
+          <li>Any 3 modules — add or swap anytime</li>
+          <li>Modules share data with each other</li>
+          <li>AI quote suggestions &amp; over-budget alerts (with Job Costing)</li>
+          <li>Branded quote PDFs</li>
+          <li>Everything in Starter</li>
+          <li>Priority support response</li>
+        </ul>
+        <a class="btn btn--accent" href="/app/signup.html">Pick your 3 modules</a>
+      </div>
+      <div class="plan">
+        <div class="plan-head"><span class="mono">Suite</span><span class="mono">Plan 03</span></div>
+        <div class="price">$349<span>/mo</span></div>
+        <p class="for">All nine modules. Complete visibility from quote to shipped.</p>
+        <ul>
+          <li>Every module included</li>
+          <li>New modules included as they release</li>
+          <li>AI quote suggestions &amp; over-budget alerts</li>
+          <li>Everything in Growth</li>
+          <li>Priority support response</li>
+          <li>Still one flat price, unlimited users</li>
+        </ul>
+        <a class="btn" href="/app/signup.html">Get the full suite</a>
+      </div>
+    </div>
+
+    <div class="svc">
+      <div>
+        <h2>Website design for your shop</h2>
+        <p>A professional, SEO-optimized site with an RFQ form wired into your Billet CRM. Delivered in 2–3 weeks. Optional $99/mo maintenance.</p>
+      </div>
+      <div class="price">From $1,500<span> one-time</span></div>
+      <a class="quiet-link" href="website-design.html">See website design →</a>
+    </div>
+  </section>
+
+  <section class="sect wrap" aria-labelledby="matrix-h">
+    <h2 id="matrix-h">What's in each plan</h2>
+    <p class="sub">Every plan gets the same platform — the difference is how many modules are switched on.</p>
+    <div class="tblwrap">
+      <table>
         <thead>
-          <tr>
-            <th style="width:36%">Module / Feature</th>
-            <th>Starter<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">$99/mo</span></th>
-            <th class="col-featured">Growth<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--blue-600)">$199/mo</span></th>
-            <th>Shop Suite<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">$349/mo</span></th>
-            <th>Website Design<br/><span style="font-weight:500;font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--gray-500)">from $1,500</span></th>
-          </tr>
+          <tr><th style="width:40%">Module / feature</th><th class="c">Starter $99</th><th class="c hi">Growth $199</th><th class="c">Suite $349</th></tr>
         </thead>
         <tbody>
-          <!-- TOOLS -->
-          <tr class="ct-group-header"><td colspan="5">Shop Floor Modules</td></tr>
-          <tr>
-            <td>Digital Production Board</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Job Costing Feedback Loop</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Digital Shop Traveler</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Customer Status Portal</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Preventive Maintenance Tracker</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Material &amp; Remnant Inventory</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>CoC Generator</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Shop Floor CRM</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Outside Service Tracker</td>
-            <td class="partial">Pick 1</td>
-            <td class="col-featured partial">Pick 3</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-
-          <!-- PLATFORM -->
-          <tr class="ct-group-header"><td colspan="5">Platform</td></tr>
-          <tr>
-            <td>Unlimited users &amp; operators</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Works on tablet, phone, desktop</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Offline mode (syncs on reconnect)</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>QuickBooks data export</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>Cross-module data sharing</td>
-            <td><span class="dash">—</span></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-          <tr>
-            <td>New modules included as released</td>
-            <td><span class="dash">—</span></td>
-            <td class="col-featured"><span class="dash">—</span></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><span class="dash">—</span></td>
-          </tr>
-
-          <!-- SUPPORT -->
-          <tr class="ct-group-header"><td colspan="5">Support &amp; Setup</td></tr>
-          <tr>
-            <td>Same-day setup &amp; onboarding</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-          </tr>
-          <tr>
-            <td>Email &amp; chat support</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-          </tr>
-          <tr>
-            <td>Priority support</td>
-            <td><span class="dash">—</span></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-          </tr>
-          <tr>
-            <td>30-day ROI guarantee</td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td class="col-featured"><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-            <td><svg class="check" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#16A34A" stroke-width="1.2"/><polyline points="4.5,8 7,10.5 11.5,5.5" stroke="#16A34A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
-          </tr>
-
+          <tr class="grp"><td colspan="4">Shop floor modules</td></tr>
+          <tr><td>Production Board</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Job Costing</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Shop Traveler</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Customer Status Portal</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Preventive Maintenance Tracker</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Material &amp; Remnant Inventory</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>CoC Generator</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Shop Floor CRM</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Outside Service Tracker</td><td class="c">Pick 1</td><td class="c hi">Pick 3</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr class="grp"><td colspan="4">Platform</td></tr>
+          <tr><td>Unlimited users &amp; operators</td><td class="c"><span class="y">✓</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>QR operator access — any phone, no logins</td><td class="c"><span class="y">✓</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>AI quote suggestions + over-budget alerts</td><td class="c">With Job Costing</td><td class="c hi">With Job Costing</td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Cross-module data sharing</td><td class="c"><span class="n">—</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>New modules included as released</td><td class="c"><span class="n">—</span></td><td class="c hi"><span class="n">—</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr class="grp"><td colspan="4">Support &amp; setup</td></tr>
+          <tr><td>Self-serve setup — running in minutes</td><td class="c"><span class="y">✓</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Email &amp; chat support</td><td class="c"><span class="y">✓</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
+          <tr><td>Priority support response</td><td class="c"><span class="n">—</span></td><td class="c hi"><span class="y">✓</span></td><td class="c"><span class="y">✓</span></td></tr>
         </tbody>
       </table>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- HOW WE STACK UP -->
-<section class="compete-section">
-  <div class="container">
-    <div class="section-eyebrow">Market Context</div>
-    <h2 class="section-h2">What other software costs — and why it matters</h2>
-    <p class="section-p">Legacy ERPs charge per user. A 10-person shop pays $450–$2,000/month before they've implemented anything. Billet is flat-rate — your whole team uses it for one price.</p>
-    <div class="compete-table-wrap">
-      <table class="compete-table">
+  <section class="sect wrap" aria-labelledby="market-h">
+    <h2 id="market-h">Market context</h2>
+    <p class="sub">What comparable shop software costs as your team grows — and what Billet costs at any size.</p>
+    <div class="tblwrap">
+      <table>
         <thead>
-          <tr>
-            <th>Software</th>
-            <th>Model</th>
-            <th>5-Person Shop</th>
-            <th>10-Person Shop</th>
-            <th class="billet-col-head">Billet (Suite)</th>
-          </tr>
+          <tr><th>Software</th><th>Pricing model</th><th class="c">5-person shop</th><th class="c">10-person shop</th><th class="c hi">Billet Suite</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>JobBOSS² (ECi)</td>
-            <td>Per user/month</td>
-            <td>$225–$1,000/mo</td>
-            <td>$450–$2,000/mo</td>
-            <td class="billet-col">$349/mo</td>
-          </tr>
-          <tr>
-            <td>ProShop ERP</td>
-            <td>Named users, annual</td>
-            <td>$500–$715/mo</td>
-            <td>$500–$715/mo+</td>
-            <td class="billet-col">$349/mo</td>
-          </tr>
-          <tr>
-            <td>Fulcrum Pro</td>
-            <td>Monthly flat</td>
-            <td>$800+/mo</td>
-            <td>$800+/mo</td>
-            <td class="billet-col">$349/mo</td>
-          </tr>
-          <tr>
-            <td>MRPeasy</td>
-            <td>Per user/month</td>
-            <td>$245–$745/mo</td>
-            <td>$490–$1,490/mo</td>
-            <td class="billet-col">$349/mo</td>
-          </tr>
-          <tr>
-            <td>Fishbowl Manufacturing</td>
-            <td>Cloud subscription</td>
-            <td>$349–$399/mo (2 users)</td>
-            <td>$349–$399/mo + add-ons</td>
-            <td class="billet-col">$349/mo</td>
-          </tr>
+          <tr><td>JobBOSS² (ECi)</td><td>Per user / month</td><td class="c">$225–$1,000/mo</td><td class="c">$450–$2,000/mo</td><td class="c hi win">$349/mo</td></tr>
+          <tr><td>ProShop ERP</td><td>Named users, annual</td><td class="c">$500–$715/mo</td><td class="c">$500–$715+/mo</td><td class="c hi win">$349/mo</td></tr>
+          <tr><td>Fulcrum Pro</td><td>Monthly flat</td><td class="c">$800+/mo</td><td class="c">$800+/mo</td><td class="c hi win">$349/mo</td></tr>
+          <tr><td>MRPeasy</td><td>Per user / month</td><td class="c">$245–$745/mo</td><td class="c">$490–$1,490/mo</td><td class="c hi win">$349/mo</td></tr>
+          <tr><td>Fishbowl Manufacturing</td><td>Cloud subscription</td><td class="c">$349–$399/mo (2 users)</td><td class="c">Scales with users</td><td class="c hi win">$349/mo</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="compete-note">* Competitor pricing sourced from Capterra, G2, GetApp, and official pricing pages as of June 2026. Prices vary by plan and are shown as monthly estimates. Billet pricing is flat-rate, unlimited users.</p>
-  </div>
-</section>
+    <p class="fine">Competitor pricing from vendor pages and third-party listings (Capterra, G2, GetApp) as of June 2026. Plans and prices vary — confirm current numbers with each vendor. Shown to illustrate pricing models, not exact quotes. Choosing on compliance needs instead of price? <a href="compare-proshop.html" style="color:var(--accent-text)">Read our honest ProShop comparison.</a></p>
+  </section>
 
-<!-- PRICING FAQ -->
-<section class="pricing-faq section section--gray">
-  <div class="container">
-    <div class="section-eyebrow" style="justify-content:center">Pricing FAQ</div>
-    <h2 class="section-h2" style="text-align:center">Pricing questions, answered</h2>
-    <div class="faq-list pricing-faq" itemscope itemtype="https://schema.org/FAQPage">
+  <section class="faq wrap" aria-labelledby="faq-h">
+    <h2 id="faq-h">Pricing questions, answered</h2>
+    <details>
+      <summary>Can I really add unlimited users for one flat price?</summary>
+      <p>Yes. Every plan includes unlimited team accounts, and operators don't even need accounts — they work from QR codes on any phone. Your price never changes as you hire.</p>
+    </details>
+    <details>
+      <summary>On the Growth plan, which 3 modules should I pick?</summary>
+      <p>Most shops start with Production Board + Job Costing + Shop Traveler — scheduling, margins, and paperless work orders cover the daily pain. You can swap modules anytime, so the first pick isn't a commitment.</p>
+    </details>
+    <details>
+      <summary>What is the 30-day money-back guarantee?</summary>
+      <p>If Billet hasn't earned its keep in your first 30 days on a paid plan, email hello@billet.app and we refund that month. No forms, no argument.</p>
+    </details>
+    <details>
+      <summary>Can I upgrade from Starter to Growth or Suite later?</summary>
+      <p>Anytime, from the billing page in the app — the change takes effect immediately and your data carries over untouched. Downgrades work the same way.</p>
+    </details>
+    <details>
+      <summary>Is there a setup fee or implementation cost?</summary>
+      <p>No. Signup is self-serve: create your shop, add your machines with their hourly rates, and you're running — most shops are live inside 10 minutes. There is nothing to implement and nobody to schedule.</p>
+    </details>
+    <details>
+      <summary>Is annual billing available?</summary>
+      <p>Plans bill monthly by default. If you'd prefer annual billing (with two months free), email hello@billet.app and we'll set it up.</p>
+    </details>
+  </section>
 
-      <details class="faq-item" open itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">Can I really add unlimited users for one flat price?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">Yes, absolutely. Every plan — Starter, Growth, and Shop Suite — includes unlimited users and operators at no extra cost. Your CNC operator, your shipping clerk, your quality manager, and your shop owner can all use it simultaneously. We don't charge by seat because we think it's wrong to penalize shops for having more people using good software.</p>
-        </div>
-      </details>
-
-      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">On the Growth plan — which 3 modules should I pick?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">The most common combinations: (1) Production Board + Job Costing + Shop Traveler — for shops whose main pain is scheduling chaos, paper, and unknown margins. (2) Shop Traveler + CoC Generator + Customer Portal — for quality-focused shops doing aerospace or defense work. (3) Job Costing + Shop CRM + Outside Services — for shops focused on profitability and customer retention. We'll help you pick the right 3 on your demo call based on your shop's specific problems.</p>
-        </div>
-      </details>
-
-      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">What is the 30-day ROI guarantee?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">Before you start, we agree on a measurable outcome — hours saved per day, margin gap identified, downtime events prevented. At 30 days, we look at it together. If you can't point to clear, real ROI, we refund month one. No negotiation, no paperwork. We've paid it once. Every other shop has been able to point to ROI — usually within the first week.</p>
-        </div>
-      </details>
-
-      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">Can I upgrade from Starter to Growth or Suite later?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">Yes. Most shops start with Starter, prove the ROI on one module in the first month, then upgrade. Upgrading is instant — no new implementation, no downtime. Your data from the first module is already in the system and connects to the new modules immediately. You're only billed the difference for the remainder of your billing cycle.</p>
-        </div>
-      </details>
-
-      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">Is there a setup fee or implementation cost?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">No setup fee. No implementation cost. No consultants. We configure your shop — machines, op codes, customers, materials — in the same call where we show you the demo. Most shops are fully running on day one. This is specifically designed to be the opposite of a 6-month ERP implementation.</p>
-        </div>
-      </details>
-
-      <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <summary itemprop="name">Is annual billing available?</summary>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">Yes. Annual billing saves you 2 months — effectively getting 12 months for the price of 10. Most shops switch to annual once they've confirmed ROI in the first month or two. Monthly billing is available with no penalty to cancel at any time.</p>
-        </div>
-      </details>
-
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="demo" aria-labelledby="cta-heading">
-  <div class="container">
-    <div class="cta-box">
-      <div class="section-eyebrow">Get Started</div>
-      <h2 id="cta-heading">Tell us which problem hurts most</h2>
-      <p>Book a 30-minute call. We'll match you to the right plan and module based on your shop's biggest pain point — and have you running before the call ends.</p>
-      <form class="demo-form" id="demoForm" novalidate aria-label="Demo request form">
-        <div class="demo-form-grid">
-          <input type="text"  name="name"    placeholder="Your name"         class="form-input" required autocomplete="name"/>
-          <input type="email" name="email"   placeholder="Work email"        class="form-input" required autocomplete="email"/>
-          <input type="text"  name="company" placeholder="Shop name"         class="form-input" autocomplete="organization"/>
-          <input type="text"  name="volume"  placeholder="Biggest pain point" class="form-input"/>
-        </div>
-        <button type="submit" class="btn-submit">Book a 30-Minute Call</button>
-        <p class="form-note">No contracts. No obligation. We'll be honest if we're not the right fit.</p>
-      </form>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer" role="contentinfo">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <a href="index.html" class="logo footer-logo" aria-label="Billet">
-        <svg class="logo-icon" width="24" height="24" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
-        <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
-        <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
-      </svg>
-        <span class="logo-text">Billet</span>
-      </a>
-      <p>Software tools for CNC machine shops and metal fabrication.</p>
-    </div>
-    <div class="footer-cols">
-      <div class="footer-col">
-        <div class="footer-col-title">Tools</div>
-        <a href="tools.html#scheduling">Production Board</a>
-        <a href="tools.html#costing">Job Costing</a>
-        <a href="tools.html#traveler">Shop Traveler</a>
-        <a href="tools.html#crm">Shop CRM</a>
-        <a href="tools.html">All 9 Tools</a>
-      </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Plans</div>
-        <a href="packages/starter/">Starter — $99/mo</a>
-        <a href="packages/growth/">Growth — $199/mo</a>
-        <a href="packages/suite/">Shop Suite — $349/mo</a>
-        <a href="website-design.html">Website Design</a>
-      </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Company</div>
-        <a href="index.html">Home</a>
-        <a href="index.html#demo">Book a Demo</a>
-        <a href="mailto:hello@billet.app">Contact</a>
-        <a href="#">Privacy</a>
+  <section class="close wrap" aria-labelledby="close-h">
+    <div class="inner">
+      <h2 id="close-h">Try every module free for 14 days. Then pick your plan.</h2>
+      <p>The trial includes all nine modules with unlimited users, no card required — decide what to pay for after you've seen it run your jobs.</p>
+      <div class="ctas">
+        <a class="btn btn--accent" href="/app/signup.html">Start free trial</a>
+        <a class="quiet-link" href="mailto:hello@billet.app">Questions? hello@billet.app</a>
       </div>
     </div>
-  </div>
-  <div class="footer-bar container">
-    <span>&copy; 2026 Billet Technologies Inc. All rights reserved.</span>
-    <span>Built for the shop floor. Not the corner office.</span>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="grid">
+      <span>BILLET — SHOP OPERATING TOOLS</span>
+      <div class="cols">
+        <a href="tools.html">TOOLS</a>
+        <a href="pricing.html">PRICING</a>
+        <a href="compare-proshop.html">VS PROSHOP</a>
+        <a href="website-design.html">WEBSITES</a>
+        <a href="/app/login.html">SIGN IN</a>
+        <a href="/app/signup.html">FREE TRIAL</a>
+      </div>
+    </div>
+    <div class="line">
+      <span>© 2026 BILLET TECHNOLOGIES INC.</span>
+      <span>BUILT FOR THE SHOP FLOOR. NOT THE CORNER OFFICE.</span>
+    </div>
   </div>
 </footer>
 
-<script src="app.js"></script>
 </body>
 </html>
