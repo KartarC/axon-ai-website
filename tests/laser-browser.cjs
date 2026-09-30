@@ -1,0 +1,34 @@
+const assert=require('node:assert/strict'),fs=require('fs'),path=require('path')
+const {chromium}=require('playwright'),{start}=require('./laser-browser-server.cjs'),{sample,rates}=require('./laser-fixture.cjs')
+;(async()=>{
+ const app=await start();let browser
+ const shots=process.env.BILLET_SCREENSHOTS||path.join(__dirname,'.artifacts');fs.mkdirSync(shots,{recursive:true})
+ try{
+  browser=await chromium.launch({headless:true,...(process.env.BILLET_BROWSER_EXECUTABLE?{executablePath:process.env.BILLET_BROWSER_EXECUTABLE}:{})})
+  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[]
+  page.on('pageerror',e=>errors.push(e.message))
+  await page.addInitScript(({account,user})=>{sessionStorage.setItem('axon_access_token','test-token');sessionStorage.setItem('axon_account',JSON.stringify(account));sessionStorage.setItem('axon_role','owner');sessionStorage.setItem('axon_user',JSON.stringify(user));window.print=()=>{window.printCalled=true}},{account:app.account,user:app.user})
+  await page.goto(app.url+'/app/modules/laser-quoting/')
+  await page.getByText('No saved quotations yet.',{exact:false}).waitFor()
+  await page.locator('#file').setInputFiles({name:'pilot.xls',mimeType:'application/vnd.ms-excel',buffer:sample()})
+  await page.getByText('187 parts',{exact:true}).waitFor();assert.match(await page.locator('#sourceWarnings').innerText(),/27.43 kg/)
+  await page.locator('[name=customer]').fill('Pilot customer')
+  await page.locator('#calculate').click();await page.getByText('Still needed',{exact:true}).waitFor()
+  const r=rates({materialMode:'kg',pricePerKg:'2',density:'7.8'})
+  for(const key of ['method','materialMode','gasMode','electricityMode','pricing','currency'])await page.locator(`[name=${key}]`).selectOption(r[key])
+  for(const [key,value]of Object.entries(r)){const field=page.locator(`[name=${key}]`);if(await field.count()&&await field.isVisible()&&(await field.evaluate(e=>e.tagName))==='INPUT')await field.fill(value)}
+  await page.locator('#calculate').click();await page.getByText('Calculation complete.',{exact:false}).waitFor();assert.match(await page.locator('#result .price').innerText(),/320.51/)
+  await page.locator('#profileName').fill('Pilot machine / MS / O2');await page.locator('#saveProfile').click();await page.getByText('New shop profile saved.',{exact:true}).waitFor()
+  await page.locator('[name=reviewed]').check();await page.locator('#saveQuote').click();await page.getByText('Quote revision saved.',{exact:false}).waitFor();assert.match(await page.locator('#result').innerText(),/Rev 1/)
+  await page.locator('#issueQuote').click();await page.getByText('Revision marked issued.',{exact:false}).waitFor()
+  await page.screenshot({path:path.join(shots,'laser-quoting-desktop.png'),fullPage:true})
+  await page.locator('#printQuote').click();assert(await page.evaluate(()=>window.printCalled));assert(!/Gas|margin|217.39|320.51.*320.51/.test(await page.locator('#customerPrint').innerText()))
+  await page.emulateMedia({media:'print'});await page.screenshot({path:path.join(shots,'laser-quoting-print.png'),fullPage:true});await page.emulateMedia({media:'screen'})
+  await page.locator('[name=percentage]').fill('25');assert(await page.locator('#quoteActions').isHidden());assert(!(await page.locator('[name=reviewed]').isChecked()))
+  await page.locator('[name=reviewed]').check();await page.locator('#saveQuote').click();await page.getByText('Quote revision saved.',{exact:false}).waitFor();assert.match(await page.locator('#result').innerText(),/Rev 2/)
+  await page.reload();await page.locator('#quoteList [data-quote]').first().click();await page.getByText('Saved revision opened.',{exact:false}).waitFor();assert.match(await page.locator('#result').innerText(),/Rev 2/)
+  await page.locator('#issueQuote').click();await page.getByText('Revision marked issued.',{exact:false}).waitFor();await page.locator('#acceptQuote').click();await page.getByText('Acceptance recorded.',{exact:false}).waitFor()
+  await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(shots,'laser-quoting-mobile.png'),fullPage:true});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1))
+  assert.deepEqual(errors,[]);console.log('Browser integration passed: import, missing inputs, customer rates, calculation, profile, save, issue, revision, reload, acceptance, private print and mobile layout.')
+ }finally{if(browser)await browser.close();await app.close()}
+})().catch(e=>{console.error(e);process.exitCode=1})
