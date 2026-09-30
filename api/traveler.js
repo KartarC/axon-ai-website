@@ -7,7 +7,8 @@
 // PATCH ?id=X                   → update step (status, dimension_value, notes, flag)
 // DELETE ?id=X                  → delete step
 // POST ?action=reorder          → { job_id, order: [id, id, ...] }
-const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
+const { sb, requireAuth, requireModule, requireRole, requireRecord, cors } = require('./_lib/supabase')
+const { completionError } = require('./_lib/security')
 
 export default async function handler(req, res) {
   cors(res)
@@ -26,6 +27,7 @@ export default async function handler(req, res) {
     )
     // Also get job info
     const jobs = await sb('GET', `jobs?id=eq.${job_id}&account_id=eq.${ctx.account.id}&select=*,customers(name)`)
+    if (ctx.role === 'viewer' && jobs?.[0]) delete jobs[0].public_token
     return res.status(200).json({ job: jobs?.[0] || null, steps: steps || [] })
   }
 
@@ -96,6 +98,7 @@ export default async function handler(req, res) {
     if (!jobs?.length) return res.status(404).json({ error: 'Job not found' })
 
     // Get template steps
+    if (!await requireRecord(ctx, 'traveler_templates', template_id, res)) return
     const tSteps = await sb('GET', `traveler_template_steps?template_id=eq.${template_id}&order=sort_order.asc`)
     if (!tSteps?.length) return res.status(400).json({ error: 'Template has no steps' })
 
@@ -125,6 +128,7 @@ export default async function handler(req, res) {
     if (!requireRole(ctx, ['owner','admin','manager'], res)) return
     const { job_id: jid, title, instructions, requires_dimension, dimension_label, dimension_unit = 'in', requires_sign_off, sort_order } = req.body || {}
     if (!jid || !title) return res.status(400).json({ error: 'job_id and title required' })
+    if (!await requireRecord(ctx, 'jobs', jid, res)) return
 
     const existing = await sb('GET', `traveler_steps?job_id=eq.${jid}&account_id=eq.${ctx.account.id}&select=step_number&order=step_number.desc&limit=1`)
     const nextNum  = (existing?.[0]?.step_number || 0) + 1
@@ -145,6 +149,9 @@ export default async function handler(req, res) {
 
   // ── PATCH update step ────────────────────────────────────
   if (req.method === 'PATCH' && id) {
+    if (!requireRole(ctx, ['owner','admin','manager','operator'], res)) return
+    if (ctx.role === 'operator' && Object.keys(req.body || {}).some(k => !['status','dimension_value','notes','flag_note','sign_off'].includes(k)))
+      return res.status(403).json({ error: 'Operators can update progress and measurements only' })
     const rows = await sb('GET', `traveler_steps?id=eq.${id}&account_id=eq.${ctx.account.id}`)
     if (!rows?.length) return res.status(404).json({ error: 'Step not found' })
 
@@ -152,6 +159,9 @@ export default async function handler(req, res) {
                      'requires_dimension','dimension_label','requires_sign_off']
     const updates = {}
     for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }
+
+    const completionProblem = completionError({ ...rows[0], ...updates }, { ...updates, sign_off: req.body.sign_off }, true)
+    if (completionProblem) return res.status(400).json({ error: completionProblem })
 
     if (updates.status === 'complete' && !rows[0].completed_at) {
       updates.completed_at = new Date().toISOString()

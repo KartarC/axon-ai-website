@@ -1,10 +1,6 @@
 import { saveSession } from './_shared/auth.js'
 
-// Supabase (anon key is safe in the browser) — mirrors login.js
-const SUPABASE_URL  = 'https://emdgtyaggcbqaxsdrsaa.supabase.co'
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZGd0eWFnZ2NicWF4c2Ryc2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDE0ODIsImV4cCI6MjA5NTkxNzQ4Mn0.mG0rl5_ZVZXISaKF3SnhxEtaxQocV58XCYWhXIgU_30'
-window.__SUPABASE_URL__  = SUPABASE_URL
-window.__SUPABASE_ANON__ = SUPABASE_ANON
+import { SUPABASE_URL, SUPABASE_ANON } from './_shared/config.js'
 
 const form = document.getElementById('signupForm')
 const btn  = document.getElementById('signupBtn')

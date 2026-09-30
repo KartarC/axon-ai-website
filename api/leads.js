@@ -1,14 +1,17 @@
 // api/leads.js — GET all leads, PATCH to update status
-// Protected by ADMIN_SECRET env var via ?secret=xxx
+// Protected by the X-Admin-Secret header
+
+const { secretMatches, validateIds } = require('./_lib/security')
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,X-Admin-Secret')
   if (req.method === 'OPTIONS') return res.status(200).end()
 
-  const { secret } = req.query
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (!validateIds(req, res)) return
+  res.setHeader('Cache-Control', 'no-store')
+  if (!secretMatches(req.headers['x-admin-secret'], process.env.ADMIN_SECRET)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 

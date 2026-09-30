@@ -32,7 +32,7 @@ function renderForm({ email, role, account_name, plan }) {
   card.innerHTML = `
     <div class="invite-welcome">You're invited</div>
     <h1 class="invite-title">Welcome to Billet</h1>
-    <p class="invite-sub">Set a password for <strong>${escHtml(email)}</strong> to access your shop's tools.</p>
+    <p class="invite-sub">Enter your existing password for <strong>${escHtml(email)}</strong> to join this shop. If you are new to Billet, choose a password to create your login.</p>
 
     <div class="invite-shop">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.5" y="3" width="15" height="13" rx="1.5" stroke="#1D4ED8" stroke-width="1.3"/><path d="M5 1.5v3M13 1.5v3M1.5 9H16.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -44,7 +44,7 @@ function renderForm({ email, role, account_name, plan }) {
 
     <form id="pwForm" novalidate>
       <div class="invite-field">
-        <label class="invite-label" for="pw">Create a password</label>
+        <label class="invite-label" for="pw">Password</label>
         <input class="invite-input" type="password" id="pw" autocomplete="new-password" placeholder="At least 8 characters" required/>
         <div class="pw-hint">Use at least 8 characters with a mix of letters and numbers.</div>
       </div>
@@ -52,7 +52,7 @@ function renderForm({ email, role, account_name, plan }) {
         <label class="invite-label" for="pw2">Confirm password</label>
         <input class="invite-input" type="password" id="pw2" autocomplete="new-password" placeholder="Repeat your password" required/>
       </div>
-      <button class="invite-btn" type="submit" id="submitBtn">Activate Account →</button>
+      <button class="invite-btn" type="submit" id="submitBtn">Join Shop →</button>
       <div class="invite-error" id="inviteError"></div>
     </form>
   `
@@ -67,7 +67,7 @@ function renderForm({ email, role, account_name, plan }) {
 
     const btn = document.getElementById('submitBtn')
     btn.disabled    = true
-    btn.textContent = 'Activating…'
+    btn.textContent = 'Joining…'
     hideErr()
 
     try {

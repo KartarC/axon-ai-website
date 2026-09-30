@@ -1,14 +1,6 @@
 import { saveSession } from './_shared/auth.js'
 
-// ⚠️  SETUP REQUIRED: Replace SUPABASE_ANON with your real anon/public key.
-// Find it in: Supabase Dashboard → Project Settings → API → "anon public" key.
-// The anon key is SAFE to expose in browser code — it is not the service role key.
-const SUPABASE_URL  = 'https://emdgtyaggcbqaxsdrsaa.supabase.co'
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVtZGd0eWFnZ2NicWF4c2Ryc2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDE0ODIsImV4cCI6MjA5NTkxNzQ4Mn0.mG0rl5_ZVZXISaKF3SnhxEtaxQocV58XCYWhXIgU_30'
-
-// Store for use by auth.js refresh
-window.__SUPABASE_URL__  = SUPABASE_URL
-window.__SUPABASE_ANON__ = SUPABASE_ANON
+import { SUPABASE_URL, SUPABASE_ANON } from './_shared/config.js'
 
 const form  = document.getElementById('loginForm')
 const btn   = document.getElementById('submitBtn')
@@ -63,7 +55,9 @@ form.addEventListener('submit', async (e) => {
 
     // Step 4: Redirect
     const returnTo = params.get('return')
-    window.location.href = returnTo || '/app/dashboard.html'
+    const target = new URL(returnTo || '/app/dashboard.html', window.location.origin)
+    window.location.href = target.origin === window.location.origin && target.pathname.startsWith('/app/')
+      ? target.pathname + target.search + target.hash : '/app/dashboard.html'
 
   } catch (err) {
     showError(err.message)

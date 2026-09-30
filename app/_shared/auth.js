@@ -1,3 +1,4 @@
+import { SUPABASE_URL, SUPABASE_ANON } from './config.js'
 // Billet — Auth utilities (browser ES module)
 // Handles session storage, JWT management, and page guards
 
@@ -66,13 +67,12 @@ export async function logout() {
   if (session?.token) {
     // Sign out from Supabase
     try {
-      const SUPABASE_URL = window.__SUPABASE_URL__ // injected by nav.js
       if (SUPABASE_URL) {
         await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${session.token}`,
-            apikey: window.__SUPABASE_ANON__ || '',
+            apikey: SUPABASE_ANON,
           },
         })
       }
@@ -86,9 +86,6 @@ export async function logout() {
 export async function refreshToken() {
   const session = getSession()
   if (!session?.refreshToken) return null
-
-  const SUPABASE_URL = window.__SUPABASE_URL__ || ''
-  const SUPABASE_ANON = window.__SUPABASE_ANON__ || ''
 
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
     method: 'POST',

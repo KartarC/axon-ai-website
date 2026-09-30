@@ -2,7 +2,7 @@
 // All routes require X-Admin-Secret header or ?secret= query param
 // ?resource=accounts → GET list / POST create / PATCH ?id=X
 // ?resource=invite   → POST send invite
-const { sb, authAdmin, requireAxonAdmin, cors } = require('./_lib/supabase')
+const { sb, requireAxonAdmin, cors } = require('./_lib/supabase')
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const SITE_URL       = process.env.SITE_URL || 'https://axon-ai-website-three.vercel.app'
@@ -71,9 +71,6 @@ export default async function handler(req, res) {
 
     const [invite] = await sb('POST', 'account_invites', { account_id, email, role })
 
-    try {
-      await authAdmin('POST', 'users', { email, email_confirm: false, user_metadata: { account_id, role } })
-    } catch (e) { /* user may already exist */ }
 
     const inviteUrl = `${SITE_URL}/app/accept-invite.html?token=${invite.token}`
     await sendInviteEmail(email, shopName, inviteUrl)

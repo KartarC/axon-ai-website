@@ -260,7 +260,7 @@ async function tryLogin() {
   if (!secret) return
 
   // Test the secret by calling the accounts API
-  const res = await fetch(`/api/axon-admin?resource=accounts?secret=${encodeURIComponent(secret)}`)
+  const res = await fetch('/api/axon-admin?resource=accounts', { headers: { 'X-Admin-Secret': secret } })
   if (!res.ok) { document.getElementById('gateError').style.display = 'block'; return }
 
   adminSecret = secret
@@ -304,7 +304,7 @@ document.getElementById('searchInput').addEventListener('input', e => {
 })
 
 document.getElementById('refreshBtn').addEventListener('click', async () => {
-  const res = await fetch(`/api/axon-admin?resource=accounts?secret=${adminSecret}`)
+  const res = await fetch('/api/axon-admin?resource=accounts', { headers: { 'X-Admin-Secret': adminSecret } })
   accounts = await res.json()
   renderTable(accounts)
 })
@@ -411,7 +411,7 @@ document.getElementById('inviteForm').addEventListener('submit', async (e) => {
 // ── Toggle status ────────────────────────────────────────────
 async function toggleStatus(accountId, status) {
   if (!confirm(`Set account status to "${status}"?`)) return
-  await fetch(`/api/axon-admin?resource=accounts?id=${accountId}`, {
+  await fetch(`/api/axon-admin?resource=accounts&id=${accountId}`, {
     method:'PATCH',
     headers:{'Content-Type':'application/json','X-Admin-Secret': adminSecret},
     body: JSON.stringify({ status }),

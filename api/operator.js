@@ -2,19 +2,26 @@
 // GET  ?token=X → return job + board entry data + traveler steps
 // POST ?token=X → { action: 'start'|'pause'|'complete'|'complete_step' }
 const { sb, cors } = require('./_lib/supabase')
+const { isToken, validateIds, completionError } = require('./_lib/security')
 
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(200).end()
 
   const { token } = req.query
-  if (!token) return res.status(400).json({ error: 'Token required' })
+  if (!isToken(token, 32)) return res.status(400).json({ error: 'Invalid token' })
+  if (!validateIds(req, res)) return
+  res.setHeader('Cache-Control', 'no-store')
 
   const jobs = await sb('GET',
     `jobs?public_token=eq.${token}&select=id,job_number,part_name,quantity,material,due_date,priority,status,notes,revision,customers(name),account_id`
   )
   if (!jobs?.length) return res.status(404).json({ error: 'Job not found. This QR code may be invalid or expired.' })
   const job = jobs[0]
+  const [account] = await sb('GET', `accounts?id=eq.${job.account_id}&select=status,plan,modules,trial_ends_at`)
+  if (!account || account.status !== 'active') return res.status(403).json({ error: 'Account unavailable' })
+  if (account.plan === 'trial' && account.trial_ends_at && account.trial_ends_at < new Date().toISOString().slice(0,10))
+    return res.status(402).json({ error: 'Trial expired' })
 
   const entries = await sb('GET',
     `board_entries?job_id=eq.${job.id}&order=op_sequence.asc&select=id,operation,op_sequence,status,board_col,est_hours,notes,machines(name,machine_no)`
@@ -24,7 +31,7 @@ export default async function handler(req, res) {
   // Fetch traveler steps (if any)
   const travelerSteps = await sb('GET',
     `traveler_steps?job_id=eq.${job.id}&order=sort_order.asc,step_number.asc` +
-    `&select=id,step_number,title,instructions,status,requires_dimension,dimension_label,dimension_unit,dimension_value,flag_note,completed_at`
+    `&select=id,step_number,title,instructions,status,requires_dimension,requires_sign_off,dimension_label,dimension_unit,dimension_value,flag_note,completed_at`
   )
   const currentTravelerStep = travelerSteps?.find(s => ['pending','in_progress'].includes(s.status)) || null
 
@@ -62,11 +69,14 @@ export default async function handler(req, res) {
     const { action, entry_id } = req.body || {}
     // ── Traveler step completion (no board action needed) ────
     if (action === 'complete_step') {
+      if (!account.modules.includes('shop-traveler')) return res.status(403).json({ error: 'Module not enabled' })
       const { step_id, dimension_value, flag_note, flag } = req.body || {}
       if (!step_id) return res.status(400).json({ error: 'step_id required' })
 
       const stepRows = await sb('GET', `traveler_steps?id=eq.${step_id}&job_id=eq.${job.id}`)
       if (!stepRows?.length) return res.status(404).json({ error: 'Step not found' })
+      const problem = completionError(stepRows[0], { status: flag ? 'flagged' : 'complete', dimension_value }, false)
+      if (problem) return res.status(400).json({ error: problem })
 
       const updates = {
         status:          flag ? 'flagged' : 'complete',
@@ -79,10 +89,12 @@ export default async function handler(req, res) {
     }
 
     const validActions = ['start','pause','complete']
+    if (!account.modules.includes('production-board')) return res.status(403).json({ error: 'Module not enabled' })
     if (!action || !validActions.includes(action)) return res.status(400).json({ error: 'action must be start, pause, complete, or complete_step' })
 
     const targetId = entry_id || currentEntry?.id
     if (!targetId) return res.status(404).json({ error: 'No active board entry found for this job' })
+    if (!entries?.some(entry => entry.id === targetId)) return res.status(404).json({ error: 'Entry not found for this job' })
 
     const statusMap = { start: 'running', pause: 'paused', complete: 'complete' }
     const newStatus = statusMap[action]
@@ -90,7 +102,7 @@ export default async function handler(req, res) {
     if (action === 'start')    updates.started_at    = new Date().toISOString()
     if (action === 'complete') updates.completed_at  = new Date().toISOString()
 
-    await sb('PATCH', `board_entries?id=eq.${targetId}&account_id=eq.${job.account_id}`, updates)
+    await sb('PATCH', `board_entries?id=eq.${targetId}&job_id=eq.${job.id}&account_id=eq.${job.account_id}`, updates)
 
     if (action === 'complete') {
       const remaining = (entries || []).filter(e => e.id !== targetId && e.status !== 'complete')

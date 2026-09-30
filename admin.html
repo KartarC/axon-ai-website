@@ -300,7 +300,7 @@ document.getElementById('passwordInput').addEventListener('keydown', e => {
 // ── LOAD DATA ───────────────────────────────────────────────────────────────
 async function loadLeads() {
   try {
-    const res = await fetch('/api/leads?secret=' + encodeURIComponent(adminSecret))
+    const res = await fetch('/api/leads', { headers: { 'X-Admin-Secret': adminSecret } })
 
     if (res.status === 401) {
       document.getElementById('loginError').style.display = 'block'
@@ -418,8 +418,8 @@ async function cycleStatus(id, current) {
 
   // Persist to Supabase via API
   try {
-    await fetch(`/api/leads?secret=${encodeURIComponent(adminSecret)}&id=${id}&status=${next}`, {
-      method: 'PATCH',
+    await fetch(`/api/leads?id=${id}&status=${next}`, {
+      method: 'PATCH', headers: { 'X-Admin-Secret': adminSecret },
     })
     showToast(`Marked as ${next}`)
   } catch (e) {

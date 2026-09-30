@@ -223,4 +223,6 @@ document.getElementById('custForm').addEventListener('submit', async (e) => {
 
 // ── Utils + init ───────────────────────────────────────────
 function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;') }
-loadShop(); loadMachines(); loadTeam(); loadCustomers()
+loadShop(); loadMachines(); loadCustomers()
+if (isAdmin) loadTeam()
+else document.querySelector('[data-tab="team"]').hidden = true

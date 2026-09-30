@@ -4,7 +4,7 @@
 // GET    ?id=X    → single job
 // PATCH  ?id=X    → update job
 // DELETE ?id=X    → delete job
-const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
+const { sb, requireAuth, requireModule, requireRole, requireRecord, cors } = require('./_lib/supabase')
 
 export default async function handler(req, res) {
   cors(res)
@@ -22,10 +22,14 @@ export default async function handler(req, res) {
     if (!rows?.length) return res.status(404).json({ error: 'Job not found' })
     const job = rows[0]
 
-    if (req.method === 'GET') return res.status(200).json(job)
+    if (req.method === 'GET') {
+      if (ctx.role === 'viewer') delete job.public_token
+      return res.status(200).json(job)
+    }
 
     if (req.method === 'PATCH') {
       if (!requireRole(ctx, ['owner','admin','manager'], res)) return
+      if (req.body?.customer_id && !await requireRecord(ctx, 'customers', req.body.customer_id, res)) return
       const allowed = ['job_number','part_name','quantity','customer_id','material','due_date','priority','status','notes','revision']
       const updates = {}
       for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }
@@ -44,7 +48,7 @@ export default async function handler(req, res) {
   // ── List / create ────────────────────────────────────────
   if (req.method === 'GET') {
     let query = `jobs?account_id=eq.${ctx.account.id}&order=created_at.desc&select=*,customers(id,name)`
-    if (status && status !== 'all') query += `&status=eq.${status}`
+    if (status && status !== 'all') query += `&status=eq.${encodeURIComponent(status)}`
     let jobs = await sb('GET', query)
     if (search) {
       const q = search.toLowerCase()
@@ -54,6 +58,7 @@ export default async function handler(req, res) {
         j.customers?.name?.toLowerCase().includes(q)
       )
     }
+    if (ctx.role === 'viewer') for (const job of jobs || []) delete job.public_token
     return res.status(200).json(jobs || [])
   }
 
@@ -62,6 +67,7 @@ export default async function handler(req, res) {
     const { job_number, part_name, quantity = 1, customer_id, material, due_date, priority = 'normal', notes, revision } = req.body || {}
     if (!job_number) return res.status(400).json({ error: 'job_number required' })
     if (!part_name)  return res.status(400).json({ error: 'part_name required' })
+    if (customer_id && !await requireRecord(ctx, 'customers', customer_id, res)) return
     const [job] = await sb('POST', 'jobs', {
       account_id: ctx.account.id,
       job_number: job_number.trim(), part_name: part_name.trim(),

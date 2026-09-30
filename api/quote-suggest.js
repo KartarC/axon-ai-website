@@ -10,7 +10,7 @@
 //      Claude falls back to a parametric cold-start estimate and says so.
 //
 // Requires env ANTHROPIC_API_KEY. Model via ANTHROPIC_MODEL (default sonnet).
-const { sb, requireAuth, requireModule, cors } = require('./_lib/supabase')
+const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
 
 const ANTHROPIC_URL   = 'https://api.anthropic.com/v1/messages'
 const DEFAULT_MODEL   = 'claude-sonnet-4-6'
@@ -64,6 +64,7 @@ export default async function handler(req, res) {
   const ctx = await requireAuth(req, res)
   if (!ctx) return
   if (!requireModule(ctx, 'job-costing', res)) return
+  if (!requireRole(ctx, ['owner','admin','manager'], res)) return
 
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
