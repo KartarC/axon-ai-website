@@ -9,9 +9,10 @@ async function start(options={}){
   const [table,search='']=url.split('?');if(!['billet_laser_quotes','billet_laser_profiles','billet_laser_imports'].includes(table))throw Error('Unexpected table')
   if(method==='POST'){const keys=Object.keys(body);return(await db.query(`insert into public.${table}(${keys.join(',')}) values(${keys.map((_,i)=>'$'+(i+1)).join(',')}) returning *`,Object.values(body))).rows}
   const params=new URLSearchParams(search),values=[],where=[]
-  for(const key of ['id','account_id','sha256']){if(params.has(key)){const v=params.get(key);if(!v.startsWith('eq.'))throw Error('Unexpected filter');values.push(v.slice(3));where.push(key+'=$'+values.length)}}
+  for(const key of ['id','account_id','sha256','name']){if(params.has(key)){const v=params.get(key);if(!v.startsWith('eq.'))throw Error('Unexpected filter');values.push(v.slice(3));where.push(key+'=$'+values.length)}}
+  if(method==='PATCH'){const keys=Object.keys(body),offset=values.length;values.push(...Object.values(body));return(await db.query(`update public.${table} set ${keys.map((k,i)=>k+'=$'+(offset+i+1)).join(',')} where ${where.join(' and ')} returning *`,values)).rows}
   let select='*';if(params.has('select'))select="id,family_id,revision,customer,reference,status,created_at,result->>'price' as price,result->>'currency' as currency"
-  const order=params.get('order')==='name.asc'?'name asc':params.get('order')==='created_at.desc'?'created_at desc':'id'
+  const order=params.get('order')==='updated_at.desc'?'updated_at desc':params.get('order')==='name.asc'?'name asc':params.get('order')==='created_at.desc'?'created_at desc':'id'
   if(method!=='GET')throw Error('Unexpected write')
   return(await db.query(`select ${select} from public.${table} where ${where.join(' and ')||'true'} order by ${order} limit 100`,values)).rows
  }

@@ -40,3 +40,27 @@ test('customer defaults and scoped standards retain validated metadata',async()=
  assert.equal(r.code,201);assert.equal(saved.rates._profile.terms,'Net 30');assert.equal(saved.rates._profile.valid_days,14)
  assert.equal((await call(h,'profiles',{name:'Bad',rates:rates(),profile:{kind:'unknown'}})).code,400)
 })
+
+test('company edits require admin and user identity always uses authenticated user',async()=>{
+ assert.equal((await call(handler('manager'),'identity',{kind:'company',details:{name:'Shop'}})).code,403)
+ let written;const h=handler('manager',async(m,p,b)=>{if(m==='POST')written=b;return []})
+ assert.equal((await call(h,'identity',{kind:'user',user_id:A,details:{name:'Staff',email:'staff@example.com'}})).code,200)
+ assert.equal(written.name,'__identity_user_'+I)
+ assert.equal((await call(h,'identity',{kind:'user',details:{name:'Staff',email:'broken'}})).code,400)
+})
+test('PDF endpoint rejects cross-account IDs and regular profile edits cannot overwrite identity',async()=>{
+ const h=handler('owner',async()=>[])
+ assert.equal((await call(h,'profiles',{name:'__identity_company',rates:rates()})).code,400)
+ const out={code:200,status(n){this.code=n;return this},json(v){this.body=v},setHeader(){}}
+ await h({method:'GET',query:{action:'pdf',id:I},headers:{}},out);assert.equal(out.code,404)
+})
+test('PDF has one page and customer projection excludes internal rates',async()=>{
+ const {quotePdf,customerQuote}=require('../api/_lib/laser-pdf'),{PDFDocument}=require('pdf-lib')
+ const q={family_id:A,revision:1,status:'draft',created_at:'2026-09-30T12:00:00Z',valid_days:30,customer:'Example Customer',reference:'Test batch',terms:'Net 30. Lead time: confirm on order.',source:await source(),result:{...calculate(await source(),rates()),identity:{company:{name:'Example Manufacturing',address:'100 Example Road, Toronto ON',email:'quotes@example.com'},user:{name:'Alex Example',title:'Estimator',email:'alex@example.com'}}}}
+ const projection=JSON.stringify(customerQuote(q));assert(!projection.includes('machineHourly'));assert(!projection.includes('gasFlowLmin'));assert(!projection.includes('percentage'))
+ const bytes=await quotePdf(q);assert.equal((await PDFDocument.load(bytes)).getPageCount(),1)
+ const artifacts=path.join(__dirname,'.artifacts');fs.mkdirSync(artifacts,{recursive:true});fs.writeFileSync(path.join(artifacts,'one-page-quote.pdf'),bytes)
+ q.source.parts=Array.from({length:100},(_,i)=>({...q.source.parts[0],name:'Part '+i}));assert.equal((await PDFDocument.load(await quotePdf(q))).getPageCount(),1)
+ q.terms='Long terms '.repeat(1000);await assert.rejects(()=>quotePdf(q),/too much text/)
+ q.result.identity={};await assert.rejects(()=>quotePdf(q),/company and user profiles/)
+})

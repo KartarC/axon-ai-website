@@ -45,7 +45,7 @@ if(session){
   if(!hasModule(session.account,'laser-quoting')||!['owner','admin','manager'].includes(session.role)){message('Laser Quoting is available to owners, admins and managers with pilot access.',true)}
   else{
     $('workspace').hidden=false;buildFields();$('profileEditor').hidden=!['owner','admin'].includes(session.role)
-    run(async()=>{profiles=await apiGet('/api/laser-quotes?action=profiles');renderProfiles();await refresh()})
+    run(async()=>{profiles=await apiGet('/api/laser-quotes?action=profiles');renderProfiles();await loadIdentity();await refresh()})
     form.addEventListener('input',markDirty);form.addEventListener('change',visibility)
     $('file').onchange=()=>run(async()=>{const file=$('file').files[0];if(!file)return;if(file.size>2*1024*1024)throw Error('Choose a file under 2 MB.');const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(Error('Could not read the selected file.'));reader.readAsDataURL(file)});const result=await apiPost('/api/laser-quotes?action=import',{file:base64,name:file.name});imported=result;autofillReport(result.source);markDirty();form.elements.reviewed.checked=false;sourceView();message(result.duplicate?'This report was already imported. Its existing source record has been reused.':'Report imported. Reference and blank sheet price filled from the report. Review highlighted values and complete your rates.')})
     form.onsubmit=e=>{e.preventDefault();run(async()=>{if(!imported)throw Error('Import a Han’s report first.');const result=await apiPost('/api/laser-quotes?action=calculate',{import_id:imported.id,rates:rates()});resultView(result);message(result.complete?'Calculation complete. Review and save your quotation.':'Complete the missing settings listed in the breakdown.',!result.complete)})}
@@ -54,12 +54,13 @@ if(session){
     $('saveProfile').onclick=()=>run(async()=>{const profile=await apiPost('/api/laser-quotes?action=profiles',{name:$('profileName').value,rates:rates(),profile:{kind:$('profileKind').value,customer_id:$('profileCustomer').value||null,machine_id:$('profileMachine').value||null,customer:form.elements.customer.value,terms:form.elements.terms.value,valid_days:form.elements.valid_days.value}});profiles.push(profile);renderProfiles();$('profile').value=profile.id;message('New profile saved. It is available to this shop on future quotations.')})
     for(const [id,status]of [['issueQuote','issued'],['acceptQuote','accepted']])$(id).onclick=()=>run(async()=>{if(!current||dirty)throw Error('Save this revision first.');current=await apiPost('/api/laser-quotes?action=status',{id:current.id,status});resultView(current.result);await refresh();message(status==='issued'?'Revision marked issued. No email has been sent.':'Acceptance recorded. Job creation is not yet part of this pilot.')})
     $('quoteList').onclick=e=>{const button=e.target.closest('[data-quote]');if(button)run(()=>loadQuote(button.dataset.quote))}
+    setupIdentity();$('downloadPdf').onclick=()=>run(downloadPdf);
     $('refreshList').onclick=()=>run(refresh);$('printQuote').onclick=printQuote
     $('newQuote').onclick=()=>{if(!dirty||window.confirm('Discard the unsaved changes and start a new quote?'))reset()}
   }
 }
 
-function fieldHelp(key){return ({
+function fieldHelp(key){if(key.startsWith('company_'))return key==='company_name'?'Your company name as it should appear on the quote. Required for PDF generation.':'Optional company contact detail printed on new quote revisions. Save the company profile to reuse it.';if(key.startsWith('user_'))return key==='user_name'?'Your name as the quote preparer. Required for PDF generation.':'Optional professional contact detail printed on new quote revisions. This does not change your sign-in account.';return ({
  file:'Required for a new quotation. Import the Han’s LaserNest workbook; the report supplies part sizes, quantities, sheet size and processing times. No drawings are needed in this version.',
  customer:'The customer receiving this quote. Load a customer profile to reuse its name and commercial defaults.',reference:'Your customer’s purchase enquiry or drawing reference. Initially filled from the report program; you can edit it.',valid_days:'Number of days the quoted price remains valid, from the issue date (or creation date for a draft).',currency:'All monetary entries use this currency. Loading rates does not convert currencies.',
  method:'Shop cost uses your rates. Han’s comparison starts with the report’s configured material, cutting, piercing and travel charges; those are not verified actual costs.',materialMode:'Charge for each full sheet, calculate full-sheet mass at a price per kg, or record customer-supplied material at zero cost.',sheetPrice:'Price of one full stock sheet. Import can suggest the report material charge divided by sheet count; confirm that this is your intended cost and currency.',pricePerKg:'Your supplier price per kilogram of this material, in the selected currency.',density:'Material density in grams per cubic centimetre, used to turn full-sheet dimensions into mass. Confirm it with your material specification.',remnantCredit:'Amount deducted for reusable material. Enter 0 when there is no credit. It cannot exceed material cost.',machineHourly:'Machine processing cost per hour. Exclude any gas, power and labor charged separately to avoid counting them twice.',setupMinutes:'Time for setup on this job. Enter 0 if no separate setup charge applies.',setupHourly:'Hourly setup labor cost. Needed only when setup minutes are above zero.',laborMinutes:'Additional labor outside machine processing and setup, such as sorting. Enter 0 if none.',laborHourly:'Hourly cost for additional labor. Needed only when additional labor minutes are above zero.',
@@ -89,6 +90,7 @@ function updateRequirements(){
   if(key==='setupHourly')text=+r.setupMinutes>0?'Required':'Optional · no setup'
   if(key==='laborHourly')text=+r.laborMinutes>0?'Required':'Optional · no additional labor'
   if(key==='reviewed')text='Required to save'
+  if(key.startsWith('company_')||key.startsWith('user_'))text=key.endsWith('_name')?'Required for PDF':'Optional'
   badge.textContent=text
   // The server returns all missing cost inputs together; avoid browser validation hiding that checklist.
   control.setAttribute('aria-required',String(text.startsWith('Required')))
@@ -114,4 +116,25 @@ function applyProfile(profile){
  if(meta.kind==='machine')$('profileMachine').value=profile.id
  for(const key of Object.keys(values)){const field=form.elements[key];if(field){delete field.dataset.origin;field.closest('label')?.querySelector('.autofill-note')?.remove()}}
  return true
+}
+
+async function loadIdentity(){
+ const identity=await apiGet('/api/laser-quotes?action=identity')
+ for(const kind of ['company','user'])for(const [key,value]of Object.entries(identity[kind]||{})){const field=$(kind+'_'+key);if(field)field.value=value}
+ $('companyIdentity').querySelectorAll('input,button').forEach(el=>el.disabled=!['owner','admin'].includes(session.role))
+}
+function setupIdentity(){
+ for(const kind of ['company','user'])$(kind+'Identity').onsubmit=e=>{e.preventDefault();run(async()=>{
+  const details=Object.fromEntries([...new FormData(e.target)].map(([key,value])=>[key.slice(kind.length+1),value]))
+  await apiPost('/api/laser-quotes?action=identity',{kind,details})
+  if(imported)markDirty()
+  message((kind==='company'?'Company':'User')+' profile saved. Save a new quote revision to include these details in its PDF.')
+ })}
+}
+async function downloadPdf(){
+ if(!current||dirty)throw Error('Save the reviewed quote revision first.')
+ const data=await apiGet('/api/laser-quotes?action=pdf&id='+encodeURIComponent(current.id))
+ const bytes=Uint8Array.from(atob(data.base64),c=>c.charCodeAt(0)),url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}))
+ const link=document.createElement('a');link.href=url;link.download=data.filename;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)
+ message('One-page PDF created. Your browser will download it; no external software is required.')
 }
