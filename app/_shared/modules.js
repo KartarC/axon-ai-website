@@ -1,5 +1,12 @@
 // Billet — Module registry and feature flag helpers
 export const MODULES = {
+  'laser-quoting': {
+    slug: 'laser-quoting', name: 'Quoting', phase: 1,
+    desc: 'Import Han’s reports and prepare quotations using your shop’s rates.',
+    path: '/app/modules/laser-quoting/', plans: ['starter','growth','suite'],
+    roi: 'Pilot · staff quoting', roles: ['owner','admin','manager'],
+    icon: '<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="4" y="2" width="14" height="18" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M7 6h8M7 10h8M7 14h3M13 14h2" stroke="currentColor" stroke-width="1.4"/></svg>',
+  },
   'production-board': {
     slug:  'production-board',
     name:  'Production Board',
@@ -119,6 +126,6 @@ export const MODULES = {
   },
 }
 
-export const hasModule     = (account, slug) => account?.modules?.includes(slug) ?? false
+export const hasModule     = (account, slug) => (account?.modules?.includes(slug) || (slug === 'laser-quoting' && account?.modules?.includes('job-costing'))) ?? false
 export const getVisibleModules = (account) => Object.values(MODULES).filter(m => hasModule(account, m.slug))
 export const getAllModules  = () => Object.values(MODULES)

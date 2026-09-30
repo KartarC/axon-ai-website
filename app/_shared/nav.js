@@ -6,7 +6,7 @@ export function renderNav(activePath = '') {
   const session = getSession()
   if (!session) return
 
-  const modules = getVisibleModules(session.account)
+  const modules = getVisibleModules(session.account).filter(m => !m.roles || m.roles.includes(session.role))
   const accountName = session.account.name
   const planLabel = { starter:'Starter', growth:'Growth', suite:'Suite', trial:'Trial' }[session.account.plan] || session.account.plan
   const trialDaysLeft = (session.account.plan === 'trial' && session.account.trial_ends_at)

@@ -1,0 +1,18 @@
+const {PGlite}=require('@electric-sql/pglite'),assert=require('node:assert/strict'),fs=require('fs'),path=require('path')
+const migration=fs.readFileSync(path.join(__dirname,'../supabase/migrations/20260930201957_billet_laser_quoting.sql'),'utf8')
+const A='10000000-0000-4000-8000-000000000001',B='10000000-0000-4000-8000-000000000002',U='20000000-0000-4000-8000-000000000001',I='30000000-0000-4000-8000-000000000001',J='30000000-0000-4000-8000-000000000002',Q='40000000-0000-4000-8000-000000000001',R='40000000-0000-4000-8000-000000000002',S='40000000-0000-4000-8000-000000000003'
+async function setup(dataDir){const db=new PGlite(dataDir);const existing=await db.query("select to_regclass('public.accounts') as t");if(!existing.rows[0].t)await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema auth;create table auth.users(id uuid primary key);create table public.accounts(id uuid primary key);create table public.account_users(account_id uuid,user_id uuid,role text);grant usage on schema public,auth to service_role,anon,authenticated;grant all on all tables in schema public,auth to service_role;`);await db.exec(migration);return db}
+async function check(){const db=await setup();await db.exec(migration);let checks=2;await db.exec(`insert into public.accounts values('${A}'),('${B}');insert into auth.users values('${U}');insert into public.account_users values('${A}','${U}','owner');insert into public.billet_laser_imports(id,account_id,created_by,sha256,source)values('${I}','${A}','${U}',repeat('a',64),'{}'),('${J}','${B}','${U}',repeat('b',64),'{}');`)
+ const privilege=await db.query(`select has_table_privilege('authenticated','billet_laser_quotes','SELECT') as browser,has_table_privilege('service_role','billet_laser_quotes','SELECT') as service,has_table_privilege('service_role','billet_laser_imports','UPDATE') as rewrite_source,has_function_privilege('anon','billet_laser_save(uuid,uuid,uuid,uuid,uuid,jsonb,jsonb)','EXECUTE') as rpc`);assert.deepEqual(privilege.rows[0],{browser:false,service:true,rewrite_source:false,rpc:false});checks++
+ const save=async(id,previous=null,imp=I,account=A)=>{const r=await db.query('select public.billet_laser_save($1,$2,$3,$4,$5,$6,$7) as result',[account,U,id,imp,previous,{customer:'Pilot',reference:'',terms:'',valid_days:30},{complete:true,price:100}]);return r.rows[0].result}
+ const status=async(id,state,account=A)=>(await db.query('select public.billet_laser_status($1,$2,$3) as result',[account,id,state])).rows[0].result
+ await db.exec('set role service_role');assert((await save(Q,null,J)).error);checks++;assert((await save(Q,null,I,B)).error);checks++
+ const first=await save(Q);assert.equal(first.revision,1);assert.equal((await save(Q)).id,Q);checks+=2
+ assert((await status(Q,'accepted')).error);assert.equal((await status(Q,'issued')).status,'issued');checks+=2
+ const next=await save(R,Q);assert.equal(next.revision,2);assert.equal(next.family_id,Q);assert((await save(S,Q)).error);assert((await status(Q,'accepted')).error);checks+=4
+ assert((await status(R,'issued',B)).error);assert.equal((await status(R,'issued')).status,'issued');assert.equal((await status(R,'accepted')).status,'accepted');assert((await save(S,R)).error);checks+=4
+ await assert.rejects(()=>db.exec(`update public.billet_laser_quotes set customer='changed' where id='${R}'`));checks++
+ await db.exec('reset role;set role authenticated');await assert.rejects(()=>db.exec('select * from public.billet_laser_quotes'));checks++;await db.exec('reset role');await db.close();console.log(`${checks} laser database checks passed`)
+}
+if(require.main===module)check().catch(e=>{console.error(e);process.exitCode=1})
+module.exports={setup}

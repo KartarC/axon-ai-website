@@ -12,8 +12,9 @@ document.getElementById('mobileNavBtn')?.addEventListener('click', () => {
   document.getElementById('app-nav').classList.toggle('open')
 })
 
-const visibleModules = getVisibleModules(session.account)
-const allModules     = getAllModules()
+const allowedModules = m => !m.roles || m.roles.includes(session.role)
+const visibleModules = getVisibleModules(session.account).filter(allowedModules)
+const allModules     = getAllModules().filter(allowedModules)
 const lockedModules  = allModules.filter(m => !visibleModules.find(v => v.slug === m.slug))
 
 const hour = new Date().getHours()
