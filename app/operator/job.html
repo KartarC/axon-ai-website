@@ -277,7 +277,8 @@ function render({ job, current_entry, all_steps, traveler }) {
               </div>
             ` : ''}
             <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-              <button class="action-btn btn-complete" style="flex:1;padding:14px;font-size:.9rem" onclick="completeStep('${traveler.current_step.id}', ${traveler.current_step.requires_dimension})">
+              ${traveler.current_step.requires_sign_off ? `<a href="/app/modules/shop-traveler/">Sign in to Shop Traveler to sign off this step</a>` : ''}
+              <button ${traveler.current_step.requires_sign_off ? 'hidden' : ''} class="action-btn btn-complete" style="flex:1;padding:14px;font-size:.9rem" onclick="completeStep('${traveler.current_step.id}', ${traveler.current_step.requires_dimension})">
                 ✓ Complete Step
               </button>
               <button onclick="flagStep('${traveler.current_step.id}')" style="padding:14px 16px;border-radius:12px;border:2px solid #FECACA;background:#FFF1F2;color:#DC2626;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">

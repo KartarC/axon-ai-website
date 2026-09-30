@@ -33,6 +33,7 @@ export default async function handler(req, res) {
 
   // ── TEAM ─────────────────────────────────────────────────
   if (resource === 'team' && req.method === 'GET') {
+    if (!requireRole(ctx, ['owner','admin'], res)) return
     const members = await sb('GET',
       `account_users?account_id=eq.${accId}&select=id,user_id,role,full_name,created_at&order=created_at.asc`)
     const invites = await sb('GET',
@@ -63,9 +64,7 @@ export default async function handler(req, res) {
       ;[invite] = await sb('POST', 'account_invites', { account_id: accId, email: cleanEmail, role })
     }
 
-    const proto = req.headers['x-forwarded-proto'] || 'https'
-    const host  = req.headers['x-forwarded-host'] || req.headers.host
-    const invite_url = `${proto}://${host}/app/accept-invite.html?token=${invite.token}`
+    const invite_url = `${require('./_lib/security').siteUrl()}/app/accept-invite.html?token=${invite.token}`
     return res.status(201).json({ ok: true, invite_url, email: cleanEmail, role })
   }
 

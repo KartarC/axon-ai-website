@@ -5,6 +5,9 @@ import { toastSuccess, toastError }  from '../../_shared/toast.js'
 
 const session = requireModule('production-board')
 if (!session) throw new Error('Access denied')
+const canManage = ['owner','admin','manager'].includes(session.role)
+const canOperate = canManage || session.role === 'operator'
+if (!canManage) document.getElementById('newJobBtn').hidden = true
 
 renderNav('/app/modules/production-board/')
 
@@ -136,7 +139,7 @@ function renderCard(entry) {
 
   return `
     <div class="job-card job-card--${pri}"
-         draggable="true"
+         draggable="${canManage}"
          data-entry-id="${entry.id}"
          data-job-id="${job.id}"
          data-token="${job.public_token || ''}"
@@ -164,10 +167,10 @@ function renderCard(entry) {
       </div>
 
       <div class="jc-actions">
-        ${entry.board_col !== 'complete'
+        ${canOperate && entry.board_col !== 'complete'
           ? getNextActionBtn(entry)
           : ''}
-        <button class="jc-btn" data-action="qr" data-entry-id="${entry.id}">
+        <button class="jc-btn" data-action="qr" data-entry-id="${entry.id}" ${!job.public_token ? 'hidden' : ''}>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1"/><rect x="7" y="1" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1"/><rect x="1" y="7" width="4" height="4" rx=".5" stroke="currentColor" stroke-width="1"/><rect x="8" y="8" width="1.5" height="1.5" fill="currentColor"/><rect x="10" y="8" width="1.5" height="1.5" fill="currentColor"/><rect x="8" y="10" width="1.5" height="1.5" fill="currentColor"/><rect x="10" y="10" width="1.5" height="1.5" fill="currentColor"/></svg>
           QR
         </button>
@@ -232,6 +235,7 @@ function attachCardListeners() {
 let dragId = null
 
 function attachDragListeners() {
+  if (!canManage) return
   document.querySelectorAll('.job-card').forEach(card => {
     card.addEventListener('dragstart', e => {
       dragId = card.dataset.entryId

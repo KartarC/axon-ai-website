@@ -6,6 +6,12 @@ import { toastError, toastSuccess } from './_shared/toast.js'
 const session = requireAuth()
 if (!session) throw new Error('Not authenticated')
 renderNav('/app/billing')
+if (!['owner','admin'].includes(session.role)) {
+  document.querySelectorAll('.plan-btn, #portalBtn').forEach(btn => {
+    btn.disabled = true
+    btn.title = 'Only shop owners and admins can manage billing'
+  })
+}
 document.getElementById('mobileNavBtn')?.addEventListener('click', () => document.getElementById('app-nav').classList.toggle('open'))
 
 const params = new URLSearchParams(location.search)

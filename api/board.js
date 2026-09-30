@@ -34,7 +34,7 @@ async function tryAutoLogCost(ctx, entryId, entry) {
 // POST   (no id, no action) → create board entry
 // PATCH  ?id=X              → update entry (status, machine, notes)
 // POST   ?action=move       → { id, board_col, machine_id, sort_order } atomic move
-const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
+const { sb, requireAuth, requireModule, requireRole, requireRecord, cors } = require('./_lib/supabase')
 
 export default async function handler(req, res) {
   cors(res)
@@ -53,6 +53,9 @@ export default async function handler(req, res) {
       `&select=*,jobs(id,job_number,part_name,quantity,due_date,priority,status,public_token,customers(id,name)),machines(id,name,machine_no)` +
       `&order=sort_order.asc`
     )
+    if (ctx.role === 'viewer') for (const entry of entries || []) {
+      if (entry.jobs) delete entry.jobs.public_token
+    }
     return res.status(200).json(entries || [])
   }
 
@@ -64,6 +67,7 @@ export default async function handler(req, res) {
 
     const jobs = await sb('GET', `jobs?id=eq.${job_id}&account_id=eq.${ctx.account.id}`)
     if (!jobs?.length) return res.status(404).json({ error: 'Job not found' })
+    if (machine_id && !await requireRecord(ctx, 'machines', machine_id, res)) return
 
     const [entry] = await sb('POST', 'board_entries', {
       account_id: ctx.account.id, job_id,
@@ -76,6 +80,10 @@ export default async function handler(req, res) {
 
   // ── PATCH: update entry (?id=X) ──────────────────────────
   if (req.method === 'PATCH' && id) {
+    if (!requireRole(ctx, ['owner','admin','manager','operator'], res)) return
+    if (ctx.role === 'operator' && Object.keys(req.body || {}).some(k => !['status','board_col','notes'].includes(k)))
+      return res.status(403).json({ error: 'Operators can update progress and notes only' })
+    if (req.body?.machine_id && !await requireRecord(ctx, 'machines', req.body.machine_id, res)) return
     const rows = await sb('GET', `board_entries?id=eq.${id}&account_id=eq.${ctx.account.id}`)
     if (!rows?.length) return res.status(404).json({ error: 'Entry not found' })
 
@@ -100,9 +108,11 @@ export default async function handler(req, res) {
 
   // ── POST ?action=move: atomic card move ──────────────────
   if (req.method === 'POST' && action === 'move') {
+    if (!requireRole(ctx, ['owner','admin','manager'], res)) return
     const { id: entryId, board_col, machine_id, sort_order } = req.body || {}
     if (!entryId || !board_col) return res.status(400).json({ error: 'id and board_col required' })
     if (!['queue','setup','running','complete'].includes(board_col)) return res.status(400).json({ error: 'Invalid board_col' })
+    if (machine_id && !await requireRecord(ctx, 'machines', machine_id, res)) return
 
     const rows = await sb('GET', `board_entries?id=eq.${entryId}&account_id=eq.${ctx.account.id}`)
     if (!rows?.length) return res.status(404).json({ error: 'Entry not found' })

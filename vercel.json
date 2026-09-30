@@ -4,19 +4,56 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
       ]
     }
   ],
   "rewrites": [
-    { "source": "/app",               "destination": "/app/index.html" },
-    { "source": "/app/accept-invite", "destination": "/app/accept-invite.html" },
-    { "source": "/app/axon-admin",    "destination": "/app/axon-admin/index.html" },
-    { "source": "/app/operator/job",  "destination": "/app/operator/job.html" }
+    {
+      "source": "/app",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/app/accept-invite",
+      "destination": "/app/accept-invite.html"
+    },
+    {
+      "source": "/app/axon-admin",
+      "destination": "/app/axon-admin/index.html"
+    },
+    {
+      "source": "/app/operator/job",
+      "destination": "/app/operator/job.html"
+    }
   ],
   "crons": [
-    { "path": "/api/billing?action=cron", "schedule": "0 13 * * *" }
+    {
+      "path": "/api/billing?action=cron",
+      "schedule": "0 13 * * *"
+    }
   ]
 }

@@ -1,6 +1,7 @@
 // Shared Supabase helpers for Vercel serverless functions
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY
+const { validateIds, isUuid, secretMatches } = require('./security')
 
 if (!SUPABASE_URL || !SERVICE_KEY) {
   console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars')
@@ -25,7 +26,8 @@ async function sb(method, path, body, extraHeaders = {}) {
   })
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`Supabase ${method} ${path} → ${res.status}: ${err}`)
+    console.error(`Database request failed (${res.status})`)
+    throw new Error('Database request failed')
   }
   const text = await res.text()
   return text ? JSON.parse(text) : null
@@ -82,6 +84,8 @@ async function getAccountContext(userId) {
 // Returns { user, role, account } or sends 401/402/403 and returns null.
 // opts.allowExpired: skip the trial-expiry gate (used by billing + session endpoints)
 async function requireAuth(req, res, opts = {}) {
+  if (!validateIds(req, res)) return null
+  res.setHeader('Cache-Control', 'no-store')
   const authHeader = req.headers['authorization'] || ''
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
   if (!token) {
@@ -133,8 +137,9 @@ function requireRole(ctx, roles, res) {
 
 // ── Require Billet admin (ADMIN_SECRET header) ─────────────────
 function requireAxonAdmin(req, res) {
-  const secret = req.headers['x-admin-secret'] || req.query?.secret
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (!validateIds(req, res)) return false
+  const secret = req.headers['x-admin-secret']
+  if (!secretMatches(secret, process.env.ADMIN_SECRET)) {
     res.status(403).json({ error: 'Billet admin access required' })
     return false
   }
@@ -148,4 +153,11 @@ function cors(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Admin-Secret')
 }
 
-module.exports = { sb, authAdmin, validateToken, getAccountContext, requireAuth, requireModule, requireRole, requireAxonAdmin, cors }
+async function requireRecord(ctx, table, id, res) {
+  if (!isUuid(id)) { res.status(400).json({ error: 'Invalid record ID' }); return null }
+  const rows = await sb('GET', `${table}?id=eq.${id}&account_id=eq.${ctx.account.id}&select=*`)
+  if (!rows?.length) { res.status(404).json({ error: 'Record not found' }); return null }
+  return rows[0]
+}
+
+module.exports = { sb, authAdmin, validateToken, getAccountContext, requireAuth, requireModule, requireRole, requireRecord, requireAxonAdmin, cors }

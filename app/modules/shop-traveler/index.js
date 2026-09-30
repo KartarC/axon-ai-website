@@ -5,6 +5,9 @@ import { toastSuccess, toastError }   from '../../_shared/toast.js'
 
 const session = requireModule('shop-traveler')
 if (!session) throw new Error('Access denied')
+const canManage = ['owner','admin','manager'].includes(session.role)
+const canOperate = canManage || session.role === 'operator'
+if (!canManage) document.getElementById('manageTemplatesBtn').hidden = true
 renderNav('/app/modules/shop-traveler/')
 document.getElementById('mobileNavBtn')?.addEventListener('click', () => document.getElementById('app-nav').classList.toggle('open'))
 
@@ -123,12 +126,14 @@ function renderSteps() {
   document.getElementById('emptyApplyTmpl')?.addEventListener('click', () => openTemplateModal())
   document.getElementById('addStepBtn')?.addEventListener('click',    () => openAddStepModal())
   attachStepListeners()
+  if (!canManage) document.querySelectorAll('#applyTmplBtn,#emptyApplyTmpl,#addStepBtn,[data-step-action="delete"]').forEach(el => { el.hidden = true })
+  if (!canOperate) document.querySelectorAll('[data-step-action]').forEach(el => { el.hidden = true })
 }
 
 function renderStep(s, idx) {
   const statusIcon = { pending:'', in_progress:'▶', complete:'✓', flagged:'!' }[s.status] || ''
   const dimValue = s.dimension_value
-    ? `<div class="step-dim"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2v8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${s.dimension_label || 'Measured'}: <strong>${esc(s.dimension_value)} ${esc(s.dimension_unit || '')}</strong></div>`
+    ? `<div class="step-dim"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2v8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>${esc(s.dimension_label || 'Measured')}: <strong>${esc(s.dimension_value)} ${esc(s.dimension_unit || '')}</strong></div>`
     : (s.requires_dimension ? `<div style="font-size:.75rem;color:var(--gray-300);font-style:italic;margin-bottom:4px">${esc(s.dimension_label || 'Dimension')} — not yet recorded</div>` : '')
 
   const completedInfo = s.completed_at
@@ -177,9 +182,11 @@ function attachStepListeners() {
         if (step?.requires_dimension) {
           const val = prompt(`Record ${step.dimension_label || 'dimension'} (${step.dimension_unit || 'in'}):`)
           if (val === null) return
-          await patchStep(stepId, { status: 'complete', dimension_value: val.trim() })
+          if (step.requires_sign_off && !confirm('Sign off this step with your account?')) return
+          await patchStep(stepId, { status: 'complete', dimension_value: val.trim(), sign_off: !!step.requires_sign_off })
         } else {
-          await patchStep(stepId, { status: 'complete' })
+          if (step?.requires_sign_off && !confirm('Sign off this step with your account?')) return
+          await patchStep(stepId, { status: 'complete', sign_off: !!step?.requires_sign_off })
         }
       } else if (action === 'flag') {
         openFlagModal(stepId, btn.dataset.stepTitle)

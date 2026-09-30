@@ -1,10 +1,9 @@
 // Billet — API fetch wrapper with JWT + auto-refresh
 import { getSession, refreshToken, clearSession } from './auth.js'
 
-let isRefreshing = false
-let refreshQueue = []
+let refreshPromise = null
 
-export async function apiFetch(path, options = {}) {
+export async function apiFetch(path, options = {}, retried = false) {
   const session = getSession()
   if (!session) {
     window.location.href = '/app/login.html'
@@ -21,31 +20,21 @@ export async function apiFetch(path, options = {}) {
 
   // Handle 401 — try token refresh once
   if (res.status === 401) {
-    if (isRefreshing) {
-      // Wait for the ongoing refresh
-      return new Promise((resolve, reject) => {
-        refreshQueue.push({ resolve, reject, path, options })
-      })
+    if (retried) {
+      clearSession()
+      window.location.href = '/app/login.html?expired=1'
+      throw new Error('Session expired')
     }
-
-    isRefreshing = true
-    const newToken = await refreshToken()
-    isRefreshing = false
-
+    if (!refreshPromise) {
+      refreshPromise = refreshToken().catch(() => null).finally(() => { refreshPromise = null })
+    }
+    const newToken = await refreshPromise
     if (!newToken) {
       clearSession()
       window.location.href = '/app/login.html?expired=1'
       throw new Error('Session expired')
     }
-
-    // Retry queued requests
-    refreshQueue.forEach(({ resolve, reject, path: p, options: o }) => {
-      apiFetch(p, o).then(resolve).catch(reject)
-    })
-    refreshQueue = []
-
-    // Retry original request
-    return apiFetch(path, options)
+    return apiFetch(path, options, true)
   }
 
   // Trial expired — route to the upgrade page (unless we're already on it)

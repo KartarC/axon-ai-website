@@ -9,7 +9,8 @@
 // Checkout uses inline price_data, so no products need to be created in the
 // Stripe dashboard. Required env: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET.
 const crypto = require('crypto')
-const { sb, requireAuth, cors } = require('./_lib/supabase')
+const { sb, requireAuth, requireRole, cors } = require('./_lib/supabase')
+const { siteUrl, secretMatches } = require('./_lib/security')
 const { sendEmail, getOwnerEmail, trialReminderEmail, trialExpiredEmail } = require('./_lib/email')
 
 // Raw body needed for webhook signature verification
@@ -25,15 +26,15 @@ const PLANS = {
 }
 const ALL_MODULES = ['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
 
-function siteUrl(req) {
-  const proto = req.headers['x-forwarded-proto'] || 'https'
-  const host  = req.headers['x-forwarded-host'] || req.headers.host
-  return `${proto}://${host}`
-}
-
 async function readRawBody(req) {
   const chunks = []
-  for await (const chunk of req) chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
+  let size = 0
+  for await (const chunk of req) {
+    const data = typeof chunk === 'string' ? Buffer.from(chunk) : chunk
+    size += data.length
+    if (size > 1024 * 1024) throw new Error('Request too large')
+    chunks.push(data)
+  }
   return Buffer.concat(chunks)
 }
 
@@ -51,12 +52,12 @@ async function stripe(path, params) {
 }
 
 function verifyStripeSignature(rawBody, sigHeader) {
-  if (!sigHeader) return false
-  const parts = Object.fromEntries(sigHeader.split(',').map(p => p.split('=')))
-  const t = parts.t, v1 = parts.v1
-  if (!t || !v1) return false
+  if (typeof sigHeader !== 'string' || !WEBHOOK_SECRET) return false
+  const parts = sigHeader.split(',').map(part => part.trim().split('='))
+  const t = parts.find(([key]) => key === 't')?.[1]
+  if (!/^\d+$/.test(t || '') || Math.abs(Date.now() / 1000 - Number(t)) > 300) return false
   const expected = crypto.createHmac('sha256', WEBHOOK_SECRET).update(`${t}.${rawBody}`).digest('hex')
-  try { return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(v1)) } catch { return false }
+  return parts.some(([key,value]) => key === 'v1' && /^[0-9a-f]{64}$/i.test(value || '') && secretMatches(value.toLowerCase(), expected))
 }
 
 export default async function handler(req, res) {
@@ -64,7 +65,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   const { action } = req.query
 
-  const raw = req.method === 'POST' ? await readRawBody(req) : null
+  let raw
+  try { raw = req.method === 'POST' ? await readRawBody(req) : null }
+  catch (_) { return res.status(413).json({ error: 'Request too large' }) }
   const body = raw && action !== 'webhook' ? (() => { try { return JSON.parse(raw.toString('utf8') || '{}') } catch { return {} } })() : {}
 
   // ── WEBHOOK ──────────────────────────────────────────────
@@ -76,31 +79,11 @@ export default async function handler(req, res) {
     let event
     try { event = JSON.parse(raw.toString('utf8')) } catch { return res.status(400).json({ error: 'Bad payload' }) }
 
-    if (event.type === 'checkout.session.completed') {
-      const s = event.data.object
-      const accountId = s.metadata?.account_id
-      const plan      = s.metadata?.plan
-      if (accountId && PLANS[plan]) {
-        // Set plan + trim modules to the plan's entitlement (production-board kept first)
-        const [acc] = await sb('GET', `accounts?id=eq.${accountId}&select=modules`) || []
-        const current = acc?.modules?.length ? acc.modules : ALL_MODULES
-        const ordered = ['production-board', ...current.filter(m => m !== 'production-board')]
-        const modules = plan === 'suite' ? ALL_MODULES : ordered.slice(0, PLANS[plan].modules_limit)
-        await sb('PATCH', `accounts?id=eq.${accountId}`, {
-          plan, modules, status: 'active',
-          stripe_customer_id:     s.customer || null,
-          stripe_subscription_id: s.subscription || null,
-          trial_ends_at: null,
-        })
-      }
-    }
-
-    if (event.type === 'customer.subscription.deleted') {
-      const sub = event.data.object
-      const rows = await sb('GET', `accounts?stripe_subscription_id=eq.${sub.id}&select=id`)
-      if (rows?.length) {
-        await sb('PATCH', `accounts?id=eq.${rows[0].id}`, { status: 'suspended' })
-      }
+    if (typeof event.id !== 'string' || !Number.isSafeInteger(event.created) || !event.data?.object)
+      return res.status(400).json({ error: 'Invalid event' })
+    if (['checkout.session.completed','customer.subscription.deleted'].includes(event.type)) {
+      try { await sb('POST', 'rpc/billet_process_billing_event', { p_event: event }) }
+      catch (_) { return res.status(500).json({ error: 'Could not process billing event; retry later' }) }
     }
 
     return res.status(200).json({ received: true })
@@ -108,10 +91,9 @@ export default async function handler(req, res) {
 
   // ── CRON: daily trial lifecycle ──────────────────────────
   if (action === 'cron' && req.method === 'GET') {
-    if (process.env.CRON_SECRET) {
-      const auth = req.headers['authorization'] || ''
-      if (auth !== `Bearer ${process.env.CRON_SECRET}`) return res.status(401).json({ error: 'Unauthorized' })
-    }
+    if (!process.env.CRON_SECRET) return res.status(503).json({ error: 'Cron not configured' })
+    if (!secretMatches(req.headers.authorization, `Bearer ${process.env.CRON_SECRET}`))
+      return res.status(401).json({ error: 'Unauthorized' })
     const base = process.env.SITE_URL || siteUrl(req)
     const today = new Date().toISOString().slice(0, 10)
     const soon  = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10)
@@ -148,6 +130,7 @@ export default async function handler(req, res) {
 
   // ── CHECKOUT ─────────────────────────────────────────────
   if (action === 'checkout' && req.method === 'POST') {
+    if (!requireRole(ctx, ['owner','admin'], res)) return
     if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact hello@billet.app' })
     const plan = body?.plan
     if (!PLANS[plan]) return res.status(400).json({ error: 'plan must be starter, growth, or suite' })
@@ -184,6 +167,7 @@ export default async function handler(req, res) {
 
   // ── PORTAL ───────────────────────────────────────────────
   if (action === 'portal' && req.method === 'POST') {
+    if (!requireRole(ctx, ['owner','admin'], res)) return
     if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet' })
     if (!ctx.account.stripe_customer_id) return res.status(400).json({ error: 'No billing account yet — subscribe to a plan first' })
     try {

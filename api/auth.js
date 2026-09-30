@@ -2,13 +2,15 @@
 // GET  ?action=session          → validate JWT, return account context
 // GET  ?action=accept-invite&token=X → validate invite token, return invite info
 // POST ?action=accept-invite    → { token, password } → activate account
-const { sb, authAdmin, requireAuth, cors } = require('./_lib/supabase')
+const { sb, authAdmin, requireAuth, validateToken, cors } = require('./_lib/supabase')
+const { isToken, siteUrl } = require('./_lib/security')
 const { sendEmail, welcomeEmail } = require('./_lib/email')
 
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(200).end()
 
+  res.setHeader('Cache-Control', 'no-store')
   const action = req.query.action
 
   // ── GET session ──────────────────────────────────────────
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
   // ── GET accept-invite: validate token ────────────────────
   if (action === 'accept-invite' && req.method === 'GET') {
     const { token } = req.query
-    if (!token) return res.status(400).json({ error: 'Token required' })
+    if (!isToken(token, 64)) return res.status(400).json({ error: 'Invalid token' })
 
     const rows = await sb('GET',
       `account_invites?token=eq.${token}&select=email,role,expires_at,accepted_at,account_id,accounts(name,plan)`
@@ -44,57 +46,47 @@ export default async function handler(req, res) {
     })
   }
 
-  // ── POST accept-invite: set password + onboard ───────────
+  // Existing identities must prove possession of their login. Never reset a password here.
   if (action === 'accept-invite' && req.method === 'POST') {
     const { token, password } = req.body || {}
-    if (!token || !password) return res.status(400).json({ error: 'token and password required' })
-    if (password.length < 8)  return res.status(400).json({ error: 'Password must be at least 8 characters' })
+    if (!isToken(token, 64)) return res.status(400).json({ error: 'Invalid token' })
+    const [invite] = await sb('GET', `account_invites?token=eq.${token}&select=*`) || []
+    if (!invite || invite.accepted_at || new Date(invite.expires_at) <= new Date())
+      return res.status(410).json({ error: 'Invite is invalid, expired, or already used' })
 
-    const rows = await sb('GET', `account_invites?token=eq.${token}&select=*`)
-    if (!rows || rows.length === 0) return res.status(404).json({ error: 'Invite not found' })
-    const invite = rows[0]
-    if (invite.accepted_at) return res.status(410).json({ error: 'Invite already used' })
-    if (new Date(invite.expires_at) < new Date()) return res.status(410).json({ error: 'Invite expired' })
-
-    let authUserId
-    try {
-      const usersRes = await fetch(
-        `${process.env.SUPABASE_URL}/auth/v1/admin/users?email=${encodeURIComponent(invite.email)}`,
-        { headers: { Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, apikey: process.env.SUPABASE_SERVICE_ROLE_KEY } }
-      )
-      const usersData = await usersRes.json()
-      const existing  = usersData?.users?.find(u => u.email === invite.email)
-
-      if (existing) {
-        authUserId = existing.id
-        await authAdmin('PUT', `users/${authUserId}`, { password, email_confirm: true })
-      } else {
-        const newUser = await authAdmin('POST', 'users', { email: invite.email, password, email_confirm: true })
-        authUserId = newUser.id
+    let user, session
+    const bearer = req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null
+    if (bearer) {
+      user = await validateToken(bearer)
+      if (!user || user.email?.toLowerCase() !== invite.email.toLowerCase())
+        return res.status(403).json({ error: 'Sign in with the email address on this invitation' })
+    } else {
+      if (typeof password !== 'string' || password.length < 8 || password.length > 256)
+        return res.status(400).json({ error: 'A password of 8–256 characters is required' })
+      const login = () => fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', apikey: process.env.SUPABASE_SERVICE_ROLE_KEY },
+        body: JSON.stringify({ email: invite.email, password }),
+      })
+      let response = await login()
+      if (!response.ok) {
+        // Creating a NEW identity fails on an existing email. No lookup/update fallback.
+        try { await authAdmin('POST', 'users', { email: invite.email, password, email_confirm: true }) }
+        catch (_) { return res.status(403).json({ error: 'Use your existing password, or recover your account before accepting this invite' }) }
+        response = await login()
       }
-    } catch (err) {
-      console.error('Auth user error:', err)
-      return res.status(500).json({ error: 'Failed to set up user account' })
+      if (!response.ok) return res.status(401).json({ error: 'Please sign in and try accepting the invite again' })
+      session = await response.json()
+      user = session.user
+      if (!user?.id || user.email?.toLowerCase() !== invite.email.toLowerCase())
+        return res.status(403).json({ error: 'Invitation identity does not match' })
     }
-
-    await sb('POST', 'account_users', {
-      account_id: invite.account_id,
-      user_id:    authUserId,
-      role:       invite.role,
-      full_name:  invite.email.split('@')[0],
+    // This service-role-only RPC locks and consumes the invitation with membership creation.
+    const result = await sb('POST', 'rpc/billet_accept_invite', {
+      p_token: token, p_user_id: user.id, p_email: user.email,
     })
-    await sb('PATCH', `account_invites?token=eq.${token}`, { accepted_at: new Date().toISOString() })
-
-    // Auto-login
-    const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', apikey: process.env.SUPABASE_SERVICE_ROLE_KEY },
-      body:    JSON.stringify({ email: invite.email, password }),
-    })
-    const loginData = await loginRes.json()
-    if (!loginRes.ok) return res.status(200).json({ ok: true, auto_login: false })
-
-    return res.status(200).json({ ok: true, auto_login: true, access_token: loginData.access_token, refresh_token: loginData.refresh_token })
+    if (!result?.ok) return res.status(409).json({ error: result?.error || 'Invite could not be accepted' })
+    return res.status(200).json({ ok: true, auto_login: !!session,
+      ...(session ? { access_token: session.access_token, refresh_token: session.refresh_token } : {}) })
   }
 
   // ── POST signup: self-serve shop signup (14-day trial, all modules) ──
@@ -148,9 +140,7 @@ export default async function handler(req, res) {
     })
 
     // Welcome email (fire-and-forget — never blocks signup)
-    const proto = req.headers['x-forwarded-proto'] || 'https'
-    const host  = req.headers['x-forwarded-host'] || req.headers.host
-    sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, `${proto}://${host}`) }).catch(() => {})
+    sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, siteUrl()) }).catch(() => {})
 
     // Auto-login so the client can go straight into onboarding
     const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
