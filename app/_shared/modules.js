@@ -1,7 +1,7 @@
 // Billet — Module registry and feature flag helpers
 export const MODULES = {
   'laser-quoting': {
-    slug: 'laser-quoting', name: 'Laser Quoting', phase: 1,
+    slug: 'laser-quoting', name: 'Quoting', phase: 1,
     desc: 'Import Han’s reports and prepare quotations using your shop’s rates.',
     path: '/app/modules/laser-quoting/', plans: ['starter','growth','suite'],
     roi: 'Pilot · staff quoting', roles: ['owner','admin','manager'],
