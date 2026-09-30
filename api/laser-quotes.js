@@ -19,6 +19,20 @@ export default async function handler(req,res){
     if(req.method==='POST'&&action==='profiles'){
       if(!requireRole(ctx,['owner','admin'],res))return
       const name=text(body.name,'profile name',100,true),rates=normalizeRates(body.rates)
+      const meta=body.profile||{kind:'shop'}
+      if(!['shop','customer','machine','gas','electricity'].includes(meta.kind))bad('Choose a profile type.')
+      rates._profile={kind:meta.kind,customer_id:null,machine_id:null}
+      for(const [key,kind] of [['customer_id','customer'],['machine_id','machine']])if(meta[key]){
+        const parent=await own('billet_laser_profiles',meta[key],account)
+        if(parent.rates._profile?.kind!==kind)bad('Invalid profile association.')
+        rates._profile[key]=parent.id
+      }
+      if(meta.kind==='customer'){
+        rates._profile.customer=text(meta.customer||name,'customer',160,true)
+        rates._profile.terms=text(meta.terms||'','terms',2000)
+        const days=Number(meta.valid_days||30);if(!Number.isInteger(days)||days<1||days>365)bad('Invalid validity.')
+        rates._profile.valid_days=days
+      }
       if(body.id){await own('billet_laser_profiles',body.id,account);return res.status(200).json((await sb('PATCH',`billet_laser_profiles?id=eq.${body.id}&account_id=eq.${account}`,{name,rates,updated_at:new Date().toISOString()}))[0])}
       return res.status(201).json((await sb('POST','billet_laser_profiles',{account_id:account,name,rates}))[0])
     }
@@ -49,6 +63,12 @@ export default async function handler(req,res){
       if(!result.complete)bad('Complete the missing costing settings before saving.')
       if(!isUuid(body.request_id))bad('Missing save request ID.')
       if(body.previous_id&&!isUuid(body.previous_id))bad('Invalid previous quote ID.')
+      result.profiles={}
+      for(const [key,kind] of [['customer_id','customer'],['machine_id','machine']])if(body[key]){
+        const profile=await own('billet_laser_profiles',body[key],account)
+        if(profile.rates._profile?.kind!==kind)bad('Invalid quote profile.')
+        result.profiles[key]={id:profile.id,name:profile.name}
+      }
       const details={customer:text(body.customer,'customer',160,true),reference:text(body.reference||'','reference',160),terms:text(body.terms||'','terms',2000),valid_days:body.valid_days??30}
       if(!Number.isInteger(details.valid_days)||details.valid_days<1||details.valid_days>365)bad('Quote validity must be 1–365 days.')
       const saved=await sb('POST','rpc/billet_laser_save',{p_account:account,p_user:ctx.user.id,p_id:body.request_id,p_import:imported.id,p_previous:body.previous_id||null,p_details:details,p_result:result})

@@ -53,3 +53,15 @@ Push the feature branch for a Vercel preview. Validate authentication, import, c
 ## Follow-up scope
 
 Multi-sheet and repeated-run semantics need further real exports. Per-part selling-price allocation, tax handling, conversion of accepted quotes into production jobs, remnant inventory, file retention and direct Han’s API/SDK integration are not in this pilot. Accepted quotes are recorded but do not create jobs. The pilot has no public/customer upload form.
+
+## Guided profiles and report autofill
+
+Each field has an accessible, keyboard-operable help button and a required/optional label. Conditional setup/labor requirements update with time values. Optional adjustments default to zero; unknown gas and electrical consumption do not. The guide explains report review, profile loading, costing, saving and customer printing.
+
+Import fills a blank reference from the report program and suggests a blank full-sheet price from the report material charge divided by sheet count. Suggestions are marked for review and never silently overwrite manual values. Other report inputs remain visible in the source summary. Imported charges are not asserted to be supplier costs.
+
+Profiles have customer, machine, gas, electricity or complete-shop types. Type and optional customer/machine associations are stored in the existing rates JSON under _profile, so no schema change is needed. Parent IDs are checked for account ownership and profile type. Customer profiles load commercial defaults; machine profiles load machine cost, power and labor rates; gas profiles load gas settings; electricity profiles load the tariff/mode. Currency mismatch blocks loading a monetary profile instead of converting it. All saves remain staff/account scoped; only owners/admins create profiles. Saved quotes retain rate snapshots and selected customer/machine profile IDs and names, so later profile changes cannot rewrite historical prices.
+
+The customer document includes a high-level explanation of material, processing, utility estimates and commercial terms. It omits hourly rates, component costs and margins.
+
+The local browser fixture accepts an optional dataDir for a durable PGlite database. Its default remains isolated memory for tests. The persistence test creates a temporary directory, saves all four profile types and a quotation through the real API, closes the database, reopens it and verifies values and associations. This local test fixture uses synthetic authentication and must never be deployed or exposed beyond loopback. The active desktop pilot stores saved records under the Codex workspace work/laser-quoting-data directory. Press Save revision or Save new profile; unsaved form changes are not automatically stored. Local persistence is not cloud sync or a backup service.

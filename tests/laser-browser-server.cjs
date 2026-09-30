@@ -2,8 +2,8 @@
 const fs=require('fs'),path=require('path'),http=require('http'),vm=require('vm')
 const {setup}=require('./database-laser.cjs')
 const root=path.resolve(__dirname,'..'),A='10000000-0000-4000-8000-000000000001',U='20000000-0000-4000-8000-000000000001'
-async function start(){
- const db=await setup();await db.exec(`insert into accounts values('${A}');insert into auth.users values('${U}');insert into account_users values('${A}','${U}','owner');set role service_role;`)
+async function start(options={}){
+ const db=await setup(options.dataDir);await db.exec(`insert into accounts values('${A}') on conflict do nothing;insert into auth.users values('${U}') on conflict do nothing;insert into account_users select '${A}','${U}','owner' where not exists(select 1 from account_users where account_id='${A}' and user_id='${U}');set role service_role;`)
  async function sb(method,url,body){
   if(url.startsWith('rpc/')){const fn=url.slice(4);if(!['billet_laser_save','billet_laser_status'].includes(fn))throw Error('Unexpected RPC');const values=Object.values(body);return(await db.query(`select public.${fn}(${values.map((_,i)=>'$'+(i+1)).join(',')}) as r`,values)).rows[0].r}
   const [table,search='']=url.split('?');if(!['billet_laser_quotes','billet_laser_profiles','billet_laser_imports'].includes(table))throw Error('Unexpected table')
@@ -24,6 +24,6 @@ async function start(){
   let p=path.resolve(root,'.'+decodeURIComponent(url.pathname));if(!p.startsWith(root+path.sep)){res.writeHead(403).end();return}if(fs.statSync(p).isDirectory())p=path.join(p,'index.html');res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'})[path.extname(p)]||'application/octet-stream');res.end(fs.readFileSync(p))
  }catch(e){res.writeHead(500).end('Local fixture error');console.error(e.message)}})
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve))
- return{url:'http://127.0.0.1:'+server.address().port,account,user:{id:U},close:async()=>{await new Promise(resolve=>server.close(resolve));await db.close()}}
+ return{db,url:'http://127.0.0.1:'+server.address().port,account,user:{id:U},close:async()=>{await new Promise(resolve=>server.close(resolve));await db.close()}}
 }
 module.exports={start}

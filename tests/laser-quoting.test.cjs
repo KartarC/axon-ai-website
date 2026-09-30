@@ -27,3 +27,16 @@ test('managers cannot change shared rate profiles',async()=>{assert.equal((await
 test('foreign import and injected IDs are denied before saving',async()=>{let calls=[];const h=handler('manager',async(m,p)=>{calls.push(p);return []});assert.equal((await call(h,'calculate',{import_id:I,rates:rates()})).code,404);assert(calls[0].includes('account_id=eq.'+A));calls=[];assert.equal((await call(h,'calculate',{import_id:I+'&select=*',rates:rates()})).code,400);assert.equal(calls.length,0)})
 test('server ignores client totals and recalculates its own canonical source',async()=>{const s=await source();let saved;const h=handler('manager',async(m,p,b)=>{if(p.startsWith('billet_laser_imports'))return[{id:I,source:s}];saved=b;return{id:I}});const r=await call(h,'save',{import_id:I,request_id:I,reviewed:true,customer:'Test',rates:rates(),result:{price:.01}});assert.equal(r.code,201);assert(saved.p_result.price>200);assert.equal(saved.p_account,A)})
 test('unchecked review and incomplete calculations cannot save',async()=>{const s=await source();let writes=0;const h=handler('manager',async(m)=>{if(m==='POST')writes++;return[{id:I,source:s}]});assert.equal((await call(h,'save',{import_id:I,rates:rates(),reviewed:false})).code,400);assert.equal((await call(h,'save',{import_id:I,rates:rates({energyPrice:''}),reviewed:true})).code,400);assert.equal(writes,0)})
+
+test('profile associations cannot reference another shop or the wrong profile type',async()=>{
+ let writes=0;const h=handler('owner',async(m,p)=>{if(m==='POST')writes++;assert(p.includes('account_id=eq.'+A));return []})
+ assert.equal((await call(h,'profiles',{name:'Gas',rates:rates(),profile:{kind:'gas',customer_id:I}})).code,404);assert.equal(writes,0)
+ const wrong=handler('owner',async()=>[{id:I,rates:{_profile:{kind:'gas'}}}])
+ assert.equal((await call(wrong,'profiles',{name:'Gas',rates:rates(),profile:{kind:'gas',machine_id:I}})).code,400)
+})
+test('customer defaults and scoped standards retain validated metadata',async()=>{
+ let saved;const h=handler('owner',async(m,p,b)=>{saved=b;return[b]})
+ const r=await call(h,'profiles',{name:'Customer A',rates:rates(),profile:{kind:'customer',customer:'Customer A',terms:'Net 30',valid_days:14}})
+ assert.equal(r.code,201);assert.equal(saved.rates._profile.terms,'Net 30');assert.equal(saved.rates._profile.valid_days,14)
+ assert.equal((await call(h,'profiles',{name:'Bad',rates:rates(),profile:{kind:'unknown'}})).code,400)
+})
