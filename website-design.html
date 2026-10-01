@@ -91,34 +91,13 @@
       .process-steps{grid-template-columns:1fr}
     }
   </style>
-<link rel="stylesheet" href="/ovrendi-brand.css?v=1">
+<link rel="stylesheet" href="/ovrendi-brand.css?v=2">
 <meta name="theme-color" content="#D9042B">
 </head>
 <body>
 
 <!-- NAV -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo" aria-label="Ovrendi homepage">
-      <img class="ovrendi-mark" src="/assets/ovrendi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
-      <span class="logo-text">Ovrendi</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="tools.html">Tools</a></li>
-      <li><a href="website-design.html" style="color:var(--gray-900);font-weight:700">Website Design</a></li>
-      <li><a href="index.html#pricing">Pricing</a></li>
-    </ul>
-    <div class="nav-ctas">
-      <a href="index.html#demo" class="nav-link-btn">Book Demo</a>
-      <a href="index.html#demo" class="nav-cta-btn">Get Started
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><line x1="2" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="11" x2="20" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="2" y1="16" x2="20" y2="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-</nav>
+<header class="ov-global"><nav aria-label="Ovrendi divisions"><a class="ov-global-brand" href="/" aria-label="Ovrendi home"><img src="/assets/ovrendi-mark.svg" width="32" height="32" alt=""><span>Ovrendi</span></a><div class="ov-global-links"><a href="/erp/">ERP</a><a href="/crm/">CRM</a><a href="/studio/" aria-current="page">Studio</a><a href="/ai/">AI</a></div><a class="ov-global-login" href="/app/login.html">Sign in <span aria-hidden="true">↗</span></a></nav></header>
 
 <!-- HERO -->
 <div class="wd-hero">
@@ -128,7 +107,7 @@
       <h1>Your shop deserves a website that wins work</h1>
       <p>Most machine shop websites look like they were built in 2009 — and they lose jobs because of it. Ovrendi builds fast, professional, SEO-ranked websites for CNC shops and fabrication companies that turn visitors into RFQ requests.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <a href="index.html#demo" class="btn-primary">Get a Quote</a>
+        <a href="mailto:kartar.c@risetekmachinery.com?subject=Ovrendi%20Studio%20project" class="btn-primary">Get a Quote</a>
         <a href="#process" class="btn-outline">See the Process</a>
       </div>
       <div style="display:flex;gap:20px;margin-top:28px;flex-wrap:wrap">
@@ -368,7 +347,7 @@
       <div style="margin-top:20px;padding-top:20px;border-top:var(--border);font-size:.82rem;color:var(--gray-500)">
         Optional add-on: <strong style="color:var(--gray-800)">$299/mo SEO maintenance</strong> — monthly blog post, Google Business updates, ranking tracking, AEO/GEO citation monitoring.
       </div>
-      <a href="index.html#demo" class="btn-primary" style="display:block;text-align:center;margin-top:20px">Get a Website Quote</a>
+      <a href="mailto:kartar.c@risetekmachinery.com?subject=Ovrendi%20Studio%20project" class="btn-primary" style="display:block;text-align:center;margin-top:20px">Get a Website Quote</a>
     </div>
   </div>
 </section>
@@ -411,7 +390,7 @@
       <h2>Get a website that wins you more jobs</h2>
       <p>Book a 30-minute call. Tell us about your shop. We'll show you what a Ovrendi-built site looks like for a shop like yours and give you a firm quote on the spot.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px">
-        <a href="index.html#demo" class="btn-primary">Book a 30-Min Call</a>
+        <a href="mailto:kartar.c@risetekmachinery.com?subject=Ovrendi%20Studio%20project" class="btn-primary">Book a 30-Min Call</a>
         <a href="tools.html" class="btn-outline">Also explore our shop tools</a>
       </div>
     </div>
@@ -438,7 +417,7 @@
         <div class="footer-col-title">Shop Tools</div>
         <a href="tools.html">All Tools</a>
         <a href="tools.html#crm">Shop CRM</a>
-        <a href="index.html#demo">Book a Demo</a>
+        <a href="mailto:kartar.c@risetekmachinery.com?subject=Ovrendi%20Studio%20project">Book a Demo</a>
       </div>
     </div>
   </div>
@@ -458,7 +437,7 @@ hamburger?.addEventListener('click', () => {
     m = document.createElement('div')
     m.id = 'mobileMenuWD'
     m.className = 'mobile-menu'
-    m.innerHTML = '<a href="tools.html">Tools</a><a href="index.html#pricing">Pricing</a><a href="index.html#demo" class="mobile-cta">Book Demo</a>'
+    m.innerHTML = '<a href="tools.html">Tools</a><a href="index.html#pricing">Pricing</a><a href="mailto:kartar.c@risetekmachinery.com?subject=Ovrendi%20Studio%20project" class="mobile-cta">Book Demo</a>'
     document.body.appendChild(m)
   }
   m.classList.toggle('open')

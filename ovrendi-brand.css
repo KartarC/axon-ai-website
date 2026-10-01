@@ -56,3 +56,31 @@ body{color:var(--ov-ink)}
 .plan-badge--new{background:#D9042B;color:#FFFFFF}
 .ov-console .ovrendi-mark{width:42px;height:42px}
 @media(min-width:901px){.mobile-nav-btn{display:none}}
+
+/* Division architecture */
+.ov-global{background:#fff;border-bottom:1px solid #DEE5EB;position:relative;z-index:20}
+.ov-global nav{max-width:1180px;margin:auto;padding:20px 28px;display:flex;align-items:center;gap:32px}
+.ov-global-brand{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:800;letter-spacing:-.05em;color:#101820;text-decoration:none}
+.ov-global-links{display:flex;align-items:center;gap:28px;margin-left:auto}
+.ov-global-links a,.ov-global-login{font-size:.87rem;font-weight:600;text-decoration:none;color:#364651}
+.ov-global-links a:hover,.ov-global-links a[aria-current]{color:#B50322;text-decoration:underline;text-underline-offset:7px}
+.ov-global-login{background:#101820;color:white;padding:10px 17px;border-radius:8px;white-space:nowrap}
+.ov-four{grid-template-columns:repeat(4,minmax(0,1fr))}.ov-card-status{font-size:.75rem!important;min-height:3em}.ov-service{display:flex;flex-direction:column}.ov-service a{margin-top:auto}
+.ov-console-top{font-size:1.1rem}.ov-console-row span:last-child{white-space:normal;text-align:right;max-width:130px}
+.ov-division main,.ov-division-footer{max-width:1180px;margin:auto;padding-inline:28px}
+.ov-division-hero{display:grid;grid-template-columns:1.35fr 1fr;gap:64px;align-items:center;padding:80px 0}
+.ov-division h1{font-size:clamp(2.6rem,5.5vw,4.5rem);line-height:1.06;letter-spacing:-.055em;max-width:15ch;margin:0 0 25px}
+.ov-division-intro{color:#52606D;max-width:55ch;font-size:1.05rem;margin-bottom:28px}
+.ov-division-cta{display:inline-block;background:#D9042B;color:white;padding:13px 20px;border-radius:8px;font-weight:650;text-decoration:none;font-size:.9rem}
+.ov-division-cta:hover{background:#B50322}.ov-division-secondary{display:inline-block;margin:14px;color:#B50322;font-weight:600}
+.ov-division-status{font-size:.78rem;color:#52606D;margin-top:20px}
+.ov-division-panel{background:#101820;border-top:6px solid #00C8E8;border-radius:20px;padding:38px;color:white}
+.ov-division-panel h2{font-size:2.8rem;line-height:1.1;letter-spacing:-.04em;margin:24px 0}.ov-division-panel h2 span{color:#65E7F9}
+.ov-division-panel p{color:#D4DFE5}.ov-division-tagline{display:block;border-top:1px solid #354550;margin-top:32px;padding-top:22px;font-size:.82rem;color:#D4DFE5}
+.ov-division-section{border-top:1px solid #DEE5EB;padding:55px 0}.ov-division-section h2{font-size:2rem;letter-spacing:-.035em;margin-bottom:25px}
+.ov-division-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.ov-division-grid article{padding:28px;border:1px solid #DEE5EB;border-radius:14px;background:#F8FAFC}
+.ov-division-grid small{color:#B50322;font-weight:650}.ov-division-grid h3{font-size:1.2rem;margin:12px 0}.ov-division-grid p{color:#52606D;font-size:.93rem}
+.ov-steps ol{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding-left:22px;margin:0 0 35px}.ov-steps li{padding-left:5px;font-weight:600}
+.ov-division-footer{padding-block:35px;border-top:1px solid #DEE5EB;display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap;font-size:.85rem}.ov-division-footer nav{display:flex;gap:18px;flex-wrap:wrap}.ov-division-footer p{color:#52606D}
+@media(max-width:900px){.ov-four{grid-template-columns:repeat(2,minmax(0,1fr))}.ov-division-hero{gap:30px}.ov-global nav{gap:20px}}
+@media(max-width:600px){.ov-global nav{padding:16px 20px;flex-wrap:wrap;gap:16px}.ov-global-brand{font-size:1.25rem}.ov-global-login{margin-left:auto}.ov-global-links{order:3;width:100%;justify-content:space-between;margin:0;padding-top:6px;gap:15px}.ov-four,.ov-division-hero,.ov-division-grid,.ov-steps ol{grid-template-columns:1fr}.ov-division main,.ov-division-footer{padding-inline:20px}.ov-division-hero{padding-block:42px}.ov-division-panel{padding:28px}.ov-steps ol{gap:20px}.ov-division-section{padding-block:38px}}
