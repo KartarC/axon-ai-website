@@ -22,7 +22,7 @@ async function sendInviteEmail(to, shopName, inviteUrl) {
           <h2 style="font-size:1.3rem;font-weight:800;margin:0 0 12px">You're invited to ${shopName}</h2>
           <p style="color:#4b5563;line-height:1.7;margin:0 0 24px">Your Ovrendi account is ready. Click below to set your password and start using your shop tools.</p>
           <a href="${inviteUrl}" style="display:inline-block;background:#111827;color:#fff;padding:14px 28px;border-radius:8px;font-weight:700;text-decoration:none">Set Password &amp; Get Started →</a>
-          <p style="color:#9ca3af;font-size:.8rem;margin-top:24px">Link expires in 7 days. Questions? kartar.c@risetekmachinery.com</p>
+          <p style="color:#9ca3af;font-size:.8rem;margin-top:24px">Link expires in 7 days. Questions? info@ovrendi.com</p>
         </div></body></html>`,
     }),
   })

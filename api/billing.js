@@ -131,7 +131,7 @@ export default async function handler(req, res) {
   // ── CHECKOUT ─────────────────────────────────────────────
   if (action === 'checkout' && req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin'], res)) return
-    if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact kartar.c@risetekmachinery.com' })
+    if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact info@ovrendi.com' })
     const plan = body?.plan
     if (!PLANS[plan]) return res.status(400).json({ error: 'plan must be starter, growth, or suite' })
     if (!['owner','admin'].includes(ctx.role)) return res.status(403).json({ error: 'Only owners and admins can manage billing' })
