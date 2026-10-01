@@ -1,4 +1,4 @@
-// Billet — App shell nav renderer
+// Ovrendi — App shell nav renderer
 import { getSession, logout } from './auth.js'
 import { getVisibleModules } from './modules.js'
 
@@ -19,12 +19,8 @@ export function renderNav(activePath = '') {
   navEl.innerHTML = `
     <div class="anav-inner">
       <a href="/app/dashboard.html" class="anav-logo">
-        <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-          <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
-          <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
-          <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
-        </svg>
-        <span class="anav-logo-text">Billet</span>
+        <img class="ovrendi-mark" src="/assets/ovrendi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
+        <span class="anav-logo-text">Ovrendi</span>
       </a>
 
       <div class="anav-account">

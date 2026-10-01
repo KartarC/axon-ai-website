@@ -1,5 +1,5 @@
 import { SUPABASE_URL, SUPABASE_ANON } from './config.js'
-// Billet — Auth utilities (browser ES module)
+// Ovrendi — Auth utilities (browser ES module)
 // Handles session storage, JWT management, and page guards
 
 const STORAGE_KEYS = {

@@ -1,4 +1,4 @@
-// api/quote-suggest.js — AI Quote Suggestor (Billet · Priority #3)
+// api/quote-suggest.js — AI Quote Suggestor (Ovrendi · Priority #3)
 // POST { job_id }                        → suggest a price from the shop's own history
 // POST { material, quantity, part_name }  → suggest from specs (no job needed)
 //

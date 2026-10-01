@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <title>Billet App</title>
+  <title>Ovrendi App</title>
   <meta name="robots" content="noindex"/>
   <script>
     // Redirect to dashboard if session exists, else to login
     const token = sessionStorage.getItem('axon_access_token')
     window.location.replace(token ? '/app/dashboard.html' : '/app/login.html')
   </script>
+<link rel="stylesheet" href="/ovrendi-brand.css?v=1">
+<meta name="theme-color" content="#D9042B">
 </head>
 <body></body>
 </html>

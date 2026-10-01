@@ -14,7 +14,7 @@ async function quotePdf(quote){
  if(!q.company.name||!q.user.name)invalid('Save your company and user profiles, then save a new quote revision before downloading its PDF.')
  const doc=await PDFDocument.create(),font=await doc.embedFont(StandardFonts.Helvetica),bold=await doc.embedFont(StandardFonts.HelveticaBold)
  const page=doc.addPage([595.28,841.89]),ink=rgb(.12,.17,.23),muted=rgb(.36,.40,.45)
- doc.setTitle(q.number+' - Revision '+q.revision);doc.setAuthor(q.company.name);doc.setCreator('Billet Laser Quoting')
+ doc.setTitle(q.number+' - Revision '+q.revision);doc.setAuthor(q.company.name);doc.setCreator('Ovrendi Laser Quoting')
  let y=794
  const clean=value=>String(value??'').replace(/[\t\r]/g,' ').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g,'')
  function lines(value,width,size,f=font){const output=[];for(const paragraph of clean(value).split('\n')){let line='';for(const word of paragraph.split(/\s+/)){let candidate=line?line+' '+word:word;if(f.widthOfTextAtSize(candidate,size)<=width){line=candidate;continue}if(line)output.push(line);line='';for(const char of word){if(f.widthOfTextAtSize(line+char,size)>width){output.push(line);line=''}line+=char}}output.push(line)}return output}

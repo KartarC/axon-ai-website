@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Billet">
-  <defs><clipPath id="c"><rect x="4" y="4" width="56" height="56" rx="15"/></clipPath></defs>
-  <g clip-path="url(#c)">
-    <rect x="4" y="4" width="56" height="56" fill="#1F2937"/>
-    <polygon points="40,4 60,4 60,24" fill="#F59E0B"/>
-  </g>
-  <text x="31" y="46" font-family="Archivo, Arial, Helvetica, sans-serif" font-size="42" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ovrendi"><path fill="#D9042B" fill-rule="evenodd" d="M23 4H49L35 18H24A6 6 0 0 0 18 24V40A6 6 0 0 0 24 46H40A6 6 0 0 0 46 40V35L60 21V41A19 19 0 0 1 41 60H23A19 19 0 0 1 4 41V23A19 19 0 0 1 23 4Z"/><path fill="#00C8E8" d="M53 7A19 19 0 0 1 59 15L43 31H27Z"/></svg>

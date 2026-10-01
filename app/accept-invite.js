@@ -31,8 +31,8 @@ function renderForm({ email, role, account_name, plan }) {
   const planLabel = { starter:'Starter', growth:'Growth', suite:'Suite' }[plan] || plan
   card.innerHTML = `
     <div class="invite-welcome">You're invited</div>
-    <h1 class="invite-title">Welcome to Billet</h1>
-    <p class="invite-sub">Enter your existing password for <strong>${escHtml(email)}</strong> to join this shop. If you are new to Billet, choose a password to create your login.</p>
+    <h1 class="invite-title">Welcome to Ovrendi</h1>
+    <p class="invite-sub">Enter your existing password for <strong>${escHtml(email)}</strong> to join this shop. If you are new to Ovrendi, choose a password to create your login.</p>
 
     <div class="invite-shop">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.5" y="3" width="15" height="13" rx="1.5" stroke="#1D4ED8" stroke-width="1.3"/><path d="M5 1.5v3M13 1.5v3M1.5 9H16.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -120,7 +120,7 @@ function showInvalid(msg) {
       </svg>
       <h2>Invite not valid</h2>
       <p>${escHtml(msg)}</p>
-      <a href="mailto:hello@billet.app" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
+      <a href="mailto:kartar.c@risetekmachinery.com" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
     </div>
   `
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="icon" href="/favicon.svg"/>
-  <title>Quote — Billet</title>
+  <title>Quote — Ovrendi</title>
   <meta name="robots" content="noindex"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -44,6 +44,8 @@
       .sheet { box-shadow:none; margin:0; max-width:none; padding:24px 8px; min-height:0; }
     }
   </style>
+<link rel="stylesheet" href="/ovrendi-brand.css?v=1">
+<meta name="theme-color" content="#D9042B">
 </head>
 <body>
 <div class="toolbar">
@@ -55,10 +57,10 @@
 <div class="sheet" id="sheet" style="display:none">
   <div class="head">
     <div class="brand">
-      <div class="brand-mark">B</div>
+      <img src="/assets/ovrendi-mark.svg" width="40" height="40" alt="Ovrendi">
       <div>
         <div class="shop-name" id="shopName"></div>
-        <div style="font-size:.72rem;color:#9CA3AF">Powered by Billet</div>
+        <div style="font-size:.72rem;color:#9CA3AF">Powered by Ovrendi</div>
       </div>
     </div>
     <div class="doc-type">
@@ -128,7 +130,7 @@
     document.getElementById('linePrice').textContent = fmt$(price)
     document.getElementById('totalVal').textContent  = fmt$(price)
     if (quote.notes) document.getElementById('termsText').textContent = quote.notes + ' — Quote valid 30 days. Payment terms: Net 30.'
-    document.getElementById('footLine').textContent  = `${session.account.name} · Generated with Billet · ${today}`
+    document.getElementById('footLine').textContent  = `${session.account.name} · Generated with Ovrendi · ${today}`
 
     document.getElementById('loading').style.display = 'none'
     document.getElementById('sheet').style.display = 'block'

@@ -1,4 +1,4 @@
-// Billet — Toast notification utility
+// Ovrendi — Toast notification utility
 
 let container = null
 

@@ -20,9 +20,9 @@ const STRIPE_KEY    = process.env.STRIPE_SECRET_KEY
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
 
 const PLANS = {
-  starter: { name: 'Billet Starter', amount: 9900,  modules_limit: 1 },
-  growth:  { name: 'Billet Growth',  amount: 19900, modules_limit: 3 },
-  suite:   { name: 'Billet Suite',   amount: 34900, modules_limit: 9 },
+  starter: { name: 'Ovrendi Starter', amount: 9900,  modules_limit: 1 },
+  growth:  { name: 'Ovrendi Growth',  amount: 19900, modules_limit: 3 },
+  suite:   { name: 'Ovrendi Suite',   amount: 34900, modules_limit: 9 },
 }
 const ALL_MODULES = ['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
 
@@ -131,7 +131,7 @@ export default async function handler(req, res) {
   // ── CHECKOUT ─────────────────────────────────────────────
   if (action === 'checkout' && req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin'], res)) return
-    if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact hello@billet.app' })
+    if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact kartar.c@risetekmachinery.com' })
     const plan = body?.plan
     if (!PLANS[plan]) return res.status(400).json({ error: 'plan must be starter, growth, or suite' })
     if (!['owner','admin'].includes(ctx.role)) return res.status(403).json({ error: 'Only owners and admins can manage billing' })

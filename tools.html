@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="icon" href="/favicon.svg"/>
 
-  <title>All Tools — Billet for CNC &amp; Fabrication Shops</title>
-  <meta name="description" content="Every Billet module explained — Production Board, Job Costing with AI quoting, Digital Shop Traveler, Customer Portal, Maintenance, Inventory, CoC Generator, Shop CRM, and Outside Service Tracker."/>
-  <link rel="canonical" href="https://billet.app/tools.html"/>
+  <title>All Tools — Ovrendi for CNC &amp; Fabrication Shops</title>
+  <meta name="description" content="Every Ovrendi module explained — Production Board, Job Costing with AI quoting, Digital Shop Traveler, Customer Portal, Maintenance, Inventory, CoC Generator, Shop CRM, and Outside Service Tracker."/>
+  <link rel="canonical" href="https://axon-ai-website-three.vercel.app/tools.html"/>
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://billet.app/tools.html"/>
-  <meta property="og:title" content="Billet Tools — Nine Modules for Machine &amp; Fab Shops"/>
+  <meta property="og:url" content="https://axon-ai-website-three.vercel.app/tools.html"/>
+  <meta property="og:title" content="Ovrendi Tools — Nine Modules for Machine &amp; Fab Shops"/>
   <meta property="og:description" content="Each tool solves one shop problem completely. Start with one, add more when ready. Flat rate, unlimited users."/>
-  <meta property="og:image" content="https://billet.app/assets/screens/production-board.png"/>
+  <meta property="og:image" content="https://axon-ai-website-three.vercel.app/assets/screens/production-board.png"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -126,18 +126,16 @@
     *,*::before,*::after{transition-duration:.01ms !important;animation:none !important}
   }
   </style>
+<link rel="stylesheet" href="/ovrendi-brand.css?v=1">
+<meta name="theme-color" content="#D9042B">
 </head>
 <body>
 
 <header class="wrap">
   <nav class="nav" aria-label="Main">
-    <a href="/" class="nav-brand" aria-label="Billet home">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <rect x="2" y="2" width="24" height="24" rx="7" fill="#1F2937"/>
-        <rect x="18" y="4" width="5.5" height="5.5" rx="1.4" fill="#F59E0B"/>
-        <text x="14" y="20" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#FAFAF9" text-anchor="middle">B</text>
-      </svg>
-      <span class="wordmark">Billet</span>
+    <a href="/" class="nav-brand" aria-label="Ovrendi home">
+      <img class="ovrendi-mark" src="/assets/ovrendi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
+      <span class="wordmark">Ovrendi</span>
     </a>
     <div class="nav-right">
       <a class="nav-link" href="tools.html" aria-current="page">Tools</a>
@@ -150,14 +148,14 @@
 
 <main>
   <section class="hero wrap" aria-labelledby="h1">
-    <h1 id="h1">Nine tools. Each solves one problem completely.</h1>
+    <h1 id="h1">Practical tools. Clear availability.</h1>
     <p>No sprawling ERP to implement. Pick the module that fixes the thing costing you the most, be running today, and add the rest when you're ready. Every module: flat rate, unlimited users.</p>
   </section>
 
   <div class="wrap">
     <nav class="index" aria-label="Module index">
-      <div class="head">Module index — M-01 to M-09</div>
-      <ol>
+      <div class="head">Shop modules + Quoting pilot</div>
+      <ol><li><a href="#quoting"><span>Quoting pilot</span><span class="no">PILOT</span></a></li>
         <li><a href="#board"><span>Production Board</span><span class="no">M-01</span></a></li>
         <li><a href="#costing"><span>Job Costing + AI</span><span class="no">M-02</span></a></li>
         <li><a href="#traveler"><span>Shop Traveler</span><span class="no">M-03</span></a></li>
@@ -173,12 +171,12 @@
 
   <div class="wrap">
 
-    <section class="mod" id="board" aria-labelledby="board-h">
+    <section class="mod" id="quoting" aria-labelledby="quoting-h"><div class="fig-head"><h2 id="quoting-h">Quoting</h2><span class="mono">Pilot · available with Job Costing access</span></div><p>Import a single-run Han’s LaserNest report, review the extracted part sizes and cutting times, then apply your own material, gas, electricity and machine rates. Save customer and machine profiles, keep quotation revisions, and generate a one-page PDF.</p><p><a class="btn btn--accent" href="/app/modules/laser-quoting/">Open Quoting</a></p></section><section class="mod" id="board" aria-labelledby="board-h">
       <div class="mod-head">
         <h2 id="board-h">Production Board</h2>
         <span><span class="mono">M-01 · </span><span class="tag tag--live">Live</span></span>
       </div>
-      <div class="fig-frame"><img src="assets/screens/production-board.png" alt="Billet production board — drag-and-drop job cards across queue, setup, running, and complete columns" width="1440" height="900" loading="lazy"/></div>
+      <div class="fig-frame"><img src="assets/screens/production-board.png" alt="Ovrendi production board — drag-and-drop job cards across queue, setup, running, and complete columns" width="1440" height="900" loading="lazy"/></div>
       <div class="mod-body">
         <div>
           <p>The whiteboard, replaced. Every job in the shop on one screen — queue, setup, running, complete — with <span class="k">drag-and-drop between columns</span> and live refresh, so the board is never a day behind reality.</p>
@@ -199,7 +197,7 @@
         <h2 id="costing-h">Job Costing + AI Quoting</h2>
         <span><span class="mono">M-02 · </span><span class="tag tag--live">Live</span></span>
       </div>
-      <div class="fig-frame"><img src="assets/screens/job-costing.png" alt="Billet job costing — quoted vs actual cost per job with live margins and over-budget alerts" width="1440" height="900" loading="lazy"/></div>
+      <div class="fig-frame"><img src="assets/screens/job-costing.png" alt="Ovrendi job costing — quoted vs actual cost per job with live margins and over-budget alerts" width="1440" height="900" loading="lazy"/></div>
       <div class="mod-body">
         <div>
           <p>Quoted vs actual per job, in real time. Jobs turn <span class="k">amber at 80% of the cost ceiling and red the moment they cross the quote</span> — and the owner gets an email the moment it happens, not a surprise at month-end.</p>
@@ -220,7 +218,7 @@
         <h2 id="traveler-h">Digital Shop Traveler</h2>
         <span><span class="mono">M-03 · </span><span class="tag tag--live">Live</span></span>
       </div>
-      <div class="fig-frame"><img src="assets/screens/shop-traveler.png" alt="Billet digital shop traveler — step-by-step work order with dimension recording and flagged steps" width="1440" height="900" loading="lazy"/></div>
+      <div class="fig-frame"><img src="assets/screens/shop-traveler.png" alt="Ovrendi digital shop traveler — step-by-step work order with dimension recording and flagged steps" width="1440" height="900" loading="lazy"/></div>
       <div class="mod-body">
         <div>
           <p>Paper work-order packets, retired. Build travelers from templates in seconds; operators work them step by step from the same QR code they already scanned — <span class="k">recording actual dimensions and flagging issues as they go</span>.</p>
@@ -318,7 +316,7 @@
           <p>A CRM that knows what a job number is. Quotes, follow-ups, and customer history tied to the actual jobs and margins — not a generic sales pipeline bolted onto a shop.</p>
         </div>
         <ul>
-          <li>Customer records already live in Billet today</li>
+          <li>Customer records already live in Ovrendi today</li>
           <li>Quote follow-ups with job context</li>
           <li>Margin history per customer from Job Costing</li>
         </ul>
@@ -359,7 +357,7 @@
 <footer class="foot">
   <div class="wrap">
     <div class="grid">
-      <span>BILLET — SHOP OPERATING TOOLS</span>
+      <span>OVRENDI — SHOP OPERATING TOOLS</span>
       <div class="cols">
         <a href="tools.html">TOOLS</a>
         <a href="pricing.html">PRICING</a>
@@ -370,7 +368,7 @@
       </div>
     </div>
     <div class="line">
-      <span>© 2026 BILLET TECHNOLOGIES INC.</span>
+      <span>© 2026 OVRENDI</span>
       <span>BUILT FOR THE SHOP FLOOR. NOT THE CORNER OFFICE.</span>
     </div>
   </div>

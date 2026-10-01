@@ -1,4 +1,4 @@
-// Billet — Module registry and feature flag helpers
+// Ovrendi — Module registry and feature flag helpers
 export const MODULES = {
   'laser-quoting': {
     slug: 'laser-quoting', name: 'Quoting', phase: 1,

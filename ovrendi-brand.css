@@ -1,0 +1,58 @@
+/* Ovrendi identity. Loaded last across public and authenticated pages.
+   Legacy token names stay compatible; status colours remain semantic. */
+:root{--ov-red:#D9042B;--ov-red-dark:#B50322;--ov-cyan:#00C8E8;--ov-ink:#101820;--ov-muted:#52606D;--ov-soft:#FFF0F3;--paper:#FFFFFF;--paper-2:#F6F8FA;--paper-deep:#101820;--paper-deep-2:#233341;--ink:#101820;--ink-2:#52606D;--ink-3:#657280;--ink-inv:#FFFFFF;--ink-inv-2:#CCD8E0;--accent:#D9042B;--accent-deep:#B50322;--accent-solid:#D9042B;--rule:#DEE5EB;--rule-dark:#3D4B57;--blue-50:#FFF0F3;--blue-100:#FFD9E1;--blue-600:#D9042B;--blue-700:#B50322;--blue-800:#92031C;--gray-900:#101820;--gray-800:#233341;--radius-sm:6px;--radius:10px;--radius-lg:16px;--radius-xl:22px}
+body{color:var(--ov-ink)}
+.ovrendi-mark{display:block;flex:none;object-fit:contain}
+.nav-brand,.logo,.login-logo,.signup-logo,.invite-logo{gap:10px}
+.wordmark,.logo-text,.anav-logo-text,.login-logo-text,.signup-logo-text,.invite-logo-text,.footer-logo-text{font-weight:800;letter-spacing:-.04em}
+.nav-brand .wordmark{font-size:1.45rem}
+.anav-logo-text{font-size:1.3rem}
+.nav{min-height:86px}
+.btn,.btn-app{border-radius:8px}
+.btn--accent,.btn-primary,.btn-app--primary,.btn-app:not(.btn-app--secondary):not(.btn-app--danger){background:var(--ov-red);color:#fff;border-color:var(--ov-red)}
+.btn--accent:hover,.btn-primary:hover,.btn-app--primary:hover{background:var(--ov-red-dark);color:#fff}
+:focus-visible{outline:3px solid #087F94;outline-offset:3px}
+.anav-link.active{background:var(--ov-soft);color:var(--ov-red-dark);box-shadow:inset 3px 0 var(--ov-red)}
+.anav-logo{padding-top:24px;padding-bottom:22px}
+.anav-plan-badge{background:#E1F9FD;color:#075968}
+.app-layout{background:#F5F8FA}
+.app-main .page-header{border-bottom:1px solid #DCE5EB;padding-bottom:20px;margin-bottom:24px}
+.page-title{letter-spacing:-.035em}
+.panel{border-color:#DCE5EB;box-shadow:0 3px 15px rgb(16 24 32 / 3%)}
+.panel input:focus,.panel select:focus,.panel textarea:focus,.help-button:focus-visible{outline-color:#087F94}
+.panel input[data-origin]{border-color:#61B9C7;background:#F0FCFE}
+.autofill-note,.inline-button{color:#086474}
+.login-wrap,.signup-wrap,.invite-wrap{position:relative}
+.login-card,.signup-card,.invite-card{border-top:4px solid var(--ov-red);box-shadow:0 18px 60px rgb(16 24 32 / 8%)}
+.ov-hero{display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:center;padding-block:72px 80px}
+.ov-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#B50322;margin-bottom:20px}
+.ov-hero h1{font-size:clamp(2.7rem,5.5vw,4.8rem);max-width:14ch;letter-spacing:-.055em}
+.ov-hero h1 em{font-style:normal;color:var(--ov-red)}
+.ov-hero .specline{margin-top:30px}
+.ov-console{background:#101820;color:white;border-radius:22px;padding:30px;position:relative;border-top:6px solid var(--ov-cyan)}
+.ov-console-top{display:flex;align-items:center;gap:12px;font-size:1.5rem;font-weight:800;margin-bottom:32px}
+.ov-console p{color:#C6D6DE;font-size:.95rem;margin:10px 0 24px}
+.ov-console-row{display:flex;justify-content:space-between;align-items:center;padding:17px 0;border-top:1px solid #35434E;font-size:.9rem;gap:16px}
+.ov-console-row span:last-child{color:#65E7F9;font-size:.72rem;white-space:nowrap}
+.ov-console a{color:white;text-decoration:none}
+.ov-console a:hover{text-decoration:underline}
+.ov-services{padding-block:40px 70px;border-top:1px solid var(--rule)}
+.ov-services h2{font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.035em;margin:0 0 26px}
+.ov-service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ov-service{border:1px solid #DEE5EB;border-radius:14px;padding:25px;background:#F8FAFC}
+.ov-service small{color:#B50322;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.ov-service h3{margin:14px 0 10px;font-size:1.2rem}
+.ov-service p{font-size:.9rem;color:#52606D;line-height:1.7;margin:0 0 18px}
+.ov-service a{font-weight:700;font-size:.85rem;color:#B50322;text-decoration:underline;text-underline-offset:4px}
+.fig-frame{border-radius:14px;overflow:hidden;box-shadow:0 12px 40px rgb(16 24 32 / 6%)}
+.plan .btn--accent{color:white}
+.brand-mark{background:transparent!important}.brand-mark::after{display:none}
+@media(max-width:760px){.ov-hero{grid-template-columns:1fr;gap:32px;padding-block:42px}.ov-hero h1{max-width:16ch}.ov-console{padding:24px}.ov-service-grid{grid-template-columns:1fr}.nav{gap:14px;flex-wrap:wrap;padding-block:16px}.nav-right{flex-wrap:wrap;gap:16px}.nav-brand .wordmark{font-size:1.3rem}}
+@media print{.ovrendi-mark{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+/* Ensure compatibility with the legacy marketing theme's important rules. */
+.btn-primary,.nav-cta-btn,.pricing-btn--primary,.btn-submit,.mobile-cta{background:#D9042B!important;color:#FFFFFF!important;border-radius:8px}
+.btn-primary:hover,.nav-cta-btn:hover,.pricing-btn--primary:hover,.btn-submit:hover{background:#B50322!important;color:#FFFFFF!important}
+.plan-badge--new{background:#D9042B;color:#FFFFFF}
+.ov-console .ovrendi-mark{width:42px;height:42px}
+@media(min-width:901px){.mobile-nav-btn{display:none}}

@@ -135,12 +135,12 @@ function requireRole(ctx, roles, res) {
   return true
 }
 
-// ── Require Billet admin (ADMIN_SECRET header) ─────────────────
+// ── Require Ovrendi admin (ADMIN_SECRET header) ─────────────────
 function requireAxonAdmin(req, res) {
   if (!validateIds(req, res)) return false
   const secret = req.headers['x-admin-secret']
   if (!secretMatches(secret, process.env.ADMIN_SECRET)) {
-    res.status(403).json({ error: 'Billet admin access required' })
+    res.status(403).json({ error: 'Ovrendi admin access required' })
     return false
   }
   return true

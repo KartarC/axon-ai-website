@@ -1,4 +1,4 @@
-// Billet — API fetch wrapper with JWT + auto-refresh
+// Ovrendi — API fetch wrapper with JWT + auto-refresh
 import { getSession, refreshToken, clearSession } from './auth.js'
 
 let refreshPromise = null
