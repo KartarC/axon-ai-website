@@ -117,3 +117,31 @@ html{scroll-padding-top:120px}.ov-global{position:sticky;top:0;z-index:100;backg
 @keyframes ov-loading{from{transform:translateX(-100%)}to{transform:translateX(385%)}}
 @media(prefers-reduced-motion:no-preference){html:has(.ov-motion){scroll-behavior:smooth}@view-transition{navigation:auto}::view-transition-old(root){animation-duration:.12s}::view-transition-new(root){animation-duration:.18s}}
 @media(prefers-reduced-motion:reduce){.ov-motion *,.ov-motion *::before,.ov-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.ov-loading-track{width:100%}::view-transition-group(*){animation:none!important}}
+
+/* Touch-friendly public navigation and account forms. */
+.ov-header-actions{display:flex;align-items:center;gap:18px;margin-left:auto;flex-shrink:0}
+.ov-signin{font-size:.85rem;color:#364651;font-weight:650;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.ov-trial-cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#D9042B;color:#fff!important;border-radius:8px;font-size:.85rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .2s,transform .2s}
+.ov-trial-cta:hover{background:#B50322;transform:translateY(-1px)}
+.ov-auth-page{min-height:100svh!important;padding:32px 16px;box-sizing:border-box}
+.ov-auth-page :is(.su-wrap,.login-wrap){max-width:480px;padding:0;width:100%;min-width:0;margin:auto}
+.ov-auth-page :is(.su-card,.login-card){padding:32px;border-top:4px solid #D9042B}
+.ov-auth-page :is(.su-input,.login-input){font-size:16px;min-height:48px}
+.ov-auth-page :is(.su-btn,.login-btn){min-height:48px;background:#D9042B;color:white}
+.ov-auth-page :is(.su-btn,.login-btn):hover:not(:disabled){background:#B50322}
+.ov-auth-page :is(.su-trialbar,.su-legal,.login-sub){overflow-wrap:anywhere}
+.ov-auth-page .su-trialbar{border-radius:10px;line-height:1.6}
+.ov-auth-page .su-trialbar svg{flex-shrink:0}
+.ov-auth-page :is(.su-hint,.su-legal,.login-footer){color:#52606D}
+.ov-forgot{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem;color:#B50322;font-weight:600}
+.ov-auth-message{padding:14px;background:#F0FCFE;border:1px solid #A5DDE6;border-radius:8px;font-size:.9rem;line-height:1.6;margin:16px 0;overflow-wrap:anywhere}
+.ov-auth-message[hidden]{display:none}
+@media(max-width:1100px){.ov-global>nav{flex-wrap:wrap;gap:10px 20px;padding:12px 24px}.ov-mega-links{order:3;flex-basis:100%;margin:0;justify-content:space-between;gap:12px}.ov-menu summary,.ov-menu-direct{min-height:44px;display:flex;align-items:center}.ov-header-actions{margin-left:auto}.ov-mega-panel{max-height:calc(100dvh - 140px)}}
+@media(max-width:600px){.ov-global>nav{padding:10px 16px;gap:4px 12px}.ov-global-brand{font-size:1.15rem}.ov-header-actions{gap:10px}.ov-trial-cta{font-size:.76rem;padding:10px 12px}.ov-signin{font-size:.76rem}.ov-mega-links{gap:4px}.ov-menu summary,.ov-menu-direct{font-size:.76rem}.ov-menu summary{gap:3px}.ov-image-hero.hero{padding:42px 20px;min-height:540px}.hero-ctas{display:flex;flex-wrap:wrap;gap:16px}.hero-ctas .btn{min-height:48px}.ov-auth-page{padding:24px 16px;align-items:flex-start!important}.ov-auth-page :is(.su-card,.login-card){padding:24px 20px}.ov-auth-page :is(.su-logo,.login-logo){margin-bottom:20px}.ov-mega-items a{min-height:60px}}
+@media(max-width:360px){.ov-signin{display:none}.ov-mega-items{grid-template-columns:1fr}.ov-auth-page{padding-inline:12px}.ov-auth-page :is(.su-card,.login-card){padding:22px 16px}}
+@media(pointer:coarse){.app-main :is(input,select,textarea){font-size:16px}.app-main :is(button,.btn-app){min-height:44px}}
+@media(max-width:768px){.app-layout .app-main{padding-top:72px}#app-nav{width:240px;height:100dvh}.mobile-nav-btn{width:44px;height:44px}.page-header{flex-wrap:wrap;gap:12px}.page-actions{flex-wrap:wrap}.modal{max-width:calc(100vw - 24px)}}
+
+.anav-close,.anav-backdrop{display:none}
+@media(max-width:768px){.anav-close{display:block;position:absolute;right:10px;top:12px;width:44px;height:44px;border:1px solid #DEE5EB;border-radius:8px;background:white;font-size:26px;cursor:pointer}.anav-logo{padding-right:60px}.anav-backdrop:not([hidden]){display:block;position:fixed;inset:0;z-index:450;border:0;background:rgba(16,24,32,.45)}}
+@media(max-width:1100px){html{scroll-padding-top:155px}}

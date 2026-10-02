@@ -92,8 +92,13 @@ export default async function handler(req, res) {
   // ── POST signup: self-serve shop signup (14-day trial, all modules) ──
   if (action === 'signup' && req.method === 'POST') {
     const { shop_name, full_name, email, password } = req.body || {}
-    if (!shop_name || !email || !password) return res.status(400).json({ error: 'Shop name, email, and password are required' })
-    if (password.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' })
+    if (typeof shop_name !== 'string' || !shop_name.trim() || shop_name.length > 120 ||
+        typeof full_name !== 'string' || !full_name.trim() || full_name.length > 120 ||
+        typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
+        typeof password !== 'string' || password.length < 8 || password.length > 256)
+      return res.status(400).json({ error: 'Enter your company, name, a valid email and a password of 8–256 characters.' })
+    // Enable only after SMTP, templates and redirect URLs have been verified.
+    const confirmEmail = process.env.OVRENDI_AUTH_EMAILS_ENABLED === 'true'
     const cleanEmail = String(email).trim().toLowerCase()
 
     // Reject if a user with this email already exists
@@ -107,10 +112,10 @@ export default async function handler(req, res) {
         return res.status(409).json({ error: 'An account with this email already exists — try signing in.' })
     } catch (_) { /* continue; user creation will fail on true duplicates */ }
 
-    // Create the auth user (auto-confirmed — frictionless trial)
+    // Create the identity; production email activation requires proof of email ownership.
     let authUserId
     try {
-      const newUser = await authAdmin('POST', 'users', { email: cleanEmail, password, email_confirm: true })
+      const newUser = await authAdmin('POST', 'users', { email: cleanEmail, password, email_confirm: !confirmEmail })
       authUserId = newUser.id
     } catch (err) {
       console.error('Signup auth user error:', err)
@@ -139,8 +144,20 @@ export default async function handler(req, res) {
       full_name: full_name || cleanEmail.split('@')[0],
     })
 
-    // Welcome email (fire-and-forget — never blocks signup)
-    sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, siteUrl()) }).catch(() => {})
+    if (confirmEmail) {
+      let emailSent = false
+      try {
+        const emailResponse = await fetch(
+          process.env.SUPABASE_URL + '/auth/v1/resend?redirect_to=' + encodeURIComponent(siteUrl() + '/app/confirm-email.html'), {
+            method: 'POST', headers: { 'Content-Type': 'application/json', apikey: process.env.SUPABASE_SERVICE_ROLE_KEY },
+            body: JSON.stringify({ type: 'signup', email: cleanEmail }),
+          })
+        emailSent = emailResponse.ok
+      } catch (_) { /* Keep the account recoverable via the resend screen. */ }
+      return res.status(201).json({ ok: true, auto_login: false, confirmation_required: true, email_sent: emailSent })
+    }
+    // Await delivery so a serverless invocation cannot end before the send completes.
+    await sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, siteUrl()) }).catch(() => {})
 
     // Auto-login so the client can go straight into onboarding
     const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {

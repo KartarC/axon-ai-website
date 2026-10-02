@@ -50,7 +50,7 @@
 <link rel="stylesheet" href="/ovrendi-brand.css?v=1">
 <meta name="theme-color" content="#D9042B">
 </head>
-<body>
+<body class="ov-auth-page">
 <div class="su-wrap">
   <a href="/" class="su-logo">
     <img class="ovrendi-mark" src="/assets/ovrendi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
@@ -59,16 +59,16 @@
 
   <div class="su-card">
     <h1 class="su-title">Start your free trial</h1>
-    <p class="su-sub">Your whole shop, running in a few minutes.</p>
+    <p class="su-sub">Create your workspace and explore the available ERP tools.</p>
     <div class="su-trialbar">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7l3 3 5-6" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      14 days free · all 9 tools · unlimited users · no card
+      14 days free · no credit card required
     </div>
 
     <form id="signupForm" novalidate>
       <div class="su-field">
         <label class="su-label" for="shop">Shop name</label>
-        <input class="su-input" id="shop" name="shop" placeholder="Precision Metalworks Ltd." required/>
+        <input class="su-input" id="shop" name="shop" autocomplete="organization" maxlength="120" placeholder="Precision Metalworks Ltd." required/>
       </div>
       <div class="su-field">
         <label class="su-label" for="name">Your name</label>
@@ -80,14 +80,14 @@
       </div>
       <div class="su-field">
         <label class="su-label" for="password">Password</label>
-        <input class="su-input" type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" required/>
+        <input class="su-input" type="password" id="password" name="password" minlength="8" maxlength="256" autocomplete="new-password" placeholder="At least 8 characters" required/>
         <div class="su-hint">Minimum 8 characters.</div>
       </div>
       <button class="su-btn" type="submit" id="signupBtn">
-        Create my shop
+        Start my free trial
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="su-error" id="signupError"></div>
+      <div class="su-error" id="signupError" role="alert"></div>
     </form>
     <div class="su-legal">By creating a shop you agree to our terms. Your trial converts to a paid plan only if you choose to continue.</div>
   </div>

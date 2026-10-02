@@ -50,7 +50,7 @@
 <link rel="stylesheet" href="/ovrendi-brand.css?v=1">
 <meta name="theme-color" content="#D9042B">
 </head>
-<body>
+<body class="ov-auth-page">
 <div class="login-wrap">
   <a href="/" class="login-logo">
     <img class="ovrendi-mark" src="/assets/ovrendi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
@@ -59,7 +59,7 @@
 
   <div class="login-card">
     <h1 class="login-title">Sign in to your shop</h1>
-    <p class="login-sub">Enter the email and password you set when you accepted your invite.</p>
+    <p class="login-sub">Welcome back. Sign in to your Ovrendi workspace.</p>
 
     <form id="loginForm" novalidate>
       <div class="login-field">
@@ -70,11 +70,12 @@
         <label class="login-label" for="password">Password</label>
         <input class="login-input" type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" required/>
       </div>
+      <a class="ov-forgot" href="/app/forgot-password.html">Forgot password?</a>
       <button class="login-btn" type="submit" id="submitBtn">
         Sign In
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="login-error" id="loginError"></div>
+      <div class="login-error" id="loginError" role="alert"></div>
     </form>
   </div>
 

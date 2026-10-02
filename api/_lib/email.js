@@ -44,23 +44,26 @@ function shell(inner) {
     </div>
     ${inner}
     <p style="color:#9CA3AF;font-size:12px;margin-top:32px;border-top:1px solid #E5E7EB;padding-top:14px">
-      Ovrendi — software for shops that make things. Questions? Just reply to this email.
+      Ovrendi — Connected software. Smarter business. Questions? Email info@ovrendi.com.
     </p>
   </div>`
 }
 
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 function welcomeEmail(shopName, appUrl) {
+  shopName = escapeHtml(shopName)
   return {
     subject: `Welcome to Ovrendi — ${shopName} is live`,
     html: shell(`
       <h2 style="font-size:20px;margin:0 0 10px">Your shop is set up 🎉</h2>
-      <p style="color:#4B5563;line-height:1.7">Your 14-day trial of <strong>${shopName}</strong> has every tool unlocked — production board, job costing, shop traveler, AI quoting, and more. Unlimited users, no card required.</p>
+      <p style="color:#4B5563;line-height:1.7">Your 14-day trial of <strong>${shopName}</strong> includes the available ERP tools, including production, job costing and quoting. No credit card is required.</p>
       <p style="color:#4B5563;line-height:1.7">Fastest way to see the value: add your machines with hourly rates, create your first job, and set a quote — Ovrendi will flag it the moment costs threaten your margin.</p>
       <a href="${appUrl}/app/dashboard.html" style="display:inline-block;background:#1F2937;color:#fff;font-weight:700;font-size:14px;padding:12px 22px;border-radius:8px;text-decoration:none;margin-top:8px">Open your dashboard</a>`),
   }
 }
 
 function trialReminderEmail(shopName, daysLeft, appUrl) {
+  shopName = escapeHtml(shopName)
   return {
     subject: `${daysLeft} day${daysLeft === 1 ? '' : 's'} left in your Ovrendi trial`,
     html: shell(`
@@ -71,6 +74,7 @@ function trialReminderEmail(shopName, daysLeft, appUrl) {
 }
 
 function trialExpiredEmail(shopName, appUrl) {
+  shopName = escapeHtml(shopName)
   return {
     subject: `Your Ovrendi trial for ${shopName} has ended`,
     html: shell(`
@@ -81,6 +85,7 @@ function trialExpiredEmail(shopName, appUrl) {
 }
 
 function overBudgetEmail(shopName, jobNumber, partName, actual, quoted, appUrl) {
+  shopName = escapeHtml(shopName); jobNumber = escapeHtml(jobNumber); partName = escapeHtml(partName)
   return {
     subject: `🔴 ${jobNumber} is over budget`,
     html: shell(`

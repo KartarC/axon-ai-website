@@ -69,6 +69,49 @@ export function renderNav(activePath = '') {
   `
 
   document.getElementById('logoutBtn')?.addEventListener('click', logout)
+  const opener = document.getElementById('mobileNavBtn')
+  if (opener) {
+    const mobile = matchMedia('(max-width: 768px)')
+    const main = document.querySelector('.app-main')
+    const closeButton = document.createElement('button')
+    closeButton.className = 'anav-close'
+    closeButton.type = 'button'
+    closeButton.textContent = '×'
+    closeButton.setAttribute('aria-label', 'Close menu')
+    navEl.prepend(closeButton)
+    const backdrop = document.createElement('button')
+    backdrop.className = 'anav-backdrop'
+    backdrop.type = 'button'
+    backdrop.setAttribute('aria-label', 'Close navigation')
+    backdrop.tabIndex = -1
+    backdrop.hidden = true
+    document.body.append(backdrop)
+    const close = () => { navEl.classList.remove('open'); sync(); opener.focus() }
+    const sync = () => {
+      const open = mobile.matches && navEl.classList.contains('open')
+      navEl.inert = mobile.matches && !open
+      if (main) main.inert = open
+      backdrop.hidden = !open
+      opener.setAttribute('aria-expanded', String(open))
+      opener.setAttribute('aria-controls', 'app-nav')
+      if (open && !navEl.contains(document.activeElement)) closeButton.focus()
+    }
+    closeButton.addEventListener('click', close)
+    backdrop.addEventListener('click', close)
+    navEl.addEventListener('keydown', event => {
+      if (!mobile.matches || !navEl.classList.contains('open')) return
+      if (event.key === 'Escape') { event.preventDefault(); close() }
+      if (event.key === 'Tab') {
+        const items = [...navEl.querySelectorAll('a[href],button:not(:disabled)')].filter(e => e.getClientRects().length)
+        const first = items[0], last = items.at(-1)
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      }
+    })
+    new MutationObserver(sync).observe(navEl, {attributes:true, attributeFilter:['class']})
+    mobile.addEventListener('change', sync)
+    sync()
+  }
 }
 
 function escHtml(str) {

@@ -1,0 +1,36 @@
+
+    body { background:var(--gray-50); display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .login-wrap { width:100%; max-width:400px; padding:24px; }
+    .login-logo { display:flex; align-items:center; gap:9px; justify-content:center; margin-bottom:32px; text-decoration:none; }
+    .login-logo-text { font-size:1.1rem; font-weight:900; color:var(--gray-900); letter-spacing:-.02em; }
+    .login-card { background:var(--white); border:var(--border); border-radius:var(--radius-xl); padding:32px; box-shadow:var(--shadow); }
+    .login-title { font-size:1.3rem; font-weight:800; color:var(--gray-900); margin:0 0 6px; letter-spacing:-.03em; }
+    .login-sub { font-size:.875rem; color:var(--gray-500); margin:0 0 24px; }
+    .login-field { margin-bottom:16px; }
+    .login-label { display:block; font-size:.78rem; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+    .login-input {
+      width:100%; box-sizing:border-box; padding:11px 14px;
+      border:1.5px solid var(--gray-200); border-radius:var(--radius);
+      font-size:.9rem; font-family:inherit; color:var(--gray-900);
+      outline:none; transition:border-color var(--t);
+    }
+    .login-input:focus { border-color:var(--blue-700); box-shadow:0 0 0 3px rgba(29,78,216,.1); }
+    .login-btn {
+      width:100%; padding:13px; margin-top:8px;
+      background:var(--gray-900); color:var(--white);
+      border:none; border-radius:var(--radius);
+      font-size:.95rem; font-weight:700; cursor:pointer;
+      font-family:inherit; transition:all var(--t);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .login-btn:hover:not(:disabled) { background:var(--gray-700); }
+    .login-btn:disabled { opacity:.6; cursor:not-allowed; }
+    .login-error {
+      margin-top:14px; padding:10px 14px;
+      background:#FFF1F2; border:1px solid #FECACA; border-radius:var(--radius);
+      font-size:.82rem; color:#DC2626; display:none;
+    }
+    .login-footer { text-align:center; margin-top:20px; font-size:.8rem; color:var(--gray-400); }
+    .login-footer a { color:var(--blue-700); }
+  
+[hidden]{display:none!important}
