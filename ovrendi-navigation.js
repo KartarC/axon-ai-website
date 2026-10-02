@@ -4,6 +4,25 @@
   if (!header) return;
   document.body.classList.add('ov-motion');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  // A short brand introduction once per tab session, never a gate to the content.
+  let firstVisit = true;
+  try { firstVisit = sessionStorage.getItem('ovrendi_intro_seen') !== '1'; sessionStorage.setItem('ovrendi_intro_seen', '1'); } catch (_) { /* Storage may be disabled. */ }
+  if (firstVisit && !reduced.matches) {
+    const intro = document.createElement('div');
+    intro.className = 'ov-first-visit';
+    intro.setAttribute('aria-hidden', 'true');
+    intro.innerHTML = '<div class="ov-intro-content"><div class="ov-intro-mark"><img src="/assets/ovrendi-mark.svg" width="72" height="72" alt=""></div><span class="ov-intro-name">Ovrendi<span>.</span></span><span class="ov-intro-tagline">Connected software. Smarter business.</span><span class="ov-intro-track"><span></span></span></div>';
+    document.body.append(intro);
+    const dismiss = () => {
+      intro.remove();
+      clearTimeout(timer);
+      for (const event of ['pointerdown', 'keydown', 'wheel', 'pagehide']) window.removeEventListener(event, dismiss);
+      reduced.removeEventListener('change', dismiss);
+    };
+    const timer = setTimeout(dismiss, 1500);
+    for (const event of ['pointerdown', 'keydown', 'wheel', 'pagehide']) window.addEventListener(event, dismiss, {once: true, passive: true});
+    reduced.addEventListener('change', dismiss, {once: true});
+  }
   const menus = [...header.querySelectorAll('.ov-menu')];
   const states = new Map();
   const frames = [{opacity: 0, transform: 'translateY(-10px) scale(.985)'}, {opacity: 1, transform: 'translateY(0) scale(1)'}];
