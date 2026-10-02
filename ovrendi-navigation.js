@@ -25,6 +25,9 @@
   }
   const menus = [...header.querySelectorAll('.ov-menu')];
   const states = new Map();
+  const hover = matchMedia('(hover: hover) and (pointer: fine)');
+  let hoverOpen, hoverClose;
+  const clearHover = () => { clearTimeout(hoverOpen); clearTimeout(hoverClose); };
   const frames = [{opacity: 0, transform: 'translateY(-10px) scale(.985)'}, {opacity: 1, transform: 'translateY(0) scale(1)'}];
   function setOpen(menu, open, immediate = false) {
     const panel = menu.querySelector('.ov-mega-panel');
@@ -52,7 +55,23 @@
     states.set(menu, {open: menu.open, animation: null});
     const summary = menu.querySelector('summary');
     summary.setAttribute('aria-expanded', String(menu.open));
+    menu.addEventListener('pointerenter', event => {
+      if (!hover.matches || event.pointerType !== 'mouse') return;
+      clearHover();
+      hoverOpen = setTimeout(() => {
+        for (const other of menus) if (other !== menu) setOpen(other, false, true);
+        if (!states.get(menu).open) setOpen(menu, true);
+      }, 120);
+    });
+    menu.addEventListener('pointerleave', event => {
+      if (!hover.matches || event.pointerType !== 'mouse') return;
+      clearHover();
+      hoverClose = setTimeout(() => {
+        if (!menu.contains(document.activeElement)) setOpen(menu, false);
+      }, 220);
+    });
     summary.addEventListener('click', event => {
+      clearHover();
       event.preventDefault();
       const open = !states.get(menu).open;
       for (const other of menus) if (other !== menu) setOpen(other, false, true);
@@ -60,6 +79,7 @@
     });
     menu.addEventListener('keydown', event => {
       if (event.key === 'Escape' && states.get(menu).open) {
+        clearHover();
         setOpen(menu, false); summary.focus(); event.preventDefault();
       }
     });

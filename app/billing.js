@@ -32,6 +32,8 @@ if (params.get('success')) {
     })
     renderNav('/app/billing')
     markCurrentPlan(data.account.plan)
+    document.getElementById('successBanner').textContent = data.account.stripe_subscription_id && data.account.status === 'active'
+      ? 'Your subscription is active.' : 'Payment confirmation is still pending. Refresh this page shortly, or contact support if your plan does not update.'
   }).catch(() => {})
 }
 
@@ -67,3 +69,19 @@ document.getElementById('portalBtn').addEventListener('click', async (e) => {
     window.location.href = r.url
   } catch (err) { toastError(err.message); btn.disabled = false }
 })
+
+// Do not send customers into an unconfigured checkout or open a second subscription.
+if (['owner','admin'].includes(session.role)) {
+  const notice = document.getElementById('billingReadiness')
+  const buttons = [...document.querySelectorAll('.plan-btn[data-plan]')]
+  buttons.forEach(button => { button.disabled = true })
+  document.getElementById('portalBtn').disabled = true
+  apiGet('/api/billing?action=status').then(status => {
+    notice.textContent = !status.checkout_ready
+      ? 'Online subscription payments are being set up. Contact info@ovrendi.com for help. No payment will be taken here yet.'
+      : status.test_mode ? 'Payment testing is enabled. This checkout uses test payments, not real charges.'
+      : 'Subscriptions are billed monthly in USD. Review the final amount in Stripe before confirming.'
+    buttons.forEach(button => { button.disabled = !status.checkout_ready || !!session.account.stripe_subscription_id || button.dataset.plan === session.account.plan })
+    document.getElementById('portalBtn').disabled = !status.portal_ready
+  }).catch(() => { notice.textContent = 'Payment availability could not be checked. Please refresh or contact info@ovrendi.com.' })
+} else document.getElementById('billingReadiness').textContent = 'A company owner or administrator can manage subscriptions.'

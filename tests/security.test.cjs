@@ -147,3 +147,21 @@ test('concurrent failed refresh rejects all waiters and retry is bounded',async(
   const results=await Promise.allSettled([ctx.apiGet('/api/jobs'),ctx.apiGet('/api/board')]);assert(results.every(r=>r.status==='rejected'));assert.equal(refreshes,1)
  }
 })
+
+test('checkout refuses incomplete configuration before contacting Stripe',async()=>{
+ const app=setup('api/billing.js',{role:'owner',env:{STRIPE_WEBHOOK_SECRET:''}}),res=response()
+ await app.handler(request('POST',{action:'checkout'},{plan:'starter'}),res)
+ assert.equal(res.code,503)
+})
+test('checkout refuses another subscription for an already subscribed account',async()=>{
+ const app=setup('api/billing.js',{role:'owner',extra:{helpers:{requireAuth:async()=>({role:'owner',account:{id:A,stripe_subscription_id:'sub_existing'},user:{email:'owner@example.invalid'}})}}}),res=response()
+ await app.handler(request('POST',{action:'checkout'},{plan:'growth'}),res)
+ assert.equal(res.code,409)
+})
+test('billing readiness is restricted and never returns credentials',async()=>{
+ for(const role of ['viewer','owner']){
+ const app=setup('api/billing.js',{role}),res=response();await app.handler(request('GET',{action:'status'}),res)
+ assert.equal(res.code,role==='owner'?200:403)
+ if(role==='owner'){assert.equal(res.body.checkout_ready,true);assert.equal(res.body.currency,'USD');assert(!JSON.stringify(res.body).includes('test-key'));assert(!JSON.stringify(res.body).includes('test-webhook'))}
+ }
+})

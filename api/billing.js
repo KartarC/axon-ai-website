@@ -128,10 +128,22 @@ export default async function handler(req, res) {
   const ctx = await requireAuth(req, res, { allowExpired: true })
   if (!ctx) return
 
+  if (action === 'status' && req.method === 'GET') {
+    if (!requireRole(ctx, ['owner','admin'], res)) return
+    return res.status(200).json({
+      checkout_ready: !!(STRIPE_KEY && WEBHOOK_SECRET),
+      portal_ready: !!(STRIPE_KEY && ctx.account.stripe_customer_id),
+      test_mode: !!STRIPE_KEY && !STRIPE_KEY.startsWith('sk_live_') && !STRIPE_KEY.startsWith('rk_live_'),
+      currency: 'USD',
+    })
+  }
+
   // ── CHECKOUT ─────────────────────────────────────────────
   if (action === 'checkout' && req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin'], res)) return
-    if (!STRIPE_KEY) return res.status(503).json({ error: 'Billing is not configured yet — contact info@ovrendi.com' })
+    if (!STRIPE_KEY || !WEBHOOK_SECRET) return res.status(503).json({ error: 'Subscription payments are not available yet — contact info@ovrendi.com' })
+    if (ctx.account.stripe_subscription_id)
+      return res.status(409).json({ error: 'You already have a subscription. Use Manage billing instead of creating another subscription.' })
     const plan = body?.plan
     if (!PLANS[plan]) return res.status(400).json({ error: 'plan must be starter, growth, or suite' })
     if (!['owner','admin'].includes(ctx.role)) return res.status(403).json({ error: 'Only owners and admins can manage billing' })
