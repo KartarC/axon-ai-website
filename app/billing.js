@@ -32,7 +32,7 @@ if (params.get('success')) {
     })
     renderNav('/app/billing')
     markCurrentPlan(data.account.plan)
-    document.getElementById('successBanner').textContent = data.account.stripe_subscription_id && data.account.status === 'active'
+    document.getElementById('successBanner').textContent = data.account.stripe_subscription_id && data.account.status === 'active' && ['active','trialing'].includes(data.account.billing_status)
       ? 'Your subscription is active.' : 'Payment confirmation is still pending. Refresh this page shortly, or contact support if your plan does not update.'
   }).catch(() => {})
 }
@@ -81,7 +81,11 @@ if (['owner','admin'].includes(session.role)) {
       ? 'Online subscription payments are being set up. Contact info@ovrendi.com for help. No payment will be taken here yet.'
       : status.test_mode ? 'Payment testing is enabled. This checkout uses test payments, not real charges.'
       : 'Subscriptions are billed monthly in USD. Review the final amount in Stripe before confirming.'
-    buttons.forEach(button => { button.disabled = !status.checkout_ready || !!session.account.stripe_subscription_id || button.dataset.plan === session.account.plan })
+    buttons.forEach(button => { button.disabled = !status.checkout_ready || (!!session.account.stripe_subscription_id && !['canceled','incomplete_expired'].includes(session.account.billing_status)) || (button.dataset.plan === session.account.plan && !['canceled','incomplete_expired'].includes(session.account.billing_status)) })
     document.getElementById('portalBtn').disabled = !status.portal_ready
   }).catch(() => { notice.textContent = 'Payment availability could not be checked. Please refresh or contact info@ovrendi.com.' })
 } else document.getElementById('billingReadiness').textContent = 'A company owner or administrator can manage subscriptions.'
+
+if (session.account.billing_status && !['active','trialing'].includes(session.account.billing_status)) {
+ const banner=document.getElementById('expiredBanner'); banner.style.display='block'; banner.textContent='Your subscription needs attention. Use Manage billing to review payment details, or choose a plan if your subscription has ended.';
+}

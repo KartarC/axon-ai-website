@@ -2,3 +2,9 @@
 
 node_modules/
 supabase/.temp/
+
+.env*
+!.env.example
+backups/
+*.backup.enc
+*.key.dpapi

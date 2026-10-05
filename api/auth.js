@@ -118,7 +118,7 @@ export default async function handler(req, res) {
       const newUser = await authAdmin('POST', 'users', { email: cleanEmail, password, email_confirm: !confirmEmail })
       authUserId = newUser.id
     } catch (err) {
-      console.error('Signup auth user error:', err)
+      console.error('Signup identity creation failed')
       return res.status(500).json({ error: 'Could not create your login. Try a different email.' })
     }
 
@@ -134,7 +134,7 @@ export default async function handler(req, res) {
       })
       account = rows[0]
     } catch (err) {
-      console.error('Signup account error:', err)
+      console.error('Signup workspace creation failed')
       return res.status(500).json({ error: 'Could not create your shop workspace.' })
     }
 

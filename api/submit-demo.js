@@ -47,12 +47,12 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const err = await response.text()
-      console.error('Supabase insert failed:', err)
+      console.error('Lead storage failed')
       return res.status(500).json({ error: 'Failed to save submission' })
     }
 
     const [lead] = await response.json()
-    console.log('New lead saved:', lead?.id, email)
+    console.log('New lead saved')
 
     return res.status(200).json({
       success: true,

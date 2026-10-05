@@ -39,12 +39,12 @@ async function readRawBody(req) {
 }
 
 // Stripe REST call with form encoding (supports nested keys passed pre-flattened)
-async function stripe(path, params) {
+async function stripe(path, params, idempotencyKey) {
   const body = new URLSearchParams(params).toString()
   const res = await fetch(`https://api.stripe.com/v1/${path}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${STRIPE_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
+    method: params ? 'POST' : 'GET',
+    headers: { Authorization: `Bearer ${STRIPE_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded', ...(idempotencyKey ? {'Idempotency-Key': idempotencyKey} : {}) },
+    ...(params ? {body} : {}),
   })
   const data = await res.json()
   if (!res.ok) throw new Error(data?.error?.message || `Stripe ${path} failed (${res.status})`)
@@ -81,9 +81,28 @@ export default async function handler(req, res) {
 
     if (typeof event.id !== 'string' || !Number.isSafeInteger(event.created) || !event.data?.object)
       return res.status(400).json({ error: 'Invalid event' })
-    if (['checkout.session.completed','customer.subscription.deleted'].includes(event.type)) {
-      try { await sb('POST', 'rpc/billet_process_billing_event', { p_event: event }) }
-      catch (_) { return res.status(500).json({ error: 'Could not process billing event; retry later' }) }
+    const supported = ['checkout.session.completed','checkout.session.async_payment_succeeded','customer.subscription.created','customer.subscription.updated','customer.subscription.deleted','customer.subscription.paused','customer.subscription.resumed','invoice.paid','invoice.payment_failed','invoice.payment_action_required'];
+    if (supported.includes(event.type)) {
+      try {
+        const obj = event.data.object;
+        const subId = event.type.startsWith('customer.subscription.') ? obj.id :
+          (obj.subscription?.id || obj.subscription || obj.parent?.subscription_details?.subscription);
+        if (!subId) return res.status(200).json({ received: true });
+        if (typeof subId !== 'string' || !/^sub_[a-zA-Z0-9]+$/.test(subId)) throw new Error('Invalid subscription');
+        // Fetch current Stripe state: delayed payment events cannot resurrect a canceled subscription.
+        const sub = await stripe('subscriptions/' + encodeURIComponent(subId));
+        const plan = sub.metadata?.plan;
+        const price = sub.items?.data?.[0]?.price;
+        if (!PLANS[plan] || sub.items?.data?.length !== 1 || sub.items.data[0].quantity !== 1 ||
+            price?.unit_amount !== PLANS[plan].amount || price.currency !== 'usd' ||
+            price.recurring?.interval !== 'month' || price.recurring?.interval_count !== 1)
+          throw new Error('Unrecognized subscription price');
+        if (typeof sub.customer !== 'string') throw new Error('Invalid customer');
+        await sb('POST', 'rpc/billet_sync_subscription', {
+          p_event: {id:event.id,type:event.type,created:event.created},
+          p_subscription: {...sub, current_period_end: sub.current_period_end || sub.items.data[0].current_period_end},
+        });
+      } catch (_) { return res.status(500).json({ error: 'Could not process billing event; retry later' }) }
     }
 
     return res.status(200).json({ received: true })
@@ -142,7 +161,7 @@ export default async function handler(req, res) {
   if (action === 'checkout' && req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin'], res)) return
     if (!STRIPE_KEY || !WEBHOOK_SECRET) return res.status(503).json({ error: 'Subscription payments are not available yet — contact info@ovrendi.com' })
-    if (ctx.account.stripe_subscription_id)
+    if (ctx.account.stripe_subscription_id && !['canceled','incomplete_expired'].includes(ctx.account.billing_status))
       return res.status(409).json({ error: 'You already have a subscription. Use Manage billing instead of creating another subscription.' })
     const plan = body?.plan
     if (!PLANS[plan]) return res.status(400).json({ error: 'plan must be starter, growth, or suite' })
@@ -161,19 +180,21 @@ export default async function handler(req, res) {
       success_url: `${base}/app/billing.html?success=1`,
       cancel_url:  `${base}/app/billing.html?canceled=1`,
       customer_email: ctx.user.email,
+      client_reference_id: ctx.account.id,
       'metadata[account_id]': ctx.account.id,
       'metadata[plan]': plan,
       'subscription_data[metadata][account_id]': ctx.account.id,
+      'subscription_data[metadata][plan]': plan,
     }
     if (ctx.account.stripe_customer_id) {
       delete params.customer_email
       params.customer = ctx.account.stripe_customer_id
     }
     try {
-      const session = await stripe('checkout/sessions', params)
+      const session = await stripe('checkout/sessions', params, `ovrendi-${ctx.account.id}-${plan}-${Math.floor(Date.now()/1800000)}`)
       return res.status(200).json({ url: session.url })
     } catch (e) {
-      return res.status(502).json({ error: e.message })
+      return res.status(502).json({ error: 'Payment service unavailable. Please try again or contact info@ovrendi.com.' })
     }
   }
 
@@ -189,7 +210,7 @@ export default async function handler(req, res) {
       })
       return res.status(200).json({ url: session.url })
     } catch (e) {
-      return res.status(502).json({ error: e.message })
+      return res.status(502).json({ error: 'Payment service unavailable. Please try again or contact info@ovrendi.com.' })
     }
   }
 

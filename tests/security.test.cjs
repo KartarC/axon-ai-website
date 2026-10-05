@@ -104,7 +104,7 @@ test('webhooks reject stale signatures and accept any valid current v1 during ro
   const req=request('POST',{action:'webhook'},body),t=Math.floor(Date.now()/1000)-age
   const sig=crypto.createHmac('sha256','test-webhook').update(`${t}.${JSON.stringify(body)}`).digest('hex')
   req.headers['stripe-signature']=`t=${t},v1=${sig},v1=${'0'.repeat(64)}`
-  const res=response();await app.handler(req,res);assert.equal(res.code,expected);assert.equal(writes,expected===200?1:0)
+  const res=response();await app.handler(req,res);assert.equal(res.code,expected);assert.equal(writes,0)
  }
 })
 test('oversized billing request is rejected',async()=>{
@@ -165,3 +165,17 @@ test('billing readiness is restricted and never returns credentials',async()=>{
  if(role==='owner'){assert.equal(res.body.checkout_ready,true);assert.equal(res.body.currency,'USD');assert(!JSON.stringify(res.body).includes('test-key'));assert(!JSON.stringify(res.body).includes('test-webhook'))}
  }
 })
+
+test('renewals and payment failures fetch current Stripe state before atomic sync',async()=>{
+ for(const type of ['invoice.paid','invoice.payment_failed','customer.subscription.updated','customer.subscription.deleted']){
+  let payload;const sub={id:'sub_test',customer:'cus_test',status:'past_due',metadata:{account_id:A,plan:'growth'},items:{data:[{quantity:1,current_period_end:2000000000,price:{unit_amount:19900,currency:'usd',recurring:{interval:'month',interval_count:1}}}]}};
+  const app=setup('api/billing.js',{sb:async(m,p,b)=>{assert.equal(p,'rpc/billet_sync_subscription');payload=b;return {ok:true}},extra:{fetch:async(url,opts)=>{assert.equal(opts.method,'GET');assert(url.endsWith('/subscriptions/sub_test'));return {ok:true,json:async()=>sub}}}});
+  const body={id:'evt_lifecycle',created:Math.floor(Date.now()/1000),type,data:{object:type.startsWith('invoice')?{parent:{subscription_details:{subscription:'sub_test'}}}:{id:'sub_test'}}};
+  const req=request('POST',{action:'webhook'},body),ts=body.created;req.headers['stripe-signature']='t='+ts+',v1='+crypto.createHmac('sha256','test-webhook').update(ts+'.'+JSON.stringify(body)).digest('hex');
+  const res=response();await app.handler(req,res);assert.equal(res.code,200);assert.equal(payload.p_subscription.status,'past_due');assert.equal(payload.p_subscription.current_period_end,2000000000);
+ }
+});
+test('unknown subscription prices cannot grant paid access',async()=>{
+ const app=setup('api/billing.js',{sb:async()=>{throw Error('Must not write')},extra:{fetch:async()=>({ok:true,json:async()=>({id:'sub_test',metadata:{plan:'suite'},items:{data:[{quantity:1,price:{unit_amount:1,currency:'usd'}}]}})})}});
+ const body={id:'evt_badprice',created:Math.floor(Date.now()/1000),type:'customer.subscription.updated',data:{object:{id:'sub_test'}}};const req=request('POST',{action:'webhook'},body);req.headers['stripe-signature']='t='+body.created+',v1='+crypto.createHmac('sha256','test-webhook').update(body.created+'.'+JSON.stringify(body)).digest('hex');const res=response();await app.handler(req,res);assert.equal(res.code,500);
+});

@@ -75,7 +75,23 @@ const C='40000000-0000-4000-8000-000000000001'
  await apply(event('evt_early_delete',800,'customer.subscription.deleted',{id:'sub_other',metadata:{account_id:B}}))
  await apply(event('evt_delayed_checkout',700,'checkout.session.completed',{...checkout,subscription:'sub_other',metadata:{account_id:B,plan:'starter'}}))
  q=await db.query('select status from accounts where id=$1',[B]);assert.equal(q.rows[0].status,'suspended');count++
- await db.exec('reset role;set role authenticated')
+
+ await db.exec('reset role');
+ await db.exec(fs.readFileSync(base+'supabase/migrations/20261005040303_ovrendi_billing_lifecycle.sql','utf8'));
+ await db.exec('set role service_role');
+ const sub={id:'sub_test',customer:'cus_test',status:'active',metadata:{account_id:A,plan:'growth'},current_period_end:2000000000,cancel_at_period_end:false};
+ const sync=async(id,time,change={})=>(await db.query('select public.billet_sync_subscription($1::jsonb,$2::jsonb) as r',[JSON.stringify({id,type:'customer.subscription.updated',created:time}),JSON.stringify({...sub,...change})])).rows[0].r;
+ await sync('evt_sync1',900);q=await db.query('select status,billing_status from accounts where id=$1',[A]);assert.equal(q.rows[0].status,'suspended');assert.equal(q.rows[0].billing_status,'active');count++;
+ assert.equal((await sync('evt_sync1',900)).duplicate,true);count++;
+ await sync('evt_sync2',1000,{status:'past_due'});q=await db.query('select billing_status from accounts where id=$1',[A]);assert.equal(q.rows[0].billing_status,'past_due');count++;
+ assert.equal((await sync('evt_stale',950)).stale,true);count++;
+ await sync('evt_sync3',1100,{status:'active',cancel_at_period_end:true});q=await db.query('select billing_status,billing_cancel_at_period_end from accounts where id=$1',[A]);assert.equal(q.rows[0].billing_status,'active');assert(q.rows[0].billing_cancel_at_period_end);count++;
+ await assert.rejects(()=>sync('evt_wrongcustomer',1200,{customer:'cus_other'}),/customer mismatch/);count++;
+ await assert.rejects(()=>sync('evt_wrongsub',1200,{id:'sub_other'}),/Conflicting subscription/);count++;
+ await sync('evt_cancel',1300,{status:'canceled'});q=await db.query('select billing_status from accounts where id=$1',[A]);assert.equal(q.rows[0].billing_status,'canceled');count++;
+ await db.exec('reset role;set role authenticated');
+ await assert.rejects(()=>sync('evt_attacker',1400),/permission denied/);count++;
+
  await assert.rejects(()=>db.query('update accounts set plan=$1 where id=$2',['suite',A]),/permission denied/);count++
  await assert.rejects(()=>db.query('select public.billet_accept_invite($1,$2,$3)',['token-one',U,'test@example.invalid']),/permission denied/);count++
  await db.close();console.log(`${count} PostgreSQL migration checks passed; production was not touched.`)

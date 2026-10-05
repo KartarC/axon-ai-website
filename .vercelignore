@@ -7,3 +7,10 @@ CODEX_HANDOFF.md
 SECURITY_FIXES.md
 
 LASER_QUOTING.md
+
+.env*
+scripts
+backups
+*.backup.enc
+*.key.dpapi
+LAUNCH_READINESS.md

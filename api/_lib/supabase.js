@@ -69,7 +69,7 @@ async function validateToken(token) {
 async function getAccountContext(userId) {
   const rows = await sb(
     'GET',
-    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone,trial_ends_at,onboarded,stripe_customer_id)`,
+    `account_users?user_id=eq.${userId}&select=role,full_name,account_id,accounts(id,name,slug,plan,modules,status,timezone,trial_ends_at,onboarded,stripe_customer_id,stripe_subscription_id,billing_status,billing_period_end,billing_cancel_at_period_end)`,
   )
   if (!rows || rows.length === 0) return null
   const row = rows[0]
@@ -104,6 +104,11 @@ async function requireAuth(req, res, opts = {}) {
   }
   if (ctx.account.status !== 'active') {
     res.status(403).json({ error: 'Account suspended' })
+    return null
+  }
+  // Billing failures restrict operations, while owners can still reach payment recovery.
+  if (!opts.allowExpired && ctx.account.billing_status && !['active','trialing'].includes(ctx.account.billing_status)) {
+    res.status(402).json({error:'Your subscription needs attention. Open billing to continue.',code:'billing_required'})
     return null
   }
   // Trial-expiry gate: expired trials get 402 so the frontend routes to billing

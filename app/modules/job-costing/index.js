@@ -148,6 +148,7 @@ function openQuoteModal(jobId, jobNum, partName, price, margin) {
   document.getElementById('qMargin').value       = margin || 40
   document.getElementById('qNotes').value        = ''
   document.getElementById('quoteError').style.display = 'none'
+  document.getElementById('aiConsent').checked = false
   // reset AI suggestion UI
   const box = document.getElementById('aiSuggestBox')
   box.style.display = 'none'; box.innerHTML = ''
@@ -163,6 +164,7 @@ function resetAiBtn() {
 }
 
 document.getElementById('aiSuggestBtn').addEventListener('click', async () => {
+  if (!document.getElementById('aiConsent').checked) { toastError('Please review and confirm the AI data disclosure.'); return }
   const btn  = document.getElementById('aiSuggestBtn')
   const box  = document.getElementById('aiSuggestBox')
   const jobId = document.getElementById('quoteJobId').value
@@ -170,7 +172,7 @@ document.getElementById('aiSuggestBtn').addEventListener('click', async () => {
   document.getElementById('aiSuggestLabel').textContent = 'Analyzing past jobs…'
 
   try {
-    const r = await apiPost('/api/quote-suggest', { job_id: jobId })
+    const r = await apiPost('/api/quote-suggest', { job_id: jobId, ai_consent: true })
     const s = r.suggestion
     const confCls = `ai-conf--${(s.confidence || 'medium')}`
     const comps = (r.comparables || []).slice(0, 4).map(c =>

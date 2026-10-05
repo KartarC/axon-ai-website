@@ -66,6 +66,8 @@ export default async function handler(req, res) {
   if (!requireModule(ctx, 'job-costing', res)) return
   if (!requireRole(ctx, ['owner','admin','manager'], res)) return
 
+  if (req.body?.ai_consent !== true) return res.status(400).json({error:'Confirm the AI data disclosure before requesting a suggestion.'})
+
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
     return res.status(503).json({
@@ -131,14 +133,14 @@ export default async function handler(req, res) {
 
   const compText = comparables.length
     ? comparables.map(c =>
-        `- ${c.job_number}: ${c.part_name} | ${c.material} | qty ${c.quantity} | quoted $${c.quoted} | actual cost $${c.actual} | margin ${c.margin_pct}%`
+        `- ${c.job_number}: ${c.material} | qty ${c.quantity} | quoted $${c.quoted} | actual cost $${c.actual} | margin ${c.margin_pct}%`
       ).join('\n')
     : '(no comparable history — use a parametric cold-start estimate from material, quantity, and typical shop rates of $75–$95/machine-hour)'
 
   const userContent =
     `New part to quote:\n` +
-    `- Part: ${target.part_name}\n- Material: ${target.material}\n- Quantity: ${target.quantity}\n` +
-    (target.notes ? `- Notes: ${target.notes}\n` : '') +
+    `- Material: ${target.material}\n- Quantity: ${target.quantity}\n` +
+
     `\nThe shop's comparable past jobs (most similar first):\n${compText}\n\n` +
     `Return JSON with exactly these keys:\n` +
     `{\n` +
@@ -157,7 +159,7 @@ export default async function handler(req, res) {
     const raw = await callClaude(apiKey, model, system, userContent)
     suggestion = parseJSON(raw)
   } catch (e) {
-    return res.status(502).json({ error: 'AI suggestion failed', detail: String(e.message || e) })
+    return res.status(502).json({ error: 'AI suggestion failed', detail: 'Please retry later or contact support.' })
   }
 
   return res.status(200).json({
