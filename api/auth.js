@@ -157,7 +157,7 @@ export default async function handler(req, res) {
       return res.status(201).json({ ok: true, auto_login: false, confirmation_required: true, email_sent: emailSent })
     }
     // Await delivery so a serverless invocation cannot end before the send completes.
-    await sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, siteUrl()) }).catch(() => {})
+    await sendEmail({ to: cleanEmail, ...welcomeEmail(shop_name, siteUrl()), idempotencyKey: `welcome-${account.id}` }).catch(() => {})
 
     // Auto-login so the client can go straight into onboarding
     const loginRes = await fetch(`${process.env.SUPABASE_URL}/auth/v1/token?grant_type=password`, {

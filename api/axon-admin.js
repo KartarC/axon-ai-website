@@ -4,7 +4,8 @@
 // ?resource=invite   → POST send invite
 const { sb, requireAxonAdmin, cors } = require('./_lib/supabase')
 
-const SITE_URL = process.env.SITE_URL || 'https://axon-ai-website-three.vercel.app'
+const { siteUrl } = require('./_lib/security')
+const { sendEmail, emailStatus, invitationEmail, welcomeEmail } = require('./_lib/email')
 
 export default async function handler(req, res) {
   cors(res)
@@ -13,6 +14,14 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if (resource === 'email' && req.method === 'GET') return res.status(200).json(emailStatus())
+  if (resource === 'email-test' && req.method === 'POST') {
+    const { email } = req.body || {}
+    if (typeof email !== 'string' || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({error:'Enter a valid test recipient'})
+    if (!emailStatus().notifications_ready) return res.status(409).json({error:'Notification sender is not configured'})
+    const result = await sendEmail({to:email,...welcomeEmail('Test workspace',siteUrl()),subject:'Ovrendi email delivery test',kind:'test'})
+    return res.status(result.ok ? 200 : 502).json(result.ok ? {ok:true,message:'Resend accepted the test email. Check the recipient inbox and Resend delivery log.'} : {error:'Resend did not accept the test. Check the key permissions and verified sender domain.'})
+  }
   const modules = ['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
   const limits = {starter:1,growth:3,suite:9,trial:9}
   if (resource === 'catalog' && req.method === 'GET') return res.status(200).json({modules,limits})
@@ -67,9 +76,10 @@ export default async function handler(req, res) {
 
   // ── INVITE ───────────────────────────────────────────────
   if (resource === 'invite' && req.method === 'POST') {
-    const { email, account_id, role = 'owner' } = req.body || {}
+    const { email, account_id, role = 'owner', send_email = false } = req.body || {}
     if (typeof email!=='string'|| !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!['owner','admin','manager','operator','viewer'].includes(role)||!account_id) return res.status(400).json({ error: 'email and account_id required' })
 
+    if (send_email && !emailStatus().invitations_ready) return res.status(409).json({error:'Secure invitation email is not configured. Create a private link instead, or finish the untracked auth sender setup.'})
     const accounts = await sb('GET', `accounts?id=eq.${account_id}&select=name`)
     if (!accounts?.length) return res.status(404).json({ error: 'Account not found' })
     const shopName = accounts[0].name
@@ -77,10 +87,10 @@ export default async function handler(req, res) {
     const [invite] = await sb('POST', 'account_invites', { account_id, email, role })
 
 
-    const inviteUrl = `${SITE_URL}/app/accept-invite.html?token=${invite.token}`
-    // Email delivery is deliberately separate from creating an invitation.
+    const inviteUrl = `${siteUrl()}/app/accept-invite.html?token=${invite.token}`
+    const delivery = send_email ? await sendEmail({to:email,...invitationEmail(shopName,inviteUrl),idempotencyKey:`invite-${invite.id}`}) : null
 
-    return res.status(201).json({ ok: true, invite_id: invite.id, invite_url: inviteUrl, email, shop: shopName })
+    return res.status(201).json({ ok: true, invite_id: invite.id, invite_url: inviteUrl, email, shop: shopName, email_status: !send_email ? 'not_requested' : delivery?.ok ? 'accepted' : 'failed' })
   }
 
   res.status(400).json({ error: 'Unknown resource or method' })
