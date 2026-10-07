@@ -23,6 +23,7 @@ const firstName = (session.fullName || session.user?.email || 'there').split(' '
 
 const content = document.getElementById('dashContent')
 content.innerHTML = `
+  <p><a href="/app/getting-started.html">New here? Start your setup checklist →</a></p>
   <div class="dash-greeting">${greeting}, ${escHtml(firstName)}</div>
   <div class="dash-sub">${escHtml(session.account.name)} · ${visibleModules.length} module${visibleModules.length !== 1 ? 's' : ''} active</div>
 

@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const result = await sendEmail({to:email,...welcomeEmail('Test workspace',siteUrl()),subject:'Ovrendi email delivery test',kind:'test'})
     return res.status(result.ok ? 200 : 502).json(result.ok ? {ok:true,message:'Resend accepted the test email. Check the recipient inbox and Resend delivery log.'} : {error:'Resend did not accept the test. Check the key permissions and verified sender domain.'})
   }
-  const modules = ['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
+  const modules = ['laser-quoting','production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service']
   const limits = {starter:1,growth:3,suite:9,trial:9}
   if (resource === 'catalog' && req.method === 'GET') return res.status(200).json({modules,limits})
   const tables = {contacts:'ovrendi_crm_contacts',tasks:'ovrendi_crm_tasks',workflows:'ovrendi_crm_workflows',activity:'ovrendi_crm_activity'}
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { name, plan = 'starter', modules = [], timezone = 'America/Toronto', notes } = req.body || {}
       if (typeof name!=='string'||!name.trim()||name.length>120) return res.status(400).json({ error: 'Company name required (maximum 120 characters)' })
-      if(!Object.hasOwn(limits,plan)||!Array.isArray(modules)||new Set(modules).size!==modules.length||modules.length>limits[plan]||modules.some(m=>!['production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service'].includes(m))) return res.status(400).json({error:'Select valid modules within the plan limit'})
+      if(!Object.hasOwn(limits,plan)||!Array.isArray(modules)||new Set(modules).size!==modules.length||modules.length>limits[plan]||modules.some(m=>!['laser-quoting','production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service'].includes(m))) return res.status(400).json({error:'Select valid modules within the plan limit'})
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
       const existing = await sb('GET', `accounts?slug=eq.${slug}`)
       const finalSlug = (existing?.length > 0) ? `${slug}-${Math.random().toString(36).slice(2,6)}` : slug

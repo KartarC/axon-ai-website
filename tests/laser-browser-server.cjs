@@ -16,7 +16,7 @@ async function start(options={}){
   if(method!=='GET')throw Error('Unexpected write')
   return(await db.query(`select ${select} from public.${table} where ${where.join(' and ')||'true'} order by ${order} limit 100`,values)).rows
  }
- const account={id:A,name:'Test Manufacturing',plan:'suite',modules:['job-costing'],status:'active'}
+ const account={id:A,name:'Test Manufacturing',plan:'suite',modules:options.modules||['job-costing'],status:'active'}
  const deps={sb,cors(){},requireAuth:async(req,res)=>{if(req.headers.authorization!=='Bearer test-token'){res.status(401).json({error:'Test session required'});return null}return{user:{id:U},account,role:'owner'}},requireRole:(ctx,roles,res)=>{if(roles.includes(ctx.role))return true;res.status(403).json({error:'Forbidden'});return false}}
  const context={Buffer,console,require:n=>n==='./_lib/supabase'?deps:require(path.resolve(root,'api',n))}
  vm.createContext(context);vm.runInContext(fs.readFileSync(root+'/api/laser-quotes.js','utf8').replace('export const config','const config').replace('export default async function handler','async function handler')+';this.handler=handler',context)

@@ -1,3 +1,4 @@
+import { installWalkthrough } from './walkthrough.js'
 import { getSession, logout } from './auth.js'
 import { getVisibleModules } from './modules.js'
 let cleanupNav = () => {}
@@ -24,9 +25,11 @@ export function renderNav(activePath = '') {
     '<div class="anav-top"><a href="/app/dashboard.html" class="anav-logo" aria-label="Ovrendi overview"><img src="/assets/ovrendi-mark.svg" width="32" height="32" alt=""><span class="anav-logo-text">Ovrendi</span></a><button class="anav-collapse" id="sidebarCollapse" type="button">'+icons.collapse+'</button></div>'+
     '<div class="anav-account"><span class="anav-shop-name">'+escHtml(accountName)+'</span><span class="anav-plan-badge">'+escHtml(session.account.plan)+' workspace</span></div>'+
     '<div class="anav-scroll"><section class="anav-group" aria-label="Account"><h2 class="anav-section-label">Account</h2>'+link('Overview','/app/dashboard.html',icons.overview,activePath.includes('/dashboard'))+(canBill?link('Plan & billing','/app/billing.html',icons.billing,activePath.includes('/billing')):'')+'</section>'+
-    '<section class="anav-group" aria-label="Workspace"><h2 class="anav-section-label">Workspace</h2>'+link('All jobs','/app/jobs/',icons.jobs,activePath.includes('/jobs/'))+modules.map(m=>link(m.name,m.path,m.icon,activePath.includes(m.slug))).join('')+'</section>'+
+    '<section class="anav-group" aria-label="Workspace"><h2 class="anav-section-label">Workspace</h2>'+(session.account.modules.includes('production-board')?link('All jobs','/app/jobs/',icons.jobs,activePath.includes('/jobs/')):'')+modules.map(m=>link(m.name,m.path,m.icon,activePath.includes(m.slug))).join('')+'</section>'+
+    '<section class="anav-group" aria-label="Learn"><h2 class="anav-section-label">Learn</h2>'+link('Getting started','/app/getting-started.html',icons.overview,activePath.includes('/getting-started'))+link('Education','/education/',icons.jobs,false)+'</section>'+
     '<section class="anav-group" aria-label="Administration"><h2 class="anav-section-label">Administration</h2>'+link('Settings','/app/settings.html',icons.settings,activePath.includes('/settings'))+'</section></div>'+
     '<div class="anav-footer"><div class="anav-theme" role="group" aria-label="Appearance"><button type="button" data-theme-choice="light" title="Light mode" aria-label="Light mode">'+icons.light+'<span>Light</span></button><button type="button" data-theme-choice="dark" title="Dark mode" aria-label="Dark mode">'+icons.dark+'<span>Dark</span></button></div><button class="anav-link anav-logout" id="logoutBtn" title="Sign out" aria-label="Sign out">'+icons.logout+'<span>Sign out</span></button></div></div>'
+  queueMicrotask(installWalkthrough)
   const collapse = document.getElementById('sidebarCollapse')
   const syncCollapse = () => {
     const collapsed = document.documentElement.dataset.sidebar === 'collapsed'
