@@ -140,15 +140,22 @@ function requireRole(ctx, roles, res) {
   return true
 }
 
-// ── Require Ovrendi admin (ADMIN_SECRET header) ─────────────────
-function requireAxonAdmin(req, res) {
-  if (!validateIds(req, res)) return false
-  const secret = req.headers['x-admin-secret']
-  if (!secretMatches(secret, process.env.ADMIN_SECRET)) {
-    res.status(403).json({ error: 'Ovrendi admin access required' })
-    return false
-  }
-  return true
+// Internal access requires a verified identity, a live session and an active staff record.
+async function requireAxonAdmin(req, res) {
+  if (!validateIds(req, res)) return null
+  res.setHeader('Cache-Control', 'no-store')
+  const token = req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : null
+  if (!token) { res.status(401).json({error:'Sign in with your staff account'}); return null }
+  try {
+    const user = await validateToken(token)
+    if (!user?.id || !user.email_confirmed_at) { res.status(401).json({error:'Your session has expired. Please sign in again.'}); return null }
+    // The token has been verified by Auth before its session identifier is used.
+    const claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString())
+    if (!isUuid(claims.session_id)) { res.status(401).json({error:'Please sign in again'}); return null }
+    const active = await sb('POST', 'rpc/ovrendi_internal_session_valid', {p_user_id:user.id,p_session_id:claims.session_id})
+    if (active !== true) { res.status(403).json({error:'This account is not approved for the internal workspace, or its session has ended.'}); return null }
+    return user
+  } catch (_) { res.status(503).json({error:'Could not verify staff access. Please try again.'}); return null }
 }
 
 // ── CORS helper ───────────────────────────────────────────────

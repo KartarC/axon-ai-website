@@ -10,7 +10,12 @@ const { sendEmail, emailStatus, invitationEmail, welcomeEmail } = require('./_li
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(200).end()
-  if (!requireAxonAdmin(req, res)) return
+  if (req.query.resource === 'staff-setup' && req.method === 'POST') {
+    return require('./_lib/staff-setup').setupStaff(req, res)
+  }
+  const staff = await requireAxonAdmin(req, res)
+  if (!staff) return
+  if (req.query.resource === 'session' && req.method === 'GET') return res.status(200).json({email:staff.email})
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
