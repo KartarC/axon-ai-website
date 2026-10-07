@@ -19,6 +19,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if (['company-team','company-user','company-invite','user-reset'].includes(resource)) {try{return await require('./_lib/company-users').companyUsers(req,res)}catch(_){return res.status(503).json({error:'Could not complete the company user request. Please try again.'})}}
   if (resource === 'email' && req.method === 'GET') return res.status(200).json(emailStatus())
   if (resource === 'email-test' && req.method === 'POST') {
     const { email } = req.body || {}
@@ -68,6 +69,7 @@ export default async function handler(req, res) {
       const allowed = ['name','plan','modules','status','timezone','notes']
       const updates = {}
       for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }
+      if(updates.name!==undefined){if(typeof updates.name!=='string'||!updates.name.trim()||updates.name.length>120)return res.status(400).json({error:'Company name is required (maximum 120 characters)'});updates.name=updates.name.trim()}
       const [existing] = await sb('GET', 'accounts?id=eq.'+id+'&select=plan,modules,stripe_subscription_id') || []
       if(!existing)return res.status(404).json({error:'Company not found'})
       if(updates.plan && existing.stripe_subscription_id && updates.plan!==existing.plan)return res.status(409).json({error:'Change paid plans through billing first'})

@@ -2,7 +2,7 @@
   "name": "billet-security-tests",
   "private": true,
   "scripts": {
-    "test": "node --test security.test.cjs laser-quoting.test.cjs account-email.test.cjs launch.test.cjs resend.test.cjs staff-auth.test.cjs && node database-security.cjs && node database-laser.cjs && node laser-persistence.cjs",
+    "test": "node --test security.test.cjs laser-quoting.test.cjs account-email.test.cjs launch.test.cjs resend.test.cjs staff-auth.test.cjs company-users.test.cjs && node database-security.cjs && node database-laser.cjs && node laser-persistence.cjs",
     "test:browser": "node laser-browser.cjs"
   },
   "devDependencies": {
@@ -10,4 +10,3 @@
     "playwright": "1.63.0"
   }
 }
-

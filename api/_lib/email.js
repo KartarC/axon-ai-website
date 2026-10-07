@@ -33,6 +33,9 @@ async function sendEmail({ to, subject, html, text, kind = 'notification', idemp
   }
 }
 
+function passwordResetEmail(url) {
+ return {secure:true,kind:'password_reset',subject:'Reset your Ovrendi password',text:`A password reset was requested for your Ovrendi account. Choose a new password: ${url}\nIf you did not request this, ignore this email. Your password has not changed.`,html:shell(`<h2>Reset your password</h2><p>A password reset was requested for your Ovrendi account.</p><p><a href="${escapeHtml(url)}" style="display:inline-block;background:#D9042B;color:white;padding:14px 22px;border-radius:8px;text-decoration:none">Choose a new password</a></p><p>If you did not request this, ignore this email. Your password has not changed.</p>`)}
+}
 function invitationEmail(shopName, inviteUrl) {
   const name = escapeHtml(shopName), url = escapeHtml(inviteUrl)
   return { kind:'invitation', secure:true, subject:'Your Ovrendi workspace invitation',
@@ -112,4 +115,4 @@ function overBudgetEmail(shopName, jobNumber, partName, actual, quoted, appUrl) 
   }
 }
 
-module.exports = { emailStatus, invitationEmail, sendEmail, getOwnerEmail, welcomeEmail, trialReminderEmail, trialExpiredEmail, overBudgetEmail }
+module.exports = { passwordResetEmail, emailStatus, invitationEmail, sendEmail, getOwnerEmail, welcomeEmail, trialReminderEmail, trialExpiredEmail, overBudgetEmail }
