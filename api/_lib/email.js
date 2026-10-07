@@ -4,11 +4,11 @@ const { sb, authAdmin } = require('./supabase')
 
 function emailStatus() {
   return { notifications_ready: !!(process.env.RESEND_API_KEY && process.env.FROM_EMAIL),
-    invitations_ready: !!(process.env.RESEND_AUTH_API_KEY && process.env.AUTH_FROM_EMAIL),
+    invitations_ready: !!((process.env.RESEND_AUTH_API_KEY || process.env.RESEND_API_KEY) && process.env.AUTH_FROM_EMAIL),
     sender: process.env.FROM_EMAIL || null, auth_sender: process.env.AUTH_FROM_EMAIL || null }
 }
 async function sendEmail({ to, subject, html, text, kind = 'notification', idempotencyKey, secure = false }) {
-  const key = secure ? process.env.RESEND_AUTH_API_KEY : process.env.RESEND_API_KEY
+  const key = secure ? (process.env.RESEND_AUTH_API_KEY || process.env.RESEND_API_KEY) : process.env.RESEND_API_KEY
   const from = secure ? process.env.AUTH_FROM_EMAIL : process.env.FROM_EMAIL
   if (!key || !from) return { skipped: true, reason: 'Email sender is not configured' }
   try {
