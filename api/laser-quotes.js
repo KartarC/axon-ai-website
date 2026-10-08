@@ -17,7 +17,7 @@ export default async function handler(req,res){
   try{
     const ctx=await requireAuth(req,res);if(!ctx)return
     // Separate beta module; Job Costing entitlement also grants pilot access.
-    if(!ctx.account.modules.some(m=>['laser-quoting','job-costing'].includes(m)))return res.status(403).json({error:'Laser Quoting is not enabled for this shop.'})
+    if(!ctx.account.modules.some(m=>['laser-quoting','job-costing'].includes(m)))return res.status(403).json({error:'Upgrade to enable Quoting for this shop.',code:'module_required',module:'laser-quoting'})
     if(!requireRole(ctx,['owner','admin','manager'],res))return
     const account=ctx.account.id, action=req.query.action||'quotes',body=req.body||{}
     if(req.method==='GET'&&action==='identity')return res.status(200).json(await identity(account,ctx.user.id))

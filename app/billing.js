@@ -1,3 +1,4 @@
+import { MODULES } from './_shared/modules.js'
 import { requireAuth, saveSession, getSession } from './_shared/auth.js'
 import { renderNav }                from './_shared/nav.js'
 import { apiPost, apiGet }          from './_shared/api.js'
@@ -15,6 +16,14 @@ if (!['owner','admin'].includes(session.role)) {
 document.getElementById('mobileNavBtn')?.addEventListener('click', () => document.getElementById('app-nav').classList.toggle('open'))
 
 const params = new URLSearchParams(location.search)
+const requestedModule = MODULES[params.get('module')]
+if (requestedModule) {
+  const banner = document.getElementById('moduleUpgradeBanner')
+  banner.style.display = 'block'
+  banner.textContent = requestedModule.name + ' is not included in your company’s current module access. ' + (['owner','admin'].includes(session.role)
+    ? 'Upgrade your plan or contact Ovrendi to add this module. Your current modules remain available.'
+    : 'Ask your company owner or administrator to upgrade and enable this module.')
+}
 if (params.get('expired'))  document.getElementById('expiredBanner').style.display = 'block'
 if (params.get('canceled')) document.getElementById('canceledBanner').style.display = 'block'
 

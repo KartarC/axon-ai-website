@@ -42,7 +42,8 @@ function reset(){current=null;imported=null;dirty=false;requestId=crypto.randomU
 if(session){
   renderNav('/app/modules/laser-quoting/')
   $('mobileNavBtn').onclick=()=>$('app-nav').classList.toggle('open')
-  if(!hasModule(session.account,'laser-quoting')||!['owner','admin','manager'].includes(session.role)){message('Laser Quoting is available to owners, admins and managers with pilot access.',true)}
+  if(!hasModule(session.account,'laser-quoting')){location.replace('/app/billing.html?module=laser-quoting')}
+  else if(!['owner','admin','manager'].includes(session.role)){message('Quoting is available to owners, admins and managers. Ask your company administrator to update your role.',true)}
   else{
     $('workspace').hidden=false;buildFields();$('profileEditor').hidden=!['owner','admin'].includes(session.role)
     run(async()=>{profiles=await apiGet('/api/laser-quotes?action=profiles');renderProfiles();await loadIdentity();await refresh()})

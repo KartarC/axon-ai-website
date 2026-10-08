@@ -51,12 +51,12 @@ export function requireAuth(returnPath) {
   return session
 }
 
-// Redirect to dashboard if module not enabled
+// Redirect to upgrade options if module not enabled
 export function requireModule(slug) {
   const session = requireAuth()
   if (!session) return null
   if (!session.account.modules.includes(slug)) {
-    window.location.href = '/app/dashboard.html?upgrade=' + slug
+    window.location.href = '/app/billing.html?module=' + encodeURIComponent(slug)
     return null
   }
   return session

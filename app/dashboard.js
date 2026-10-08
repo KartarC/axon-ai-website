@@ -58,7 +58,7 @@ content.innerHTML = `
     <div class="dash-section-label">Also available</div>
     <div class="modules-grid">
       ${lockedModules.map(m => `
-        <div class="module-tile module-tile--locked">
+        <${m.phase <= 3 ? `a href="/app/billing.html?module=${m.slug}"` : 'div'} class="module-tile module-tile--locked">
           <div class="module-tile-icon" style="background:var(--gray-100);border-color:var(--gray-200);color:var(--gray-400)">${m.icon}</div>
           <div>
             <div class="module-tile-name" style="color:var(--gray-500)">${m.name}</div>
@@ -66,9 +66,9 @@ content.innerHTML = `
           </div>
           <div class="lock-badge">
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1.5" y="4.5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M3.5 4.5V3a2 2 0 0 1 4 0v1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
-            Add module
+            ${m.phase <= 3 ? 'Upgrade to unlock' : 'In development'}
           </div>
-        </div>
+        </${m.phase <= 3 ? 'a' : 'div'}>
       `).join('')}
     </div>
   ` : ''}

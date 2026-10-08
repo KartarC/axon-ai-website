@@ -125,7 +125,7 @@ async function requireAuth(req, res, opts = {}) {
 // ── Require module access ────────────────────────────────────
 function requireModule(ctx, slug, res) {
   if (!ctx.account.modules.includes(slug)) {
-    res.status(403).json({ error: `Module '${slug}' not enabled for this account` })
+    res.status(403).json({ error: `Module '${slug}' not enabled for this account. Upgrade to request access.`, code: 'module_required', module: slug })
     return false
   }
   return true

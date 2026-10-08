@@ -45,6 +45,9 @@ export async function apiFetch(path, options = {}, retried = false) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: 'Request failed' }))
+    if (res.status === 403 && err.code === 'module_required' && !location.pathname.includes('/app/billing')) {
+      window.location.href = '/app/billing.html?module=' + encodeURIComponent(err.module || '')
+    }
     throw new Error(err.error || `HTTP ${res.status}`)
   }
 

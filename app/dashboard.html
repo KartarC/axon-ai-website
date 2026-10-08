@@ -43,7 +43,9 @@
     .module-tile:hover .module-tile-arrow { color:var(--blue-700); transform:translateX(3px); }
 
     /* Phase 2+ module teaser (locked) */
-    .module-tile--locked { opacity:.65; cursor:not-allowed; background:var(--gray-50); }
+    .module-tile--locked { opacity:.65; cursor:default; background:var(--gray-50); }
+    a.module-tile--locked { cursor:pointer; }
+    a.module-tile--locked:focus-visible { outline:2px solid var(--red); outline-offset:3px; }
     .module-tile--locked:hover { transform:none; box-shadow:none; border-color:var(--gray-200); }
     .lock-badge {
       display:inline-flex; align-items:center; gap:5px;
