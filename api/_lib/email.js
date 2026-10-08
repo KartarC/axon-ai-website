@@ -82,14 +82,14 @@ function welcomeEmail(shopName, appUrl) {
   }
 }
 
-function trialReminderEmail(shopName, daysLeft, appUrl) {
+function trialReminderEmail(shopName, daysLeft, appUrl, automatic=false, canceled=false) {
   shopName = escapeHtml(shopName)
   return {
     subject: `${daysLeft} day${daysLeft === 1 ? '' : 's'} left in your Ovrendi trial`,
     html: shell(`
       <h2 style="font-size:20px;margin:0 0 10px">Your trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}</h2>
-      <p style="color:#4B5563;line-height:1.7"><strong>${shopName}</strong>'s data, jobs, and settings stay exactly as they are — pick a plan and keep rolling. Flat pricing, unlimited users, starting at $99/mo.</p>
-      <a href="${appUrl}/app/billing.html" style="display:inline-block;background:#1F2937;color:#fff;font-weight:700;font-size:14px;padding:12px 22px;border-radius:8px;text-decoration:none;margin-top:8px">Choose a plan</a>`),
+      <p style="color:#4B5563;line-height:1.7"><strong>${shopName}</strong>: ${automatic ? (canceled ? 'Your subscription is scheduled to end. Review the cancellation date in Manage billing.' : 'Your selected USD monthly subscription starts automatically when the trial ends. Review your amount and first charge date, or cancel before that date, in Manage billing.') : 'Choose a plan and add your card to continue automatically after the trial. Plans start at US$49/month. Without a subscription, no payment is taken.'}</p>
+      <a href="${appUrl}/app/billing.html" style="display:inline-block;background:#1F2937;color:#fff;font-weight:700;font-size:14px;padding:12px 22px;border-radius:8px;text-decoration:none;margin-top:8px">${automatic ? 'Manage billing' : 'Choose a plan'}</a>`),
   }
 }
 

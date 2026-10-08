@@ -183,3 +183,37 @@ test('unknown subscription prices cannot grant paid access',async()=>{
 test('internal CRM denies unprivileged users before database access',async()=>{const app=setup('api/axon-admin.js',{extra:{helpers:{requireAxonAdmin:(req,res)=>{res.status(403).json({error:'Forbidden'});return false}}}}),res=response();await app.handler(request('GET',{resource:'contacts'}),res);assert.equal(res.code,403)});
 test('internal module limits and unknown module names are enforced server-side',async()=>{for(const modules of [['production-board','job-costing'],['made-up']]){const app=setup('api/axon-admin.js',{extra:{helpers:{requireAxonAdmin:()=>true}}}),res=response();await app.handler(request('POST',{resource:'accounts'},{name:'Fixture',plan:'starter',modules}),res);assert.equal(res.code,400)}});
 test('internal CRM rejects invalid task states',async()=>{const app=setup('api/axon-admin.js',{extra:{helpers:{requireAxonAdmin:()=>true}}}),res=response();await app.handler(request('POST',{resource:'tasks'},{title:'Fixture',status:'invalid'}),res);assert.equal(res.code,400)});
+
+test('launch checkout requires consent and does not sell Suite',async()=>{
+ for(const body of [{plan:'starter'},{plan:'suite',accept_recurring:true}]) {
+  const app=setup('api/billing.js',{role:'owner'}),res=response();
+  await app.handler(request('POST',{action:'checkout'},body),res);assert.equal(res.code,400);
+ }
+});
+test('launch checkout uses USD monthly prices, required card, and preserves trial end',async()=>{
+ for(const [plan,amount] of [['starter','4900'],['growth','9900']]) {
+  let sent;const account={id:A,plan:'trial',trial_ends_at:'2099-01-07'};
+  const app=setup('api/billing.js',{role:'owner',extra:{helpers:{requireAuth:async()=>({role:'owner',user:{email:'fixture@example.invalid'},account})},fetch:async(url,opts)=>{sent=new URLSearchParams(opts.body);return{ok:true,json:async()=>({url:'https://checkout.stripe.com/fixture'})}}}});
+  const res=response();await app.handler(request('POST',{action:'checkout'},{plan,accept_recurring:true}),res);assert.equal(res.code,200);
+  assert.equal(sent.get('line_items[0][price_data][unit_amount]'),amount);assert.equal(sent.get('line_items[0][price_data][currency]'),'usd');assert.equal(sent.get('adaptive_pricing[enabled]'),'false');assert.equal(sent.get('payment_method_collection'),'always');
+  assert.equal(Number(sent.get('subscription_data[trial_end]')),Date.parse('2099-01-08T00:00:00Z')/1000);
+  assert.equal(sent.get('subscription_data[metadata][price_version]'),'launch-2026-10');assert.equal(sent.get('subscription_data[trial_settings][end_behavior][missing_payment_method]'),'cancel');
+ }
+});
+test('trial dates do not give paid or expired customers another trial; short trials extend safely',()=>{
+ const app=setup('api/billing.js'),now=Date.parse('2026-10-08T12:00:00Z');
+ assert.equal(app.checkoutTrialEnd({plan:'starter',trial_ends_at:'2099-01-01'},now),null);
+ assert.equal(app.checkoutTrialEnd({plan:'trial',trial_ends_at:'2026-10-07'},now),null);
+ assert.equal(app.checkoutTrialEnd({plan:'trial',trial_ends_at:'2099-01-01',stripe_subscription_id:'sub_fixture'},now),null);
+ assert(app.checkoutTrialEnd({plan:'trial',trial_ends_at:'2026-10-09'},now)>=now/1000+48*3600);
+ assert.equal(app.checkoutTrialEnd({plan:'trial',trial_ends_at:'2027-01-07'},now),Date.parse('2027-01-08T00:00:00Z')/1000);
+});
+test('webhook validates launch and grandfathered prices independently',async()=>{
+ for(const [version,amount,expected] of [['launch-2026-10',4900,200],[undefined,9900,200],['launch-2026-10',9900,500],[undefined,4900,500]]) {
+  let writes=0;const sub={id:'sub_fixture',customer:'cus_fixture',status:'active',metadata:{account_id:A,plan:'starter',price_version:version},items:{data:[{quantity:1,price:{unit_amount:amount,currency:'usd',recurring:{interval:'month',interval_count:1}}}]}};
+  const app=setup('api/billing.js',{sb:async()=>{writes++},extra:{fetch:async()=>({ok:true,json:async()=>sub})}});
+  const body={id:'evt_fixture',created:Math.floor(Date.now()/1000),type:'customer.subscription.updated',data:{object:{id:sub.id}}},req=request('POST',{action:'webhook'},body),t=body.created;
+  req.headers['stripe-signature']=`t=${t},v1=${crypto.createHmac('sha256','test-webhook').update(`${t}.${JSON.stringify(body)}`).digest('hex')}`;
+  const res=response();await app.handler(req,res);assert.equal(res.code,expected);assert.equal(writes,expected===200?1:0);
+ }
+});

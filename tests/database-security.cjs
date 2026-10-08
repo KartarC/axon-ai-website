@@ -99,6 +99,16 @@ const C='40000000-0000-4000-8000-000000000001'
  q=await db.query('select modules from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['laser-quoting']);count++;
  await sync('evt_quoting_upgrade',1600,{metadata:{account_id:A,plan:'growth'}});
  q=await db.query('select modules from accounts where id=$1',[A]);assert.equal(q.rows[0].modules.length,3);assert.equal(q.rows[0].modules[0],'laser-quoting');count++;
+ await db.exec('reset role');
+ await db.exec(fs.readFileSync(base+'supabase/migrations/20261008183718_launch_subscription_trials.sql','utf8'));
+ await db.exec('set role service_role');
+ const launch={account_id:A,plan:'starter',price_version:'launch-2026-10'};
+ await sync('evt_launch_trial',1700,{status:'trialing',trial_end:1799366400,metadata:launch});
+ q=await db.query('select modules,trial_ends_at::text as trial from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['laser-quoting']);assert.equal(q.rows[0].trial,'2027-01-08');count++;
+ await sync('evt_launch_paid',1800,{status:'active',metadata:launch});
+ q=await db.query('select modules,trial_ends_at from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['laser-quoting']);assert.equal(q.rows[0].trial_ends_at,null);count++;
+ await sync('evt_launch_growth',1900,{metadata:{...launch,plan:'growth'}});
+ q=await db.query('select modules from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['production-board','job-costing','shop-traveler']);count++;
  await db.exec('reset role;set role authenticated');
  await assert.rejects(()=>sync('evt_attacker',1400),/permission denied/);count++;
 
