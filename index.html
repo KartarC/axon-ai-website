@@ -23,98 +23,100 @@
   <meta name="twitter:description" content="Purpose-built software modules for machine shops and fab shops. From $99/mo flat. No per-user fees."/>
   <meta name="twitter:image" content="https://axon-ai-website-three.vercel.app/assets/screens/production-board.png"/>
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://axon-ai-website-three.vercel.app/#organization",
-        "name": "Ovrendi",
-        "url": "https://axon-ai-website-three.vercel.app",
-        "logo": "https://axon-ai-website-three.vercel.app/assets/ovrendi-mark.svg",
-        "description": "Purpose-built software tools for CNC machine shops and metal fabrication shops across North America.",
-        "foundingDate": "2026",
-        "areaServed": ["US", "CA"],
-        "knowsAbout": ["CNC machine shop software", "fabrication shop management", "job costing", "production scheduling", "shop floor management"]
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://axon-ai-website-three.vercel.app/#organization",
+      "name": "Ovrendi",
+      "url": "https://axon-ai-website-three.vercel.app",
+      "logo": "https://axon-ai-website-three.vercel.app/assets/ovrendi-mark.svg",
+      "description": "Purpose-built software tools for CNC machine shops and metal fabrication shops across North America.",
+      "foundingDate": "2026",
+      "areaServed": [
+        "US",
+        "CA"
+      ],
+      "knowsAbout": [
+        "CNC machine shop software",
+        "fabrication shop management",
+        "job costing",
+        "production scheduling",
+        "shop floor management"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://axon-ai-website-three.vercel.app/#software",
+      "name": "Ovrendi ERP",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "49",
+        "priceCurrency": "USD",
+        "description": "Starter Quoting pilot, per company per month with unlimited users"
       },
-      {
-        "@type": "SoftwareApplication",
-        "@id": "https://axon-ai-website-three.vercel.app/#software",
-        "name": "Ovrendi Shop Suite",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "99",
-          "priceCurrency": "USD",
-          "priceValidUntil": "2027-12-31",
-          "description": "Starter plan — any single module, unlimited users"
-        },
-        "featureList": [
-          "Digital production board and job scheduling",
-          "Job costing with actual vs quoted tracking and over-budget alerts",
-          "Digital shop traveler with QR codes",
-          "AI quote suggestions from the shop's own job history",
-          "Customer order status portal",
-          "Preventive maintenance tracker",
-          "Material and remnant inventory",
-          "Certificate of conformance generator",
-          "Outside service tracker",
-          "Shop floor CRM"
-        ],
-        "screenshot": "https://axon-ai-website-three.vercel.app/assets/screens/production-board.png",
-        "provider": {"@id": "https://axon-ai-website-three.vercel.app/#organization"}
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://axon-ai-website-three.vercel.app/#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is the best software for CNC machine shops?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Ovrendi provides purpose-built, modular software tools for CNC machine shops and job shops. Unlike per-user ERPs such as JobBOSS2 or ProShop, Ovrendi is flat-rate: from $99/mo with unlimited users. Modules include production scheduling, job costing, digital shop traveler, preventive maintenance tracking, and customer CRM."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How does job costing software help machine shops?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Job costing software tracks actual labor and material costs against the quoted price in real time. In Ovrendi, completing an operation on the production board auto-logs labor from the machine's hourly rate, and the job is flagged the moment costs approach or cross the quote — before more money is lost, not after the job ships."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is a digital shop traveler for manufacturing?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "A digital shop traveler replaces paper work order packets. Each job gets a QR code; operators scan it on any phone to see step-by-step instructions, record actual measurements, and flag issues. Every step is time-stamped, creating a complete audit trail without a single sheet of paper."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How much does machine shop management software cost?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Traditional machine shop ERPs are typically priced per user or per employee, with published estimates for suites like ProShop starting around $500+/month. Ovrendi is flat-rate: $99/month for any single module, $199 for three, or $349 for all nine — unlimited users, no setup fees, cancel anytime."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does Ovrendi work with my accounting software?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Ovrendi's costing and job data exports in formats compatible with any accounting system, including QuickBooks. Most small machine shops and fabrication shops run Ovrendi standalone for shop-floor operations and keep their existing accounting stack unchanged."
-            }
-          }
-        ]
+      "featureList": [
+        "Quoting pilot with Han’s imports and PDF quotations",
+        "Production Board (Growth)",
+        "Job Costing (Growth)",
+        "Shop Traveler (Growth)"
+      ],
+      "screenshot": "https://axon-ai-website-three.vercel.app/assets/screens/production-board.png",
+      "provider": {
+        "@id": "https://axon-ai-website-three.vercel.app/#organization"
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://axon-ai-website-three.vercel.app/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the best software for CNC machine shops?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ovrendi Starter provides the Quoting pilot for US$49 per company per month. Growth includes Production Board, Job Costing and Shop Traveler, with Quoting included, for US$99 per company per month. Both include unlimited team users. Additional Suite modules are in development; contact us about availability."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does job costing software help machine shops?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Job costing software tracks actual labor and material costs against the quoted price in real time. In Ovrendi, completing an operation on the production board auto-logs labor from the machine's hourly rate, and the job is flagged the moment costs approach or cross the quote — before more money is lost, not after the job ships."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a digital shop traveler for manufacturing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A digital shop traveler replaces paper work order packets. Each job gets a QR code; operators scan it on any phone to see step-by-step instructions, record actual measurements, and flag issues. Every step is time-stamped, creating a complete audit trail without a single sheet of paper."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does machine shop management software cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ovrendi Starter provides the Quoting pilot for US$49 per company per month. Growth includes Production Board, Job Costing and Shop Traveler, with Quoting included, for US$99 per company per month. Both include unlimited team users. Additional Suite modules are in development; contact us about availability."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Ovrendi work with my accounting software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ovrendi's costing and job data exports in formats compatible with any accounting system, including QuickBooks. Most small machine shops and fabrication shops run Ovrendi standalone for shop-floor operations and keep their existing accounting stack unchanged."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
