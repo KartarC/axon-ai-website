@@ -19,6 +19,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if(resource === 'mailbox') return require('./_lib/zoho-mail').zohoMail(req,res)
   if (['company-team','company-user','company-invite','user-reset'].includes(resource)) {try{return await require('./_lib/company-users').companyUsers(req,res)}catch(_){return res.status(503).json({error:'Could not complete the company user request. Please try again.'})}}
   if (resource === 'email' && req.method === 'GET') return res.status(200).json(emailStatus())
   if (resource === 'email-test' && req.method === 'POST') {
