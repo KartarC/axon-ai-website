@@ -89,6 +89,16 @@ const C='40000000-0000-4000-8000-000000000001'
  await assert.rejects(()=>sync('evt_wrongcustomer',1200,{customer:'cus_other'}),/customer mismatch/);count++;
  await assert.rejects(()=>sync('evt_wrongsub',1200,{id:'sub_other'}),/Conflicting subscription/);count++;
  await sync('evt_cancel',1300,{status:'canceled'});q=await db.query('select billing_status from accounts where id=$1',[A]);assert.equal(q.rows[0].billing_status,'canceled');count++;
+ await db.exec('reset role');
+ await db.exec(fs.readFileSync(base+'supabase/migrations/20261008033022_preserve_quoting_subscription_access.sql','utf8'));
+ await db.exec('set role service_role');
+ await db.query("update accounts set modules=array['laser-quoting'],status='active',trial_ends_at='2027-01-07' where id=$1",[A]);
+ await sync('evt_quoting_paid',1400,{metadata:{account_id:A,plan:'starter'}});
+ q=await db.query('select modules,plan from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['laser-quoting']);assert.equal(q.rows[0].plan,'starter');count++;
+ await sync('evt_quoting_renewal',1500,{metadata:{account_id:A,plan:'starter'}});
+ q=await db.query('select modules from accounts where id=$1',[A]);assert.deepEqual(q.rows[0].modules,['laser-quoting']);count++;
+ await sync('evt_quoting_upgrade',1600,{metadata:{account_id:A,plan:'growth'}});
+ q=await db.query('select modules from accounts where id=$1',[A]);assert.equal(q.rows[0].modules.length,3);assert.equal(q.rows[0].modules[0],'laser-quoting');count++;
  await db.exec('reset role;set role authenticated');
  await assert.rejects(()=>sync('evt_attacker',1400),/permission denied/);count++;
 
