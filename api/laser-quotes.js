@@ -1,4 +1,5 @@
 const { sb, requireAuth, requireRole, cors } = require('./_lib/supabase')
+const { manage } = require('./_lib/quote-links')
 const { isUuid } = require('./_lib/security')
 const { parseHans, MAX_FILE } = require('./_lib/laser-import')
 const { calculate, normalizeRates } = require('./_lib/laser-cost')
@@ -20,6 +21,13 @@ export default async function handler(req,res){
     if(!ctx.account.modules.some(m=>['laser-quoting','job-costing'].includes(m)))return res.status(403).json({error:'Upgrade to enable Quoting for this shop.',code:'module_required',module:'laser-quoting'})
     if(!requireRole(ctx,['owner','admin','manager'],res))return
     const account=ctx.account.id, action=req.query.action||'quotes',body=req.body||{}
+    if(action==='approval'){
+      const id=req.method==='GET'?req.query.id:body.id
+      if(!isUuid(id))bad('Invalid quote ID.')
+      const operation=req.method==='GET'?'list':body.operation
+      if(!['GET','POST'].includes(req.method)||!['list','create','revoke'].includes(operation))bad('Invalid approval action.')
+      return res.status(200).json(await manage(sb,ctx,id,operation))
+    }
     if(action==='draft'){
       const path=`ovrendi_quote_drafts?account_id=eq.${account}&user_id=eq.${ctx.user.id}`
       if(req.method==='GET')return res.status(200).json((await sb('GET',path))[0]||{version:0,payload:null})
