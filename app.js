@@ -41,6 +41,7 @@ document.getElementById('demoForm')?.addEventListener('submit', async e => {
   btn.style.opacity = '.7'
 
   const data = {
+    tracking: window.ovAnalytics?.context(),
     name:    form.name.value.trim(),
     email:   form.email.value.trim(),
     company: form.company?.value?.trim() || '',

@@ -437,5 +437,5 @@ function showTab(tab) {
 const ro = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target)} }), {threshold:.07})
 document.querySelectorAll('.reveal').forEach(el => ro.observe(el))
 </script>
-</body>
+<script src="/ovrendi-analytics.js" defer></script></body>
 </html>

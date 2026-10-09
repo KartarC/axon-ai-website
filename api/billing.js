@@ -126,6 +126,7 @@ export default async function handler(req, res) {
     const base = process.env.SITE_URL || siteUrl(req)
     const today = new Date().toISOString().slice(0, 10)
     const soon  = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10)
+    try { await sb('DELETE','ovrendi_event_limits?expires_at=lt.'+new Date().toISOString()); await sb('DELETE', 'ovrendi_web_events?created_at=lt.'+new Date(Date.now()-30*86400000).toISOString()) } catch (_) { console.error('Analytics retention cleanup failed') }
     let reminded = 0, expired = 0
 
     // 3-day reminders — flags only burn when the email actually sends,

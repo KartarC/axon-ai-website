@@ -144,6 +144,7 @@ export default async function handler(req, res) {
       full_name: full_name || cleanEmail.split('@')[0],
     })
 
+    if(req.body?.tracking) await require('./_lib/engagement').conversion(req.body.tracking,'signup')
     if (confirmEmail) {
       let emailSent = false
       try {

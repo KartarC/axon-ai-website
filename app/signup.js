@@ -23,7 +23,7 @@ form.addEventListener('submit', async (e) => {
     const res  = await fetch('/api/auth?action=signup', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ shop_name, full_name, email, password }),
+      body:    JSON.stringify({ shop_name, full_name, email, password, tracking:window.ovAnalytics?.context() }),
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || 'Could not create your shop. Please try again.')
