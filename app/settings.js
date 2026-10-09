@@ -26,7 +26,7 @@ function loadShop() {
   const plan = session.account.plan
   const trial = session.account.trial_ends_at
   document.getElementById('planLine').textContent =
-    `Plan: ${plan}${plan === 'trial' && trial ? ` · trial ends ${trial}` : ''} — contact info@ovrendi.com to change plans.`
+    `Plan: ${plan}${plan === 'trial' && trial ? ` · trial ends ${trial}` : ''} — contact hello@getovrendi.com to change plans.`
   if (!isAdmin) {
     document.getElementById('shopName').disabled = true
     document.getElementById('shopTz').disabled = true

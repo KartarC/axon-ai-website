@@ -7,7 +7,7 @@ function safePage(value){
  if(p.startsWith('/app/modules/')){const module=p.split('/')[3];return ['laser-quoting','production-board','job-costing','shop-traveler','customer-portal','maintenance','materials','coc','crm','outside-service'].includes(module)?'/app/modules/'+module+'/':'/app/other'}
  if(p.startsWith('/app/'))return ['/app/signup.html','/app/login.html','/app/billing.html','/app/dashboard.html','/app/settings.html','/app/getting-started.html','/app/support.html'].includes(p)?p:'/app/other';
  if(/^\/articles\/[a-z0-9-]+\/?$/.test(p))return p.slice(0,120);
- return ['/','/index.html','/pricing.html','/erp/','/crm/','/studio/','/ai/','/about/','/contact/','/articles/','/tools.html','/website-design.html','/compare-proshop.html','/packages/starter/','/packages/growth/','/packages/suite/'].includes(p)?p:'/other';
+ return ['/','/index.html','/pricing.html','/erp/','/crm/','/studio/','/ai/','/about/','/contact/','/privacy.html','/terms.html','/cookies.html','/articles/','/tools.html','/website-design.html','/compare-proshop.html','/packages/starter/','/packages/growth/','/packages/suite/'].includes(p)?p:'/other';
 }
 function tracking(t){return t&&t.consent===true&&isUuid(t.session_id)?{session_id:t.session_id,page:safePage(t.page),source:['direct','search','social','referral','email','paid'].includes(t.source)?t.source:'direct'}:null}
 async function conversion(t,form){const data=tracking(t);if(!data)return;try{await sb('POST','ovrendi_web_events',{...data,form,kind:'form_success'})}catch(_){/* Analytics must never fail a successful submission. */}}

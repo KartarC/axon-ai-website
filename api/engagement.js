@@ -12,7 +12,7 @@ export default async function handler(req,res){
   const ip=req.headers['x-vercel-forwarded-for']||req.headers['x-forwarded-for']||'unknown';
   const bucket=require('crypto').createHmac('sha256',process.env.CRON_SECRET).update(String(ip).split(',')[0]+':'+minute).digest('hex');
   if(!await sb('POST','rpc/ovrendi_event_allow',{p_bucket:bucket}))return res.status(429).json({error:'Please slow down'});
-  const data=tracking(req.body);if(!data||!['page_view','form_start','cta_click'].includes(req.body.kind)||!['','demo','signup'].includes(req.body.form||''))return res.status(400).json({error:'Invalid analytics event'});
+  const data=tracking(req.body);if(!data||!['page_view','form_start','cta_click'].includes(req.body.kind)||!['','demo','signup','contact'].includes(req.body.form||''))return res.status(400).json({error:'Invalid analytics event'});
   const recent=await sb('GET',`ovrendi_web_events?session_id=eq.${data.session_id}&created_at=gt.${new Date(Date.now()-60000).toISOString()}&select=id&limit=31`);
   if(recent?.length>=30)return res.status(429).json({error:'Please slow down'});
   await sb('POST','ovrendi_web_events',{...data,kind:req.body.kind,form:req.body.form||''});return res.status(200).json({ok:true});

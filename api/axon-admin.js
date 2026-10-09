@@ -19,6 +19,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if(resource==='enquiries')return require('./_lib/enquiries').enquiries(req,res)
   if(resource==='support')return require('./_lib/support').support(req,res,staff,true)
   if(['customer-success','payment-method'].includes(resource))return require('./_lib/customer-success').customerSuccess(req,res)
   if(['bugs','customer-activity','web-analytics'].includes(resource)){try{return await require('./_lib/engagement').staffEngagement(req,res)}catch(_){return res.status(503).json({error:'Could not load reporting'})}}

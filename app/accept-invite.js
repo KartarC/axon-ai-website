@@ -120,7 +120,7 @@ function showInvalid(msg) {
       </svg>
       <h2>Invite not valid</h2>
       <p>${escHtml(msg)}</p>
-      <a href="mailto:info@ovrendi.com" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
+      <a href="mailto:hello@getovrendi.com" style="color:var(--blue-700);font-size:.875rem;font-weight:600">Contact support →</a>
     </div>
   `
 }

@@ -32,7 +32,7 @@ emailForm?.addEventListener('submit', async event => {
       email: document.getElementById('email').value.trim(), ...(!recovery ? {type: 'signup'} : {}),
     })
     if (response.status === 429) throw new Error('Please wait a minute before requesting another email.')
-    if (!response.ok) throw new Error('Email delivery is unavailable right now. Please try again later or contact info@ovrendi.com.')
+    if (!response.ok) throw new Error('Email delivery is unavailable right now. Please try again later or contact hello@getovrendi.com.')
     showMessage('If this email is eligible, you’ll receive a link shortly. Check your inbox and spam folder.')
   } catch (err) { showError(err.message === 'Failed to fetch' ? 'Connection unavailable. Please try again.' : err.message) }
   finally { button.disabled = false; button.textContent = original }

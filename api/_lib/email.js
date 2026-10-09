@@ -18,7 +18,7 @@ async function sendEmail({ to, subject, html, text, kind = 'notification', idemp
         ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}) },
       body: JSON.stringify({ from, to: [to], subject, html, text,
         tags: [{name:'brand',value:'ovrendi'},{name:'category',value:kind}],
-        ...(process.env.EMAIL_REPLY_TO ? {reply_to:process.env.EMAIL_REPLY_TO} : {}) }),
+        reply_to: 'hello@getovrendi.com' }),
     })
     if (!res.ok) {
       console.error('[email] Provider rejected send', res.status)
