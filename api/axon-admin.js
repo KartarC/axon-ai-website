@@ -19,6 +19,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if(resource==='sales')return require('./_lib/sales').sales(req,res,staff)
   if(resource==='enquiries')return require('./_lib/enquiries').enquiries(req,res)
   if(resource==='support')return require('./_lib/support').support(req,res,staff,true)
   if(['customer-success','payment-method'].includes(resource))return require('./_lib/customer-success').customerSuccess(req,res)
