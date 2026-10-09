@@ -20,6 +20,29 @@ export default async function handler(req,res){
     if(!ctx.account.modules.some(m=>['laser-quoting','job-costing'].includes(m)))return res.status(403).json({error:'Upgrade to enable Quoting for this shop.',code:'module_required',module:'laser-quoting'})
     if(!requireRole(ctx,['owner','admin','manager'],res))return
     const account=ctx.account.id, action=req.query.action||'quotes',body=req.body||{}
+    if(action==='draft'){
+      const path=`ovrendi_quote_drafts?account_id=eq.${account}&user_id=eq.${ctx.user.id}`
+      if(req.method==='GET')return res.status(200).json((await sb('GET',path))[0]||{version:0,payload:null})
+      if(req.method==='POST'){
+        if(!Number.isInteger(body.version)||body.version<0)bad('Invalid draft version.')
+        let payload=null
+        if(body.payload!==null){
+          const p=body.payload;if(!p||typeof p!=='object'||JSON.stringify(p).length>45000)bad('Invalid draft.')
+          if(p.import_id)await own('billet_laser_imports',p.import_id,account)
+          if(p.previous_id)await own('billet_laser_quotes',p.previous_id,account)
+          if(!p.values||Array.isArray(p.values)||typeof p.values!=='object')bad('Invalid draft fields.')
+          const values={};for(const [key,value] of Object.entries(p.values)){
+            if(!/^[a-zA-Z_]{1,40}$/.test(key)||['__proto__','constructor','prototype','reviewed'].includes(key))continue
+            if(typeof value!=='string'||value.length>2000)bad('Invalid draft field.');values[key]=value
+          }
+          payload={import_id:p.import_id||null,previous_id:p.previous_id||null,values}
+        }
+        const saved=await sb('POST','rpc/ovrendi_save_draft',{p_account:account,p_user:ctx.user.id,p_version:body.version,p_payload:payload})
+        if(saved.error)bad(saved.error,409)
+        return res.status(200).json(saved)
+      }
+    }
+    if(action==='source'&&req.method==='GET')return res.status(200).json(await own('billet_laser_imports',req.query.id,account))
     if(req.method==='GET'&&action==='identity')return res.status(200).json(await identity(account,ctx.user.id))
     if(req.method==='POST'&&action==='identity'){
       if(!['company','user'].includes(body.kind))bad('Choose company or user profile.')
@@ -63,7 +86,7 @@ export default async function handler(req,res){
     }
     if(req.method==='GET'&&action==='quotes'){
       if(req.query.id)return res.status(200).json(await own('billet_laser_quotes',req.query.id,account))
-      return res.status(200).json(await sb('GET',`billet_laser_quotes?account_id=eq.${account}&select=id,family_id,revision,customer,reference,status,created_at,result->price,result->currency&order=created_at.desc&limit=100`))
+      return res.status(200).json(await sb('GET',`billet_laser_quotes?account_id=eq.${account}&select=id,family_id,revision,customer,reference,status,created_at,issued_at,valid_days,result->price,result->currency&order=created_at.desc&limit=100`))
     }
     if(req.method==='POST'&&action==='import'){
       if(typeof body.file!=='string'||body.file.length>Math.ceil(MAX_FILE/3)*4||body.file.length%4!==0||! /^[A-Za-z0-9+/]*={0,2}$/.test(body.file))bad('Invalid file. Upload a Han’s workbook under 2 MB.')
@@ -102,7 +125,7 @@ export default async function handler(req,res){
       return res.status(201).json(saved)
     }
     if(req.method==='POST'&&action==='status'){
-      if(!isUuid(body.id)||!['issued','accepted'].includes(body.status))bad('Invalid quote transition.')
+      if(!isUuid(body.id)||!['issued','accepted','declined','expired'].includes(body.status))bad('Invalid quote transition.')
       const row=await sb('POST','rpc/billet_laser_status',{p_account:account,p_id:body.id,p_status:body.status})
       if(row.error)bad(row.error,409)
       return res.status(200).json(row)

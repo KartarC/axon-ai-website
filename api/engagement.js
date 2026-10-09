@@ -18,6 +18,7 @@ export default async function handler(req,res){
   await sb('POST','ovrendi_web_events',{...data,kind:req.body.kind,form:req.body.form||''});return res.status(200).json({ok:true});
  }
  const ctx=await requireAuth(req,res,{allowExpired:true});if(!ctx)return;
+ if(action==='support')return require('./_lib/support').support(req,res,ctx);
  if(action==='presence'&&req.method==='POST'){
   const path=`ovrendi_user_presence?account_id=eq.${ctx.account.id}&user_id=eq.${ctx.user.id}`;
   const rows=await sb('GET',path+'&select=last_seen_at');if(rows?.[0]&&Date.now()-Date.parse(rows[0].last_seen_at)<45000)return res.status(200).json({ok:true});

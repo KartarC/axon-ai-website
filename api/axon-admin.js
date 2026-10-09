@@ -19,6 +19,8 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control','no-store')
   const { resource, id } = req.query
+  if(resource==='support')return require('./_lib/support').support(req,res,staff,true)
+  if(['customer-success','payment-method'].includes(resource))return require('./_lib/customer-success').customerSuccess(req,res)
   if(['bugs','customer-activity','web-analytics'].includes(resource)){try{return await require('./_lib/engagement').staffEngagement(req,res)}catch(_){return res.status(503).json({error:'Could not load reporting'})}}
   if(resource === 'mailbox') return require('./_lib/zoho-mail').zohoMail(req,res)
   if (['company-team','company-user','company-invite','user-reset'].includes(resource)) {try{return await require('./_lib/company-users').companyUsers(req,res)}catch(_){return res.status(503).json({error:'Could not complete the company user request. Please try again.'})}}

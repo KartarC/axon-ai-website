@@ -1,0 +1,4 @@
+export async function prepareScreenshot(file){
+ if(!file)return null;if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>8*1024*1024)throw Error('Choose a PNG, JPEG or WebP screenshot under 8 MB.');
+ const image=await createImageBitmap(file);try{if(image.width*image.height>24000000)throw Error('Screenshot is too large. Crop it first.');const scale=Math.min(1,1600/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,canvas.width,canvas.height);c.drawImage(image,0,0,canvas.width,canvas.height);const value=canvas.toDataURL('image/jpeg',.72);if(value.length>540000)throw Error('Crop the screenshot to the relevant area and try again.');return value}finally{image.close()}
+}

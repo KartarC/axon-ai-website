@@ -3,16 +3,18 @@ const fs=require('fs'),path=require('path'),http=require('http'),vm=require('vm'
 const {setup}=require('./database-laser.cjs')
 const root=path.resolve(__dirname,'..'),A='10000000-0000-4000-8000-000000000001',U='20000000-0000-4000-8000-000000000001'
 async function start(options={}){
- const db=await setup(options.dataDir);await db.exec(`insert into accounts values('${A}') on conflict do nothing;insert into auth.users values('${U}') on conflict do nothing;insert into account_users select '${A}','${U}','owner' where not exists(select 1 from account_users where account_id='${A}' and user_id='${U}');set role service_role;`)
+ const db=await setup(options.dataDir);
+ if(!(await db.query("select to_regclass('public.ovrendi_quote_drafts') as t")).rows[0].t){await db.exec('create table public.ovrendi_bug_reports(id uuid primary key);');await db.exec(fs.readFileSync(root+'/supabase/migrations/20261009175433_quoting_support_success.sql','utf8'))}
+ await db.exec(`insert into accounts values('${A}') on conflict do nothing;insert into auth.users values('${U}') on conflict do nothing;insert into account_users select '${A}','${U}','owner' where not exists(select 1 from account_users where account_id='${A}' and user_id='${U}');set role service_role;`)
  async function sb(method,url,body){
-  if(url.startsWith('rpc/')){const fn=url.slice(4);if(!['billet_laser_save','billet_laser_status'].includes(fn))throw Error('Unexpected RPC');const values=Object.values(body);return(await db.query(`select public.${fn}(${values.map((_,i)=>'$'+(i+1)).join(',')}) as r`,values)).rows[0].r}
-  const [table,search='']=url.split('?');if(!['billet_laser_quotes','billet_laser_profiles','billet_laser_imports'].includes(table))throw Error('Unexpected table')
+  if(url.startsWith('rpc/')){const fn=url.slice(4);if(!['billet_laser_save','billet_laser_status','ovrendi_save_draft'].includes(fn))throw Error('Unexpected RPC');const values=Object.values(body);return(await db.query(`select public.${fn}(${values.map((_,i)=>'$'+(i+1)).join(',')}) as r`,values)).rows[0].r}
+  const [table,search='']=url.split('?');if(!['billet_laser_quotes','billet_laser_profiles','billet_laser_imports','ovrendi_quote_drafts'].includes(table))throw Error('Unexpected table')
   if(method==='POST'){const keys=Object.keys(body);return(await db.query(`insert into public.${table}(${keys.join(',')}) values(${keys.map((_,i)=>'$'+(i+1)).join(',')}) returning *`,Object.values(body))).rows}
   const params=new URLSearchParams(search),values=[],where=[]
-  for(const key of ['id','account_id','sha256','name']){if(params.has(key)){const v=params.get(key);if(!v.startsWith('eq.'))throw Error('Unexpected filter');values.push(v.slice(3));where.push(key+'=$'+values.length)}}
+  for(const key of ['id','account_id','user_id','sha256','name']){if(params.has(key)){const v=params.get(key);if(!v.startsWith('eq.'))throw Error('Unexpected filter');values.push(v.slice(3));where.push(key+'=$'+values.length)}}
   if(method==='PATCH'){const keys=Object.keys(body),offset=values.length;values.push(...Object.values(body));return(await db.query(`update public.${table} set ${keys.map((k,i)=>k+'=$'+(offset+i+1)).join(',')} where ${where.join(' and ')} returning *`,values)).rows}
-  let select='*';if(params.has('select'))select="id,family_id,revision,customer,reference,status,created_at,result->>'price' as price,result->>'currency' as currency"
-  const order=params.get('order')==='updated_at.desc'?'updated_at desc':params.get('order')==='name.asc'?'name asc':params.get('order')==='created_at.desc'?'created_at desc':'id'
+  let select='*';if(params.has('select'))select="id,family_id,revision,customer,reference,status,created_at,issued_at,valid_days,result->>'price' as price,result->>'currency' as currency"
+  const order=params.get('order')==='updated_at.desc'?'updated_at desc':params.get('order')==='name.asc'?'name asc':params.get('order')==='created_at.desc'?'created_at desc':table==='ovrendi_quote_drafts'?'user_id':'id'
   if(method!=='GET')throw Error('Unexpected write')
   return(await db.query(`select ${select} from public.${table} where ${where.join(' and ')||'true'} order by ${order} limit 100`,values)).rows
  }

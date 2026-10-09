@@ -17,7 +17,7 @@ async function sb(method, path, body, extraHeaders = {}) {
     ...extraHeaders,
   }
   if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
-    headers['Prefer'] = 'return=representation'
+    headers['Prefer'] = [extraHeaders.Prefer, 'return=representation'].filter(Boolean).join(',')
   }
   const res = await fetch(url, {
     method,

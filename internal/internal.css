@@ -10,3 +10,6 @@
 #gate{place-items:stretch}.login-story{width:100%}
 
 .mail-messages{list-style:none;padding:0}.mail-messages button{display:flex;flex-direction:column;text-align:left;gap:6px;width:100%;margin-bottom:8px;overflow-wrap:anywhere}.mail-body{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;max-height:480px;overflow:auto}#mailCompose textarea{width:100%;box-sizing:border-box}#mailCompose label{display:block;margin:12px 0}#mailCompose input{width:100%;box-sizing:border-box}
+
+/* Support conversations and keyboard navigation */
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #087e8b;outline-offset:3px}.panel button{margin:4px}img{max-width:100%;height:auto}@media(max-width:600px){.panel{padding:16px}button,input,select{min-height:44px}.cards{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}}
