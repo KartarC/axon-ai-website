@@ -5,7 +5,7 @@
     "test": "node --test security.test.cjs laser-quoting.test.cjs account-email.test.cjs launch.test.cjs resend.test.cjs staff-auth.test.cjs company-users.test.cjs zoho-mail.test.cjs engagement.test.cjs workflow.test.cjs contact.test.cjs quote-approval.test.cjs && node database-security.cjs && node database-laser.cjs && node laser-persistence.cjs",
     "test:browser": "node laser-browser.cjs",
     "test:mailbox": "node mailbox-browser.cjs",
-    "test:education": "node education-browser.cjs"
+    "test:education": "node education-browser.cjs && node education-library-browser.cjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8",

@@ -1,34 +1,72 @@
-# Ovrendi user guide
+# Ovrendi user handbook
 
-Updated October 2026. This guide describes the current software; quoting is a staff-operated pilot.
+Updated October 9, 2026. Written guides for the current software. Reading a guide does not enable a paid module.
 
-## Your first quotation
+## Create your first quotation
+
+Read online: https://getovrendi.com/education/first-quote/
 
 ### Before you begin
 
-Use an owner, admin or manager login with Quoting access. Have a single-run Han’s LaserNest quotation workbook (up to 2 MB), sheet pricing, machine costs, gas rates and electricity costs ready. The supplied export is supported; other layouts may need review.
+Who this is for: Owners, admins and managers with Quoting access.
 
-### Set your identity
+A supported Han’s workbook under 2 MB, your shop’s rates and customer details.
 
-Open Quoting → Company & user profiles. Save your company name and address, then your name and title. Company details are shared; only owners and admins edit them. Your user profile does not change your login email.
+### 1. Save the company and user profiles
 
-### Import and inspect
+Open Quoting → Company & user profiles. Save the company name and address, then your name and title. Only owners and admins can edit the shared company profile. These details are captured when you save a quote revision.
 
-Choose the Han’s quotation file. Check material, thickness, sheet dimensions, requested versus nested quantities and processing times. Read every warning. The reference and blank sheet price may be filled from the report; confirm the highlighted values and currency.
+### 2. Import and review the report
 
-### Enter your costs
+Choose your Han’s quotation workbook. The Import → Review report → Price → Preview → Issue & share bar shows the next task. Check the parts, millimetre dimensions, requested versus nested quantities and warnings. Select I reviewed the imported parts… when you have checked them.
 
-Enter a customer name, validity and currency. Choose Shop cost estimate for your own costs. Load appropriate profiles or enter material, machine, setup, gas and electricity settings. Do not count gas, electricity or labor twice in a combined machine rate.
+### 3. Enter the customer and rates
 
-### Review and save
+Enter the customer name, reference if needed, quote validity and currency. Load saved profiles or enter your material, machine, gas and electricity costs. Report-filled values are suggestions to confirm; do not treat missing consumption values as zero.
 
-Select Calculate quote. Resolve the Still needed list and warnings. Confirm that you reviewed the source and rates, then select Save revision. Unsaved form changes are not stored automatically.
+### 4. Calculate and save
 
-### Create the customer document
+Select Calculate quote. Resolve the Still needed list, review the breakdown and confirm the final review checkbox. Select Save revision. The saved quotation number and revision should appear. Working drafts autosave, but a draft is not a saved or issued quotation.
 
-After saving, select Download one-page PDF or Customer print / PDF. Mark issued records the quote status; it does not email the customer. Record acceptance is available after issuing. Job creation from a quotation is not yet part of the pilot.
+### 5. Preview and issue
+
+Select Preview customer quotation. Check the price, quantities and terms. Close the preview and choose Mark issued when ready. Issuing does not send email.
+
+### 6. Share and check the response
+
+Select Create / replace approval link, copy the private link and share it yourself. Alternatively download the one-page PDF. Under Customer approval, select Refresh responses to check for acceptance, a decline or a change request.
+
+### Check your result
+
+You should have a saved revision and, if issued, a customer approval link. Internal cost rates and margin are excluded from the customer-facing view.
+
+## Account access and your team
+
+Read online: https://getovrendi.com/education/account-and-team/
+
+### Join the right company
+
+Open the private invitation link supplied by your administrator. Use the invited email address. Follow the acceptance page to create your password or authenticate an existing identity. Never share your password or invitation link publicly.
+
+### Roles and modules
+
+Module access is set per company. Owners and admins manage company settings; Quoting is available to owners, admins and managers. Operator and viewer access does not include the quoting editor. A missing module may indicate that it is not included in your company’s trial or plan.
+
+### Request a change
+
+Ask your company administrator or Ovrendi contact to correct your name, role or company access. Ovrendi’s internal CRM is restricted to approved Ovrendi staff. Removing access from one company does not delete the person’s global login.
+
+### Password resets
+
+An approved administrator can send a password-reset email to the email stored on your login. Follow the secure email link to choose your own password. If you did not request a reset, ignore it. Check junk mail and ask the administrator to inspect the delivery result if needed.
+
+### Appearance and navigation
+
+Use the sidebar to open enabled modules, Settings, Getting started and Education. Light and Dark switch appearance. On a phone, use the menu button; on desktop, collapse the sidebar to make more room.
 
 ## Machine, gas and electricity profiles
+
+Read online: https://getovrendi.com/education/rates-and-profiles/
 
 ### Who can save standards
 
@@ -56,6 +94,8 @@ Under Save reusable standards choose the profile type, optional customer and mac
 
 ## Understand your quote calculation
 
+Read online: https://getovrendi.com/education/understand-pricing/
+
 ### Material
 
 Full-sheet cost uses the stock quantity and price per sheet. Weight-based pricing uses dimensions, thickness, density and price per kg. An entered remnant credit is deducted. Customer-supplied material is a separate option.
@@ -76,7 +116,43 @@ Han’s charge comparison uses the report’s configured charges instead of the 
 
 The customer PDF presents the quotation without your internal hourly rates and margin. Review the document, terms, quantities, currency and totals before sharing. Estimates depend on the source report and settings you enter.
 
+## Review a Han’s report before pricing
+
+Read online: https://getovrendi.com/education/import-review/
+
+### Before you begin
+
+Who this is for: Quoting users preparing a new estimate.
+
+The original single-run Han’s LaserNest quotation workbook, up to 2 MB.
+
+### 1. Choose a supported workbook
+
+Open Quoting and select the file under Import the cutting report. The supplied format supports XLSX content sometimes saved with an .xls extension. Renaming an unrelated workbook will not make it compatible. One report is used per quotation.
+
+### 2. Check the stock and units
+
+Compare material, thickness and full-sheet dimensions with the original report. Dimensions shown in the import are millimetres. Confirm that the stock size is the full sheet, not only the area occupied by the nest.
+
+### 3. Compare requested and nested parts
+
+Read the part table. Requested quantity and nested quantity can differ. The estimate and customer batch price use the nested quantities. Resolve an incorrect nest in the source software and export a corrected report.
+
+### 4. Read warnings and suggested values
+
+Check processing time and every warning. A blank reference or sheet price may be filled from the report. Confirm the currency and whether the report material charge is a suitable basis for your actual sheet cost.
+
+### 5. Confirm the source review
+
+Tick I reviewed the imported parts, quantities, millimetre units and report warnings. Continue to pricing. This check is separate from the final costing review required before saving.
+
+### Check your result
+
+The imported part counts and stock match your intended job. If they do not, stop and correct the source rather than pricing an inaccurate quantity.
+
 ## Saved revisions, status and PDFs
+
+Read online: https://getovrendi.com/education/saved-quotes/
 
 ### Find a saved quote
 
@@ -94,29 +170,217 @@ A new saved quotation is a draft. Mark issued records that revision as issued, b
 
 Save the company and user identity before saving the quote revision. Download the one-page PDF. Check customer details, currency, quantities, validity and terms. Downloading a PDF does not deliver it to the customer.
 
-## Account access and your team
+### Customer decisions and new revisions
 
-### Join the right company
+Issued quotes can be accepted, declined or receive a change request through a private approval link. Refresh responses in Customer approval to review the result. A new revision disables older approval links. See the Share a quote for customer approval tutorial.
 
-Open the private invitation link supplied by your administrator. Use the invited email address. Follow the acceptance page to create your password or authenticate an existing identity. Never share your password or invitation link publicly.
+## Resume, revise or repeat a quotation
 
-### Roles and modules
+Read online: https://getovrendi.com/education/drafts-and-revisions/
 
-Module access is set per company. Owners and admins manage company settings; Quoting is available to owners, admins and managers. Operator and viewer access does not include the quoting editor. A missing module may indicate that it is not included in your company’s trial or plan.
+### Before you begin
 
-### Request a change
+Who this is for: Quoting users returning to unfinished or repeat work.
 
-Ask your company administrator or Ovrendi contact to correct your name, role or company access. Ovrendi’s internal CRM is restricted to approved Ovrendi staff. Removing access from one company does not delete the person’s global login.
+An unfinished working draft or an existing saved quotation.
 
-### Password resets
+### 1. Resume unfinished work
 
-An approved administrator can send a password-reset email to the email stored on your login. Follow the secure email link to choose your own password. If you did not request a reset, ignore it. Check junk mail and ask the administrator to inspect the delivery result if needed.
+Wait for Working draft saved before leaving. On return, choose Restore working draft or Discard draft. Working drafts belong to your user and company; they do not issue a quote. Restored drafts must be recalculated and reviewed.
 
-### Appearance and navigation
+### 2. Open the saved revision
 
-Use the sidebar to open enabled modules, Settings, Getting started and Education. Light and Dark switch appearance. On a phone, use the menu button; on desktop, collapse the sidebar to make more room.
+Under Saved quotations, select Refresh and open the quote number. This displays the saved snapshot of the source and rates. The list contains the most recent 100 revisions.
 
-## Troubleshooting your first quote
+### 3. Revise the same customer offer
+
+Open the latest unaccepted revision, change the necessary details, calculate, review and save. The new revision retains the quote family and increases its revision number. Earlier snapshots stay unchanged. A newer revision makes older customer approval links unavailable.
+
+### 4. Create a separate repeat order
+
+For a new order, choose Duplicate as new quote. Review the customer, quantities, rates, reference and validity before saving. Saving creates a new quote number, rather than modifying the original order.
+
+### 5. Resolve a competing tab
+
+If a draft changed in another tab, reload and restore the latest draft before continuing. Avoid editing the same working quote in several tabs. Accepted quotations cannot be revised; duplicate as a new quote when you need a separate offer.
+
+### Check your result
+
+Confirm whether the result has a new revision number or a new quote number, according to your intent. Reissue a revised offer and generate a new link before sharing.
+
+## Share a quote for customer approval
+
+Read online: https://getovrendi.com/education/customer-approvals/
+
+### Before you begin
+
+Who this is for: Owners, admins and managers with Quoting access.
+
+A saved, issued, unexpired quotation revision that you have previewed.
+
+### 1. Preview the customer view
+
+Open the saved quotation and select Preview customer quotation. Check the company identity, customer, parts, quantities, final price, currency and terms. Internal cost rates and margin do not appear in this view.
+
+### 2. Issue and create the link
+
+Select Mark issued for a draft. Under Customer approval, choose Create / replace approval link and confirm. The quote must be the latest issued, unexpired revision.
+
+### 3. Copy and share privately
+
+Select Copy link and send it to your customer using your usual email. Creating the link does not send email. Anyone holding it can view the quote and submit its first response, so do not post it publicly. Copy it before leaving; the full link cannot be retrieved later.
+
+### 4. Review the response
+
+Open the quote and select Refresh responses. The history shows the decision, supplied name and email, response time, optional PO number and message. Acceptance marks the quote accepted; a decline marks it declined. A change request leaves it issued but closes the response form for that link.
+
+### 5. Handle changes or revoke access
+
+For pricing or quantity changes, save and issue a new revision. Its previous approval links become unavailable. To withdraw access, choose Revoke links. Creating a replacement link also disables earlier links for that revision. A link expires at the earlier of quote expiry or 30 days after link creation.
+
+### Check your result
+
+The response is visible in Customer approval after refreshing. This records a customer decision; it does not collect payment. The submitted email is self-declared, not verified identity.
+
+## Respond to a quotation
+
+Read online: https://getovrendi.com/education/customer-response/
+
+### Before you begin
+
+Who this is for: Customers receiving a private Ovrendi quotation link.
+
+The complete private link sent by the quoting company.
+
+### 1. Open the private link
+
+Use the full link provided by the sender. You do not need an Ovrendi account. Keep the link private: anyone holding it can view the quotation and submit its first response.
+
+### 2. Read the quotation
+
+Check the customer name, revision, parts and quantities, batch total, currency, validity and terms. Taxes are excluded from the displayed batch total. Use Print / save PDF if you want a copy.
+
+### 3. Choose your response
+
+Choose Accept quotation, Request changes or Decline quotation. Enter your name and email. A purchase-order number is optional. Explain the required changes in the message when requesting changes.
+
+### 4. Confirm and submit
+
+Confirm that you are authorized to respond and have reviewed the quotation and terms. Select Submit response and confirm. Wait for the recorded-response message. This action does not charge a payment method.
+
+### 5. Contact the sender if needed
+
+A recorded response cannot be edited through the same link. Contact the sender if you made a mistake. If the link is unavailable, it may have expired, been revoked or been replaced by a newer quotation; ask the sender for the current link.
+
+### Check your result
+
+The page displays Acceptance recorded, Decline recorded or Change request recorded. The sender can review it in their Ovrendi workspace.
+
+## Check your customer PDF
+
+Read online: https://getovrendi.com/education/pdf-checklist/
+
+### Before you begin
+
+Who this is for: Quoting users preparing customer documents.
+
+A saved revision with the correct company and preparer profiles.
+
+### 1. Check the identity snapshot
+
+Confirm the company name, address and contact details in Company & user profiles, plus your name. Existing saved revisions retain their original profile snapshot; save a new revision to capture changed profile details.
+
+### 2. Preview the saved quotation
+
+Select Preview customer quotation. Check the customer, reference, revision, material, thickness and nested quantities. Confirm the final batch price and currency against your reviewed estimate.
+
+### 3. Check the commercial terms
+
+Review quote validity, lead time, payment terms and exclusions. Taxes are excluded from the current quotation total. Avoid promising terms that your company has not agreed to.
+
+### 4. Download or print
+
+Select Download one-page PDF for the generated document. Customer print / PDF opens your browser’s print route. Review the downloaded file before sharing it; generating a PDF does not issue the quote or send email.
+
+### 5. Use an approval link for a recorded decision
+
+A PDF by itself does not provide an online response form. Issue the quote and create a private approval link when you want the customer to accept, decline or request changes in Ovrendi.
+
+### Check your result
+
+Open the downloaded file and verify it contains the intended saved revision, correct quantities and customer price, without internal rates or margin.
+
+## Trials, subscriptions and module access
+
+Read online: https://getovrendi.com/education/billing-and-access/
+
+### Before you begin
+
+Who this is for: Company owners and users checking available modules.
+
+Your signed-in company account. Billing actions depend on your permissions and payment configuration.
+
+### 1. Check your company access
+
+Review the modules available in your application sidebar and billing page. A Quoting-only trial does not include Production Board, Job Costing or Shop Traveler. Reading an education guide does not enable its module.
+
+### 2. Understand the trial period
+
+Use the trial end date shown for your account. Most self-service trials and individually arranged pilots can have different durations. Do not assume another customer’s trial length applies to your company.
+
+### 3. Review an upgrade
+
+A locked module leads to the upgrade page. Review the included modules, currency, recurring price and trial details before continuing. Ovrendi subscription prices are in USD; quotation currency is a separate setting.
+
+### 4. Review billing consent
+
+A trial alone does not supply payment authorization. Automatic billing requires an agreed subscription and payment details through checkout. Check the actual checkout terms and billing date. If checkout is unavailable, contact the team rather than submitting card details in a support message.
+
+### 5. Ask for billing help
+
+Use the contact form or in-app support for account-specific questions, cancellation help or unexpected access. Include your company and issue, but never your card number or password.
+
+### Check your result
+
+You know the modules, trial end date and billing terms that apply to your company. Do not use test checkout as proof that a live subscription is active.
+
+## Report a problem and follow its progress
+
+Read online: https://getovrendi.com/education/report-a-bug/
+
+### Before you begin
+
+Who this is for: Signed-in users reporting an issue.
+
+A short description of the problem and steps to reproduce it.
+
+### 1. Open Report a bug
+
+Open the application’s Report a bug page. Reports go to Ovrendi’s internal CRM linked to your user and company.
+
+### 2. Describe one issue clearly
+
+Enter a short title and explain the steps, what you expected and what actually happened. Add the affected page if useful. Include the visible error wording and quote reference, but do not include private approval links or passwords.
+
+### 3. Submit and confirm
+
+Select Submit report and wait for confirmation. Look under Your recent reports to find the saved report. If submission fails, keep a copy of your description and retry.
+
+### 4. Add a useful screenshot
+
+Open the report conversation to attach a supported screenshot and provide follow-up details. Crop or obscure confidential customer data, payment information and credentials first.
+
+### 5. Follow the conversation
+
+Return to the report to read replies and answer follow-up questions. Support is provided by email and in-app messages; phone support is not offered. For a sign-in problem, use the public contact form instead.
+
+### Check your result
+
+Your report appears in your recent reports and its conversation contains your message. The public contact form is also available at /contact/.
+
+## Troubleshoot your first quote
+
+Read online: https://getovrendi.com/education/troubleshooting/
 
 ### The workbook will not import
 
@@ -128,7 +392,7 @@ Read Still needed and use the question mark next to a field. Enter actual gas co
 
 ### Save revision is not working
 
-Import a report, enter the required customer details, complete the calculation and select the review checkbox. Check the status message. Do not close the page until the revision appears in Saved quotations.
+Import a report, enter the required customer details, complete the calculation, confirm the imported report in step 2 and select the final review checkbox. Check the status message. Do not close the page until the revision appears in Saved quotations.
 
 ### The PDF has old details
 
@@ -140,54 +404,12 @@ Confirm you are in the correct company and have an allowed role and module. An e
 
 ## Production Board basics
 
-### Check access
-
-Production Board must be enabled for your company. It is not included in a Quoting-only trial. Available actions depend on your role.
-
-### Create or find work
-
-Open Production Board. Use New Job and enter the required job number and part name, then the quantity, priority and other available job details. Review before saving.
-
-### Track progress
-
-Use the board’s Queue, Setup, Running and Complete stages to follow active work. Refresh to retrieve current information. Operators can update progress; viewers cannot edit. Machine assignments and instructions require a suitable management role.
-
-### Review the day
-
-Use the total active, running, past-due and rush-job indicators to decide what needs attention. Confirm job details before moving work; a status change represents real production progress.
+Read online: https://getovrendi.com/education/production-board/
 
 ## Job Costing basics
 
-### Check access
-
-Job Costing is separately enabled for the company and is not part of a Quoting-only pilot. It compares quoted and actual job costs; the Han’s import workflow lives in Quoting.
-
-### Find the job
-
-Open Job Costing and choose All, At Risk, Over budget, On budget or No quote set. Select a job row for its detailed breakdown and cost entry.
-
-### Review actual costs
-
-Check labor, material and overhead entries against the quote before interpreting the margin. Enter accurate expenses with a permitted role. Refresh after updates to review the latest totals.
-
-### Use AI deliberately
-
-Suggest price with AI is optional and requires the on-screen consent. It sends job references and historical quote/cost totals to Anthropic; part names and notes are excluded. Review any estimate before use. If the provider is not configured, continue with manual costing.
+Read online: https://getovrendi.com/education/job-costing/
 
 ## Shop Traveler basics
 
-### Open the correct job
-
-Shop Traveler must be enabled for your company. Locate the job and review its instructions before recording work. This module is not included in a Quoting-only trial.
-
-### Prepare the steps
-
-With a permitted management role, use Apply Template or Add Step. Enter a clear title, instructions and any required dimension label and unit. Manage Templates lets the team reuse standard sequences.
-
-### Complete required checks
-
-Follow the step instructions and record required dimensions and sign-offs. The software checks required fields before completion. Enter observed values; a completed step should reflect work actually performed.
-
-### Record an issue
-
-Use Flag Issue when work needs attention. Describe the problem and any action taken. Share the issue with the appropriate supervisor. A traveler record is not a certification of regulatory compliance.
+Read online: https://getovrendi.com/education/shop-traveler/
