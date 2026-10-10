@@ -1,3 +1,4 @@
+import { installBuilder } from './builder.js'
 import { customerPicker } from './customers.js'
 import { workflow } from './workflow.js'
 import { draftController } from './draft.js'
@@ -22,7 +23,7 @@ const sections=[
 ]
 function rates(){const data=Object.fromEntries(new FormData(form));const r={currency:data.currency};for(const section of sections)for(const [key] of section.fields)r[key]=data[key]??'';for(const key of ['remnantCredit','setupMinutes','laborMinutes','purgeSeconds','otherCost','minimumCharge'])if(r[key]==='')r[key]='0';return r}
 function buildFields(){
-  $('rateFields').innerHTML=sections.map((section,i)=>`<section class="rate-section" data-section="${i}"><h3>${esc(section.title)}</h3><p class="hint">${esc(section.hint)}</p><div class="fields">${section.fields.map(([key,label,type,options])=>`<label data-field="${key}">${esc(label)}${type==='select'?`<select name="${key}">${options.map(([value,text])=>`<option value="${value}">${esc(text)}</option>`).join('')}</select>`:`<input name="${key}" type="${type==='text'?'text':'number'}" ${type==='text'?'maxlength="300"':'min="0" max="100000000" step="any"'} ${typeof type==='number'?`value="${type}"`:''}>`}</label>`).join('')}</div></section>`).join('')
+  $('rateFields').innerHTML=sections.map((section,i)=>`<details open class="rate-section" data-section="${i}"><summary>${esc(section.title)}</summary><p class="hint">${esc(section.hint)}</p><div class="fields">${section.fields.map(([key,label,type,options])=>`<label data-field="${key}">${esc(label)}${type==='select'?`<select name="${key}">${options.map(([value,text])=>`<option value="${value}">${esc(text)}</option>`).join('')}</select>`:`<input name="${key}" type="${type==='text'?'text':'number'}" ${type==='text'?'maxlength="300"':'min="0" max="100000000" step="any"'} ${typeof type==='number'?`value="${type}"`:''}>`}</label>`).join('')}</div></details>`).join('')
   visibility()
   decorateFields()
 }
@@ -55,7 +56,7 @@ if(session){
   if(!hasModule(session.account,'laser-quoting')){location.replace('/app/billing.html?module=laser-quoting')}
   else if(!['owner','admin','manager'].includes(session.role)){message('Quoting is available to owners, admins and managers. Ask your company administrator to update your role.',true)}
   else{
-    $('workspace').hidden=false;buildFields();guided=workflow({getState:()=>({imported,current,dirty}),get:apiGet,post:apiPost,run,notice:message,reload:loadQuote});guided.update();$('profileEditor').hidden=!['owner','admin'].includes(session.role)
+    $('workspace').hidden=false;buildFields();guided=workflow({getState:()=>({imported,current,dirty}),get:apiGet,post:apiPost,run,notice:message,reload:loadQuote});guided.update();installBuilder();$('profileEditor').hidden=!['owner','admin'].includes(session.role)
     run(async()=>{profiles=await apiGet('/api/laser-quotes?action=profiles');renderProfiles();await loadIdentity();await refresh();await drafts.init()})
     refreshCustomerPicker=customerPicker({root:$('customerPicker'),field:form.elements.customer,get:apiGet,post:apiPost,profiles:()=>profiles,changed:()=>{ $('profileCustomer').value='';markDirty() }})
     form.addEventListener('input',markDirty);form.addEventListener('change',visibility)
