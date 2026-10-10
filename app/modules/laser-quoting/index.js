@@ -1,3 +1,4 @@
+import { customerPicker } from './customers.js'
 import { workflow } from './workflow.js'
 import { draftController } from './draft.js'
 import { requireAuth } from '../../_shared/auth.js'
@@ -7,7 +8,7 @@ import { apiGet, apiPost } from '../../_shared/api.js'
 const session=requireAuth(), $=id=>document.getElementById(id), form=$('quoteForm')
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 let imported=null, current=null, profiles=[], dirty=false, busy=false, requestId=crypto.randomUUID()
-let guided=null
+let guided=null, refreshCustomerPicker=()=>{}
 const drafts=draftController({get:apiGet,post:apiPost,notice:message,
  capture:()=>({import_id:imported?.id||null,previous_id:current?.id||null,values:{...Object.fromEntries(new FormData(form)),reviewed:undefined,profileCustomer:$('profileCustomer').value,profileMachine:$('profileMachine').value}}),
  restore:async p=>{if(p.previous_id)await loadQuote(p.previous_id);else current=null;imported=p.import_id?await apiGet('/api/laser-quotes?action=source&id='+encodeURIComponent(p.import_id)):null;fill(p.values);$('profileCustomer').value=p.values.profileCustomer||'';$('profileMachine').value=p.values.profileMachine||'';form.elements.reviewed.checked=false;dirty=true;requestId=crypto.randomUUID();sourceView();$('quoteActions').hidden=true;$('result').textContent='Recovered draft. Calculate and review before saving a revision.';guided?.resetReview()}
@@ -56,6 +57,7 @@ if(session){
   else{
     $('workspace').hidden=false;buildFields();guided=workflow({getState:()=>({imported,current,dirty}),get:apiGet,post:apiPost,run,notice:message,reload:loadQuote});guided.update();$('profileEditor').hidden=!['owner','admin'].includes(session.role)
     run(async()=>{profiles=await apiGet('/api/laser-quotes?action=profiles');renderProfiles();await loadIdentity();await refresh();await drafts.init()})
+    refreshCustomerPicker=customerPicker({root:$('customerPicker'),field:form.elements.customer,get:apiGet,post:apiPost,profiles:()=>profiles,changed:()=>{ $('profileCustomer').value='';markDirty() }})
     form.addEventListener('input',markDirty);form.addEventListener('change',visibility)
     $('file').onchange=()=>run(async()=>{if(!drafts.canReplace())throw Error('Restore or discard the saved working draft first.');const file=$('file').files[0];if(!file)return;if(file.size>2*1024*1024)throw Error('Choose a file under 2 MB.');const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(Error('Could not read the selected file.'));reader.readAsDataURL(file)});const result=await apiPost('/api/laser-quotes?action=import',{file:base64,name:file.name});imported=result;autofillReport(result.source);markDirty();form.elements.reviewed.checked=false;sourceView();message(result.duplicate?'This report was already imported. Its existing source record has been reused.':'Report imported. Reference and blank sheet price filled from the report. Review highlighted values and complete your rates.')})
     form.onsubmit=e=>{e.preventDefault();run(async()=>{if(!imported)throw Error('Import a Han’s report first.');const result=await apiPost('/api/laser-quotes?action=calculate',{import_id:imported.id,rates:rates()});resultView(result);message(result.complete?'Calculation complete. Review and save your quotation.':'Complete the missing settings listed in the breakdown.',!result.complete)})}
@@ -95,7 +97,7 @@ function decorateFields(){
  });updateRequirements()
 }
 function updateRequirements(){
- const r=rates(),optional=['reference','terms','profile','profileKind','profileCustomer','profileMachine','remnantCredit','setupMinutes','laborMinutes','purgeSeconds','otherCost','minimumCharge']
+ const r=rates(),optional=['customerSearch','savedCustomer','reference','terms','profile','profileKind','profileCustomer','profileMachine','remnantCredit','setupMinutes','laborMinutes','purgeSeconds','otherCost','minimumCharge']
  document.querySelectorAll('#workspace label').forEach(label=>{const control=label.querySelector('input,select,textarea'),badge=label.querySelector('.field-status');if(!control||!badge)return;const key=control.name||control.id
   let text=optional.includes(key)?'Optional':key==='profileName'?'Required to save profile':key==='file'?'Required for new quote':'Required'
   if(key==='setupHourly')text=+r.setupMinutes>0?'Required':'Optional · no setup'
@@ -113,6 +115,7 @@ function autofillReport(source){
  if(source.sheetCount>0)suggest('sheetPrice',String(Number((source.charges.material/source.sheetCount).toFixed(8))))
 }
 function renderProfiles(){
+ refreshCustomerPicker()
  const describe=p=>{const meta=p.rates._profile||{kind:'shop'};return [meta.kind,p.name,...['customer_id','machine_id'].map(k=>profiles.find(x=>x.id===meta[k])?.name)].filter(Boolean).join(' · ')}
  $('profile').innerHTML='<option value="">Choose a profile</option>'+profiles.map(p=>`<option value="${esc(p.id)}">${esc(describe(p))}</option>`).join('')
  for(const [id,kind,label]of [['profileCustomer','customer','All customers in this shop'],['profileMachine','machine','All machines in this shop']]){const selected=$(id).value;$(id).innerHTML=`<option value="">${label}</option>`+profiles.filter(p=>p.rates._profile?.kind===kind).map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');$(id).value=selected}
