@@ -131,7 +131,7 @@ async function loadTeam() {
       </tr>`).join('')
     inv.querySelectorAll('.inv-send').forEach(b=>b.addEventListener('click',async()=>{
       b.disabled=true;b.textContent='Sending…'
-      try{const r=await apiPost('/api/settings?resource=invite',{email:b.dataset.email,role:b.dataset.role});if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.');else toastError('Invitation saved, but email could not be sent. Try Send email again or copy the link.')}catch(err){toastError(err.message)}finally{b.disabled=false;b.textContent='Send email'}
+      try{const r=await apiPost('/api/settings?resource=invite',{email:b.dataset.email,role:b.dataset.role});document.getElementById('invDeliveryStatus').textContent=r.email_status==='accepted'?'Invitation accepted by the email service. Check the inbox or junk folder.':'Invitation saved, but email could not be sent. Try Send email again or copy the link.';if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.');else toastError('Invitation saved, but email could not be sent. Try Send email again or copy the link.')}catch(err){toastError(err.message)}finally{b.disabled=false;b.textContent='Send email'}
     }))
     inv.querySelectorAll('.inv-copy').forEach(b => b.addEventListener('click', (e) => {
       const url = `${location.origin}/app/accept-invite.html?token=${e.target.dataset.token}`
@@ -153,7 +153,7 @@ document.getElementById('invBtn').addEventListener('click', async (e) => {
     document.getElementById('invUrl').textContent = r.invite_url
     document.getElementById('invBox').style.display = 'block'
     document.getElementById('invEmail').value = ''
-    if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.')
+    document.getElementById('invDeliveryStatus').textContent=r.email_status==='accepted'?'Invitation accepted by the email service. Check the inbox or junk folder.':'Invitation saved, but email could not be sent. Try Send email again or copy the link.';if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.')
     else toastError('Invitation saved, but email could not be sent. Try Send email again or copy the link.')
     loadTeam()
   } catch (err) { toastError(err.message) }
