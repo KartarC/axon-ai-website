@@ -124,10 +124,15 @@ async function loadTeam() {
         <td>${esc(i.email)}</td>
         <td><span class="role-pill">${i.role}</span></td>
         <td style="text-align:right">
+          <button class="act-btn inv-send" data-email="${esc(i.email)}" data-role="${i.role}">Send email</button>
           <button class="act-btn inv-copy" data-token="${i.token}">Copy link</button>
           ${isAdmin ? `<button class="act-btn act-btn--red inv-del" data-id="${i.id}">Revoke</button>` : ''}
         </td>
       </tr>`).join('')
+    inv.querySelectorAll('.inv-send').forEach(b=>b.addEventListener('click',async()=>{
+      b.disabled=true;b.textContent='Sending…'
+      try{const r=await apiPost('/api/settings?resource=invite',{email:b.dataset.email,role:b.dataset.role});if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.');else toastError('Invitation saved, but email could not be sent. Try Send email again or copy the link.')}catch(err){toastError(err.message)}finally{b.disabled=false;b.textContent='Send email'}
+    }))
     inv.querySelectorAll('.inv-copy').forEach(b => b.addEventListener('click', (e) => {
       const url = `${location.origin}/app/accept-invite.html?token=${e.target.dataset.token}`
       navigator.clipboard.writeText(url).then(() => toastSuccess('Invite link copied'))
@@ -142,16 +147,17 @@ document.getElementById('invBtn').addEventListener('click', async (e) => {
   const btn = e.currentTarget
   const email = document.getElementById('invEmail').value.trim()
   if (!email) return toastError('Enter an email address')
-  btn.disabled = true; btn.textContent = 'Creating…'
+  btn.disabled = true; btn.textContent = 'Sending…'
   try {
     const r = await apiPost('/api/settings?resource=invite', { email, role: document.getElementById('invRole').value })
     document.getElementById('invUrl').textContent = r.invite_url
     document.getElementById('invBox').style.display = 'block'
     document.getElementById('invEmail').value = ''
-    toastSuccess('Invite created — copy the link and send it')
+    if(r.email_status==='accepted')toastSuccess('Invitation accepted by the email service. Check the inbox or junk folder.')
+    else toastError('Invitation saved, but email could not be sent. Try Send email again or copy the link.')
     loadTeam()
   } catch (err) { toastError(err.message) }
-  finally { btn.disabled = false; btn.textContent = 'Create invite' }
+  finally { btn.disabled = false; btn.textContent = 'Send invitation' }
 })
 document.getElementById('invCopyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('invUrl').textContent).then(() => toastSuccess('Copied'))

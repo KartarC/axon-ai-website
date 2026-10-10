@@ -8,6 +8,7 @@
 // ?resource=member    DELETE → remove a member ?id=X (owner/admin; not self, not owners)
 // ?resource=member    PATCH  → change a member's role ?id=X (owner only)
 // ?resource=customers GET/POST/PATCH/DELETE → customers CRUD (write: owner/admin/manager)
+const { sendEmail, invitationEmail } = require('./_lib/email')
 const { sb, requireAuth, requireRole, cors } = require('./_lib/supabase')
 
 export default async function handler(req, res) {
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ members: members || [], invites: pending, my_user_id: ctx.user.id })
   }
 
-  // ── INVITE: create (returns link — owner shares it) ──────
+  // ── INVITE: create and email (link remains available as fallback) ──────
   if (resource === 'invite' && req.method === 'POST') {
     if (!requireRole(ctx, ['owner','admin'], res)) return
     const { email, role = 'operator' } = req.body || {}
@@ -52,20 +53,22 @@ export default async function handler(req, res) {
     const validRoles = ['admin','manager','operator','viewer']
     if (!validRoles.includes(role)) return res.status(400).json({ error: 'role must be admin, manager, operator, or viewer' })
     const cleanEmail = String(email).trim().toLowerCase()
+    if(cleanEmail.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return res.status(400).json({error:'Enter a valid email address'})
 
     // Already a member?
     const existing = await sb('GET',
       `account_users?account_id=eq.${accId}&select=id,user_id`)
     // (membership is keyed by user_id; cheap check via invites instead)
     const dupInvite = await sb('GET',
-      `account_invites?account_id=eq.${accId}&email=eq.${encodeURIComponent(cleanEmail)}&accepted_at=is.null&select=id,token,expires_at`)
+      `account_invites?account_id=eq.${accId}&email=eq.${encodeURIComponent(cleanEmail)}&accepted_at=is.null&select=id,token,expires_at,role`)
     let invite = (dupInvite || []).find(i => !i.expires_at || new Date(i.expires_at) > new Date())
     if (!invite) {
       ;[invite] = await sb('POST', 'account_invites', { account_id: accId, email: cleanEmail, role })
     }
 
     const invite_url = `${require('./_lib/security').siteUrl()}/app/accept-invite.html?token=${invite.token}`
-    return res.status(201).json({ ok: true, invite_url, email: cleanEmail, role })
+    const delivery = await sendEmail({to:cleanEmail,...invitationEmail(ctx.account.name,invite_url),idempotencyKey:`invite-${invite.id}`})
+    return res.status(201).json({ ok: true, invite_url, email: cleanEmail, role:invite.role||role, email_status:delivery?.ok?'accepted':'failed' })
   }
 
   // ── INVITE: revoke ───────────────────────────────────────
