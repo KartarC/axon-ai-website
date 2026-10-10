@@ -22,19 +22,29 @@ export function renderNav(activePath = '') {
   const accountName = session.account.name
   const canBill = ['owner','admin'].includes(session.role)
   const link = (name, href, glyph, active) => '<a href="'+href+'" class="anav-link '+(active?'active':'')+'" title="'+name+'" aria-label="'+name+'"'+(active?' aria-current="page"':'')+'>'+glyph+'<span>'+name+'</span></a>'
+  const group=(name,links)=>'<details class="anav-group" open><summary>'+name+'</summary><div class="nav-children">'+links+'</div></details>'
   navEl.innerHTML = '<div class="anav-inner">'+
     '<div class="anav-top"><a href="/app/dashboard.html" class="anav-logo" aria-label="Ovrendi overview"><img src="/assets/ovrendi-mark.svg" width="32" height="32" alt=""><span class="anav-logo-text">Ovrendi</span></a><button class="anav-collapse" id="sidebarCollapse" type="button">'+icons.collapse+'</button></div>'+
     '<div class="anav-account"><span class="anav-shop-name">'+escHtml(accountName)+'</span><span class="anav-plan-badge">'+escHtml(session.account.plan)+' workspace</span></div>'+
-    '<div class="anav-scroll"><section class="anav-group" aria-label="Account"><h2 class="anav-section-label">Account</h2>'+link('Overview','/app/dashboard.html',icons.overview,activePath.includes('/dashboard'))+(canBill?link('Plan & billing','/app/billing.html',icons.billing,activePath.includes('/billing')):'')+'</section>'+
-    '<section class="anav-group" aria-label="Workspace"><h2 class="anav-section-label">Workspace</h2>'+(session.account.modules.includes('production-board')?link('All jobs','/app/jobs/',icons.jobs,activePath.includes('/jobs/')):'')+modules.map(m=>link(m.name,m.path,m.icon,activePath.includes(m.slug))).join('')+'</section>'+
-    '<section class="anav-group" aria-label="Learn"><h2 class="anav-section-label">Learn</h2>'+link('Getting started','/app/getting-started.html',icons.overview,activePath.includes('/getting-started'))+link('Education','/education/',icons.jobs,false)+link('Report a bug','/app/support.html',icons.settings,activePath.includes('/support'))+'</section>'+
-    '<section class="anav-group" aria-label="Administration"><h2 class="anav-section-label">Administration</h2>'+link('Settings','/app/settings.html',icons.settings,activePath.includes('/settings'))+'</section></div>'+
+    '<label class="nav-search"><span class="sr-only">Search navigation</span><input type="search" placeholder="Search navigation…" aria-label="Search navigation"></label>'+
+    '<div class="anav-scroll">'+link('Overview','/app/dashboard.html',icons.overview,activePath.includes('/dashboard'))+
+    group('Daily work',(session.account.modules.includes('production-board')?link('All jobs','/app/jobs/',icons.jobs,activePath.includes('/jobs/')):'')+modules.map(m=>link(m.name,m.path,m.icon,activePath.includes(m.slug))).join(''))+
+    group('Company',link('Settings','/app/settings.html',icons.settings,activePath.includes('/settings'))+(canBill?link('Plan & billing','/app/billing.html',icons.billing,activePath.includes('/billing')):''))+
+    group('Help & learning',link('Getting started','/app/getting-started.html',icons.overview,activePath.includes('/getting-started'))+link('Education','/education/',icons.jobs,false)+link('Report a bug','/app/support.html',icons.settings,activePath.includes('/support')))+'<p class="nav-empty" hidden>No matching pages.</p></div>'+
     '<div class="anav-footer"><div class="anav-theme" role="group" aria-label="Appearance"><button type="button" data-theme-choice="light" title="Light mode" aria-label="Light mode">'+icons.light+'<span>Light</span></button><button type="button" data-theme-choice="dark" title="Dark mode" aria-label="Dark mode">'+icons.dark+'<span>Dark</span></button></div><button class="anav-link anav-logout" id="logoutBtn" title="Sign out" aria-label="Sign out">'+icons.logout+'<span>Sign out</span></button></div></div>'
+  const search=navEl.querySelector('input[type=search]')
+  search.addEventListener('input',()=>{
+    const term=search.value.trim().toLowerCase();let count=0
+    navEl.querySelectorAll('.anav-scroll .anav-link').forEach(a=>{a.hidden=!a.textContent.toLowerCase().includes(term);if(!a.hidden)count++})
+    navEl.querySelectorAll('details').forEach(d=>{d.hidden=![...d.querySelectorAll('a')].some(a=>!a.hidden);if(term)d.open=true})
+    navEl.querySelector('.nav-empty').hidden=!!count
+  })
   queueMicrotask(installWalkthrough)
   installEngagement()
   const collapse = document.getElementById('sidebarCollapse')
   const syncCollapse = () => {
     const collapsed = document.documentElement.dataset.sidebar === 'collapsed'
+    if(collapsed)navEl.querySelectorAll('details').forEach(d=>d.open=true)
     collapse.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
     collapse.setAttribute('aria-label', collapse.title)
     collapse.setAttribute('aria-expanded', String(!collapsed))
@@ -86,7 +96,7 @@ export function renderNav(activePath = '') {
       if (!mobile.matches || !navEl.classList.contains('open')) return
       if (event.key === 'Escape') { event.preventDefault(); close() }
       if (event.key === 'Tab') {
-        const items = [...navEl.querySelectorAll('a[href],button:not(:disabled)')].filter(e => e.getClientRects().length)
+        const items = [...navEl.querySelectorAll('a[href],button:not(:disabled),input,summary')].filter(e => e.getClientRects().length)
         const first = items[0], last = items.at(-1)
         if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
