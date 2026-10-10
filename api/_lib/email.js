@@ -40,7 +40,7 @@ function invitationEmail(shopName, inviteUrl) {
   const name = escapeHtml(shopName), url = escapeHtml(inviteUrl)
   return { kind:'invitation', secure:true, subject:'Your Ovrendi workspace invitation',
     text:`You have been invited to ${shopName} on Ovrendi. Open this private link to review and accept: ${inviteUrl}\nUse your existing Ovrendi password if you already have an account, or create a password if you are new.\nIf you were not expecting this invitation, ignore this message.`,
-    html:shell(`<p style="color:#D9042B;font-size:11px;letter-spacing:2px;font-weight:bold">YOUR TEAM IS WAITING</p><h2 style="font-size:28px;line-height:1.2">Join your team on Ovrendi.</h2><p>You have been invited to <strong>${name}</strong> on Ovrendi.</p><p><a href="${url}" style="display:inline-block;padding:14px 22px;background:#D9042B;color:white;border-radius:8px;text-decoration:none">Review invitation</a></p><div style="background:#f5f5f7;border-radius:10px;padding:18px;line-height:1.7"><strong>Getting started</strong><br>1. Open your invitation.<br>2. Sign in with your existing password, or create one if you are new.<br>3. Accept to join your company workspace.</div><p style="font-size:13px;line-height:1.6">Button not working? Copy this private link into your browser:<br><a href="${url}" style="color:#B50322;word-break:break-all">${url}</a></p><p style="font-size:13px;line-height:1.6">If your invitation has expired, ask your workspace administrator for a new one. Keep this link private. If you were not expecting this invitation, ignore this message.</p><p style="font-size:13px">Need help? <a href="mailto:hello@getovrendi.com" style="color:#B50322">hello@getovrendi.com</a></p>`) }
+    html:shell(`<p style="color:#D9042B;font-size:11px;letter-spacing:2px;font-weight:bold">WORKSPACE INVITATION</p><h2 style="font-size:28px;line-height:1.2">Join your team on Ovrendi.</h2><p>You have been invited to <strong>${name}</strong> on Ovrendi.</p><p><a href="${url}" style="display:inline-block;padding:14px 22px;background:#D9042B;color:white;border-radius:8px;text-decoration:none">Review invitation</a></p><div style="background:#f5f5f7;border-radius:10px;padding:18px;line-height:1.7"><strong>Getting started</strong><br>1. Open your invitation.<br>2. Sign in with your existing password, or create one if you are new.<br>3. Accept to join your company workspace.</div><p style="font-size:13px;line-height:1.6">Button not working? Copy this private link into your browser:<br><a href="${url}" style="color:#B50322;word-break:break-all">${url}</a></p><p style="font-size:13px;line-height:1.6">If your invitation has expired, ask your workspace administrator for a new one. Keep this link private. If you were not expecting this invitation, ignore this message.</p><p style="font-size:13px">Need help? <a href="mailto:hello@getovrendi.com" style="color:#B50322">hello@getovrendi.com</a></p>`, `You’re invited to ${shopName}. Review your invitation and securely access your team’s workspace.`) }
 }
 
 // Look up the owner's email for an account (account_users → auth admin)
@@ -54,10 +54,10 @@ async function getOwnerEmail(accountId) {
 }
 
 // ── Shared shell ─────────────────────────────────────────────
-function shell(inner) {
-  return `<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#111827">
+function shell(inner, preview = 'An update about your Ovrendi workspace.') {
+  return `<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all" aria-hidden="true">${escapeHtml(preview)}${'&#8204;&nbsp;'.repeat(100)}</div><div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;color:#111827">
     <div style="margin-bottom:24px">
-      <span style="display:inline-block;background:#D9042B;color:#FAFAF9;font-weight:800;font-size:15px;border-radius:8px;padding:5px 10px">O</span>
+      <img src="https://getovrendi.com/assets/ovrendi-email-mark.png" width="40" height="40" alt="Ovrendi logo" style="display:inline-block;vertical-align:middle;border:0;width:40px;height:40px">
       <span style="font-weight:800;font-size:17px;letter-spacing:-.5px;margin-left:6px">Ovrendi</span>
     </div>
     ${inner}
