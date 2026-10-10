@@ -22,3 +22,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}button:focus-visibl
 @media(max-width:650px){#workspace{display:block}#workspace>aside{position:relative;height:auto;max-height:48vh;border-right:0;border-bottom:1px solid var(--line)}#navigation{display:block}.aside-bottom{display:flex}}
 
 #workspace>aside{overflow:hidden}#navigation{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}.aside-bottom{flex-shrink:0}aside .brand:before{content:"O";display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;border-radius:7px;background:#d9042b;color:white;font-size:16px}aside .brand span{margin-left:34px}@media(max-width:650px){#workspace>aside{overflow-y:auto}#navigation{flex:none}}
+
+/* Compact accordion keeps normal laptop navigation in one viewport. */
+#workspace>aside{padding:12px}#navigation details{margin:4px 0}#navigation summary{padding:8px}#navigation a{padding:7px 12px;min-height:32px}.staff-search{margin:10px 8px}.aside-bottom{padding-top:10px;gap:6px}.aside-bottom small{font-size:10px;line-height:1.4}.aside-bottom button{min-height:34px;padding:6px 12px}
+@media(max-width:650px){#workspace>aside{max-height:none;height:auto;overflow:visible}#navigation{overflow:visible}#navigation a,#navigation summary{min-height:44px}}

@@ -22,7 +22,7 @@ export function renderNav(activePath = '') {
   const accountName = session.account.name
   const canBill = ['owner','admin'].includes(session.role)
   const link = (name, href, glyph, active) => '<a href="'+href+'" class="anav-link '+(active?'active':'')+'" title="'+name+'" aria-label="'+name+'"'+(active?' aria-current="page"':'')+'>'+glyph+'<span>'+name+'</span></a>'
-  const group=(name,links)=>'<details class="anav-group" open><summary>'+name+'</summary><div class="nav-children">'+links+'</div></details>'
+  const group=(name,links)=>'<details class="anav-group"><summary>'+name+'</summary><div class="nav-children">'+links+'</div></details>'
   navEl.innerHTML = '<div class="anav-inner">'+
     '<div class="anav-top"><a href="/app/dashboard.html" class="anav-logo" aria-label="Ovrendi overview"><img src="/assets/ovrendi-mark.svg" width="32" height="32" alt=""><span class="anav-logo-text">Ovrendi</span></a><button class="anav-collapse" id="sidebarCollapse" type="button">'+icons.collapse+'</button></div>'+
     '<div class="anav-account"><span class="anav-shop-name">'+escHtml(accountName)+'</span><span class="anav-plan-badge">'+escHtml(session.account.plan)+' workspace</span></div>'+
@@ -33,10 +33,14 @@ export function renderNav(activePath = '') {
     group('Help & learning',link('Getting started','/app/getting-started.html',icons.overview,activePath.includes('/getting-started'))+link('Education','/education/',icons.jobs,false)+link('Report a bug','/app/support.html',icons.settings,activePath.includes('/support')))+'<p class="nav-empty" hidden>No matching pages.</p></div>'+
     '<div class="anav-footer"><div class="anav-theme" role="group" aria-label="Appearance"><button type="button" data-theme-choice="light" title="Light mode" aria-label="Light mode">'+icons.light+'<span>Light</span></button><button type="button" data-theme-choice="dark" title="Dark mode" aria-label="Dark mode">'+icons.dark+'<span>Dark</span></button></div><button class="anav-link anav-logout" id="logoutBtn" title="Sign out" aria-label="Sign out">'+icons.logout+'<span>Sign out</span></button></div></div>'
   const search=navEl.querySelector('input[type=search]')
+  const groups=[...navEl.querySelectorAll('.anav-group')]
+  const resetGroups=()=>groups.forEach(d=>d.open=!!d.querySelector('[aria-current="page"]'))
+  resetGroups()
+  groups.forEach(d=>d.querySelector('summary').addEventListener('click',()=>{if(!d.open)groups.forEach(other=>{if(other!==d)other.open=false})}))
   search.addEventListener('input',()=>{
     const term=search.value.trim().toLowerCase();let count=0
     navEl.querySelectorAll('.anav-scroll .anav-link').forEach(a=>{a.hidden=!a.textContent.toLowerCase().includes(term);if(!a.hidden)count++})
-    navEl.querySelectorAll('details').forEach(d=>{d.hidden=![...d.querySelectorAll('a')].some(a=>!a.hidden);if(term)d.open=true})
+    navEl.querySelectorAll('details').forEach(d=>{d.hidden=![...d.querySelectorAll('a')].some(a=>!a.hidden);d.open=term?true:!!d.querySelector('[aria-current="page"]')})
     navEl.querySelector('.nav-empty').hidden=!!count
   })
   queueMicrotask(installWalkthrough)
@@ -45,6 +49,7 @@ export function renderNav(activePath = '') {
   const syncCollapse = () => {
     const collapsed = document.documentElement.dataset.sidebar === 'collapsed'
     if(collapsed)navEl.querySelectorAll('details').forEach(d=>d.open=true)
+    else if(!search.value)resetGroups()
     collapse.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
     collapse.setAttribute('aria-label', collapse.title)
     collapse.setAttribute('aria-expanded', String(!collapsed))

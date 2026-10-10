@@ -48,3 +48,6 @@ html[data-app-theme] .anav-link{min-height:40px;padding:8px 10px;margin:2px 0;fo
 
 @media(min-width:769px){.anav-close,.mobile-nav-btn{display:none!important}}
 html[data-app-theme=dark] #app-nav .anav-link.active{background:#202226;color:#ff91a7}
+
+/* Compact desktop rhythm; touch targets remain generous on phones. */
+@media(min-width:769px){.anav-top{padding:12px 14px 6px}html[data-app-theme] .anav-account{padding:2px 18px 8px}.nav-search{margin-bottom:6px}.anav-group{padding:4px 0}html[data-app-theme] .anav-link{min-height:32px;padding:6px 10px}.anav-group>summary{padding:7px 8px}html[data-app-theme] .anav-footer{padding:8px 12px}.anav-theme{margin-bottom:4px}.anav-theme button{min-height:32px}}
