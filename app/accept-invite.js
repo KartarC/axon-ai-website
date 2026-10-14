@@ -38,7 +38,7 @@ function renderForm({ email, role, account_name, plan }) {
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.5" y="3" width="15" height="13" rx="1.5" stroke="#1D4ED8" stroke-width="1.3"/><path d="M5 1.5v3M13 1.5v3M1.5 9H16.5" stroke="#1D4ED8" stroke-width="1.3" stroke-linecap="round"/></svg>
       <div>
         <div class="invite-shop-name">${escHtml(account_name)}</div>
-        <div class="invite-shop-role">${escHtml(role)} · ${planLabel} Plan</div>
+        <div class="invite-shop-role">${escHtml(role)} · ${escHtml(planLabel)} Plan</div>
       </div>
     </div>
 
@@ -53,7 +53,7 @@ function renderForm({ email, role, account_name, plan }) {
         <input class="invite-input" type="password" id="pw2" autocomplete="new-password" placeholder="Repeat your password" required/>
       </div>
       <button class="invite-btn" type="submit" id="submitBtn">Join Shop →</button>
-      <div class="invite-error" id="inviteError"></div>
+      <div class="invite-error" id="inviteError" role="alert"></div>
     </form>
   `
 
@@ -96,13 +96,13 @@ function renderForm({ email, role, account_name, plan }) {
             user:          sessData.user,
             full_name:     sessData.full_name,
           })
-          window.location.href = '/app/dashboard.html'
+          window.location.href = '/app/getting-started.html'
           return
         }
       }
 
       // Fallback: redirect to login
-      window.location.href = '/app/login.html?activated=1'
+      window.location.href = '/app/login.html?activated=1&return=%2Fapp%2Fgetting-started.html'
     } catch (err) {
       showErr('Something went wrong. Please try again.')
       btn.disabled = false

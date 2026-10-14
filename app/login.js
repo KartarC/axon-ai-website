@@ -8,6 +8,12 @@ const errEl = document.getElementById('loginError')
 
 // Check for messages (expired session, etc.)
 const params = new URLSearchParams(location.search)
+if (params.get('activated')) {
+  const notice = document.createElement('p')
+  notice.setAttribute('role', 'status')
+  notice.textContent = 'Your invitation has been accepted. Sign in with your password to continue setup.'
+  form.before(notice)
+}
 if (params.get('expired')) showError('Your session expired. Please sign in again.')
 
 form.addEventListener('submit', async (e) => {
