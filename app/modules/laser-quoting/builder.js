@@ -1,3 +1,4 @@
+import {installSetupLink} from './setup.js'
 export function installBuilder(){
  const $=id=>document.getElementById(id),workspace=$('workspace');workspace.dataset.view='builder';
  const bar=document.createElement('div');bar.className='builder-bar';bar.innerHTML='<div><p class="eyebrow">QUOTATIONS / EDITOR</p><strong id="quoteState">New quotation · Draft</strong></div><div class="builder-switch" role="group" aria-label="Quotation view"><button type="button" data-view="builder" aria-pressed="true">1 · Builder</button><button type="button" data-view="review" aria-pressed="false">2 · Review &amp; share</button><button type="button" data-view="saved" aria-pressed="false">Saved quotations</button></div>';
@@ -24,4 +25,5 @@ export function installBuilder(){
  // Reveal collapsed fields for browser validation and tutorial navigation.
  $('quoteForm').addEventListener('invalid',e=>{setView('builder');for(let parent=e.target.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true},true);
  document.addEventListener('click',e=>{if(e.target.closest('#startWalkthrough')){setView('builder');workspace.querySelector('.standards-fold').open=true}},true);
+ installSetupLink();
 }

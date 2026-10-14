@@ -19,6 +19,8 @@ export function installWalkthrough(){
  const url=new URL(location.href);
  if(url.searchParams.has('tour')){url.searchParams.delete('tour');history.replaceState(history.state,'',url)}
  if(kind!=='quoting')return;
+ // Setup links guide a specific task; keep the tour optional here.
+ if(new URLSearchParams(location.search).has('setup')||document.getElementById('workspace')?.dataset.setupEntry)return;
  const session=getSession();
  if(!session?.user?.id||!session?.account?.id)return;
  const key=`ovrendi:walkthrough:quoting:${session.account.id}:${session.user.id}`;
