@@ -12,6 +12,7 @@ export default async function handler(req, res) {
 
   res.setHeader('Cache-Control', 'no-store')
   const action = req.query.action
+  if(action==='onboarding')return require('./_lib/onboarding').onboarding(req,res)
 
   // ── GET session ──────────────────────────────────────────
   if (action === 'session' && req.method === 'GET') {

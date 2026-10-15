@@ -1,3 +1,4 @@
+import {apiGet,apiPatch} from './_shared/api.js'
 import {requireAuth} from './_shared/auth.js'
 import {renderNav} from './_shared/nav.js'
 import {hasModule} from './_shared/modules.js'
@@ -26,7 +27,32 @@ if(session){
  document.getElementById('meter').max=steps.length
  document.getElementById('checklist').innerHTML=steps.map(([id,title,description,href,action,guide],i)=>`<article class="setup-step"><span class="setup-number" aria-hidden="true">${i+1}</span><div class="setup-content"><h2>${title}</h2><p>${description}</p><div class="setup-actions"><a class="btn-app btn-app--primary" href="${href}">${action} →</a>${id==='quoting-rates'?'<a href="/app/modules/laser-quoting/?setup=company">PDF contact details</a>':''}<details><summary>Need help?</summary><a href="/education/${guide}/">Read the step-by-step guide</a></details></div><label><input type="checkbox" data-step="${i}" data-task="${id}" ${done.includes(id)?'checked':''}>I’ve completed this step</label></div></article>`).join('')
  function progress(){const n=document.querySelectorAll('[data-step]:checked').length;document.getElementById('meter').value=n;document.getElementById('progress').textContent=n===steps.length?'Your setup checklist is complete.':n+' of '+steps.length+' steps complete'}
- document.getElementById('checklist').onchange=()=>{const visible=new Set(steps.map(s=>s[0]));done=[...done.filter(id=>!visible.has(id)),...[...document.querySelectorAll('[data-step]:checked')].map(x=>x.dataset.task)];try{localStorage.setItem(key,JSON.stringify(done))}catch(_){}progress()}
- progress()
+ const sync=document.createElement('p');sync.setAttribute('role','status');document.getElementById('progress').after(sync)
+ const retry=document.createElement('button');retry.type='button';retry.className='btn-app btn-app--secondary';retry.textContent='Retry sync';retry.hidden=true;sync.after(retry)
+ const inputs=[...document.querySelectorAll('[data-task]')];let busy=false,loaded=false
+ const lock=value=>inputs.forEach(input=>input.disabled=value)
+ const render=()=>{inputs.forEach(input=>input.checked=done.includes(input.dataset.task));progress()}
+ // Old browser checkmarks are imported only into missing cloud records, never over a saved unchecked state.
+ const localDone=[...done];done=[];render();lock(true)
+ async function load(){
+  if(busy)return;busy=true;lock(true);retry.hidden=true;sync.textContent='Loading saved progress…'
+  try{
+   let data=await apiGet('/api/auth?action=onboarding')
+   if(!loaded){for(const id of localDone.filter(id=>data.allowed_tasks.includes(id)&&!data.tasks.some(t=>t.task_id===id)))await apiPatch('/api/auth?action=onboarding',{task_id:id,completed:true,import_local:true});data=await apiGet('/api/auth?action=onboarding')}
+   done=data.tasks.filter(t=>t.completed).map(t=>t.task_id);loaded=true;render()
+   try{localStorage.removeItem(key);localStorage.removeItem('ovrendi_setup_v2:'+session.account.id+':'+session.user?.id)}catch(_){}
+   sync.textContent='Progress saved to your account. Continue from any device.';lock(false)
+  }catch(e){sync.textContent=e.message;retry.hidden=false}finally{busy=false}
+ }
+ document.getElementById('checklist').onchange=async event=>{
+  const input=event.target;if(!input.matches('[data-task]')||busy||!loaded)return
+  busy=true;lock(true);sync.textContent='Saving progress…';retry.hidden=true
+  try{await apiPatch('/api/auth?action=onboarding',{task_id:input.dataset.task,completed:input.checked});done=done.filter(id=>id!==input.dataset.task);if(input.checked)done.push(input.dataset.task);sync.textContent='Progress saved to your account.'}
+  catch(e){sync.textContent=e.message+' Your change was not saved.';retry.hidden=false}
+  finally{render();lock(false);busy=false}
+ }
+ retry.onclick=load
+ window.addEventListener('focus',()=>{if(loaded)load()})
+ load()
  if(!canQuote){document.getElementById('openQuoting').hidden=true;if(steps.length===1)document.getElementById('moduleNotice').textContent='No supported module setup tasks are available for your access yet. Ask your administrator which tools are enabled.'}
 }
