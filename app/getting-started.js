@@ -38,7 +38,7 @@ if(session){
   if(busy)return;busy=true;lock(true);retry.hidden=true;sync.textContent='Loading saved progress…'
   try{
    let data=await apiGet('/api/auth?action=onboarding')
-   if(!loaded){for(const id of localDone.filter(id=>data.allowed_tasks.includes(id)&&!data.tasks.some(t=>t.task_id===id)))await apiPatch('/api/auth?action=onboarding',{task_id:id,completed:true,import_local:true});data=await apiGet('/api/auth?action=onboarding')}
+   if(!loaded){for(const id of localDone.filter(id=>data.allowed_tasks.includes(id)&&!data.tasks.some(t=>t.task_id===id)))await apiPatch('/api/auth?action=onboarding',{task:id,completed:true,import_local:true});data=await apiGet('/api/auth?action=onboarding')}
    done=data.tasks.filter(t=>t.completed).map(t=>t.task_id);loaded=true;render()
    try{localStorage.removeItem(key);localStorage.removeItem('ovrendi_setup_v2:'+session.account.id+':'+session.user?.id)}catch(_){}
    sync.textContent='Progress saved to your account. Continue from any device.';lock(false)
@@ -47,7 +47,7 @@ if(session){
  document.getElementById('checklist').onchange=async event=>{
   const input=event.target;if(!input.matches('[data-task]')||busy||!loaded)return
   busy=true;lock(true);sync.textContent='Saving progress…';retry.hidden=true
-  try{await apiPatch('/api/auth?action=onboarding',{task_id:input.dataset.task,completed:input.checked});done=done.filter(id=>id!==input.dataset.task);if(input.checked)done.push(input.dataset.task);sync.textContent='Progress saved to your account.'}
+  try{await apiPatch('/api/auth?action=onboarding',{task:input.dataset.task,completed:input.checked});done=done.filter(id=>id!==input.dataset.task);if(input.checked)done.push(input.dataset.task);sync.textContent='Progress saved to your account.'}
   catch(e){sync.textContent=e.message+' Your change was not saved.';retry.hidden=false}
   finally{render();lock(false);busy=false}
  }

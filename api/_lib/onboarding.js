@@ -16,7 +16,7 @@ async function onboarding(req,res){
    return res.status(200).json({tasks:rows||[],allowed_tasks:allowed})
   }
   if(req.method!=='PATCH')return res.status(405).json({error:'Method not allowed'})
-  const {task_id,completed,import_local}=req.body||{}
+  const {task:task_id,completed,import_local}=req.body||{}
   if(!allowed.includes(task_id)||typeof completed!=='boolean'||(import_local!==undefined&&typeof import_local!=='boolean'))return res.status(400).json({error:'Choose an available onboarding step and completion state'})
   if(import_local&&completed!==true)return res.status(400).json({error:'Only completed local steps can be imported'})
   await sb('POST','ovrendi_onboarding_progress?on_conflict=account_id,user_id,task_id',{
