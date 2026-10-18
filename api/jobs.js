@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (!ctx) return
   if (!requireModule(ctx, 'production-board', res)) return
 
-  if(['production','from-quote'].includes(req.query.action))return require('./_lib/production').production(req,res,ctx)
+  if(['production','from-quote','timer'].includes(req.query.action))return require('./_lib/production').production(req,res,ctx)
   const { id, status, search } = req.query
 
   // ── Single job routes (?id=X) ────────────────────────────
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
     if (req.method === 'PATCH') {
       if (!requireRole(ctx, ['owner','admin','manager'], res)) return
       if (req.body?.customer_id && !await requireRecord(ctx, 'customers', req.body.customer_id, res)) return
+      if(['complete','shipped','cancelled','on_hold'].includes(req.body?.status)){const [tracking]=await sb('GET',`ovrendi_job_tracking?account_id=eq.${ctx.account.id}&job_id=eq.${id}&select=timer_started_at`);if(tracking?.timer_started_at)return res.status(409).json({error:'Stop the job timer before closing or pausing this job'})}
       const allowed = ['job_number','part_name','quantity','customer_id','material','due_date','priority','status','notes','revision']
       const updates = {}
       for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }

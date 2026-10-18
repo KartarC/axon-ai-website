@@ -4,6 +4,13 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='timer'){
+   if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'})
+   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
+   if(!isUuid(req.query.id)||!Number.isInteger(req.body?.version)||req.body.version<0||!['start','stop'].includes(req.body?.timer_action)||Object.keys(req.body).some(k=>!['version','timer_action'].includes(k)))return res.status(400).json({error:'Invalid timer request'})
+   const result=await sb('POST','rpc/ovrendi_job_timer',{p_account:ctx.account.id,p_user:ctx.user.id,p_job:req.query.id,p_version:req.body.version,p_action:req.body.timer_action})
+   return res.status(result.error?409:200).json(result)
+  }
   if(action==='from-quote'){
    if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'})
    if(!requireRole(ctx,['owner','admin','manager'],res))return
@@ -25,7 +32,7 @@ async function production(req,res,ctx){
    const quoteRate=quote?.result?.rates
    const profiles=manage?await sb('GET',`billet_laser_profiles?account_id=eq.${ctx.account.id}&select=id,name,rates&limit=500`):[]
    const rates=profiles.filter(p=>p.rates.laborHourly!==null&&p.rates.laborHourly!==undefined&&p.rates.laborHourly!=='').map(p=>({id:p.id,name:p.name,rate:Number(p.rates.laborHourly),currency:p.rates.currency}))
-   return res.status(200).json({...rows[0],events,labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
+   return res.status(200).json({...rows[0],events,server_time:new Date().toISOString(),labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
   }
   if(req.method!=='PATCH'||!isUuid(req.query.id))return res.status(405).json({error:'Method not allowed'})
   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
