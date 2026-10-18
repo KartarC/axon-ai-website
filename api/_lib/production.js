@@ -4,6 +4,23 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='time-submissions'){
+   if(req.method==='GET'&&req.query.inbox==='1'){
+    if(!requireRole(ctx,['owner','admin','manager'],res))return
+    const pending=await sb('GET',`ovrendi_time_submissions?account_id=eq.${ctx.account.id}&status=eq.submitted&select=user_id,week_start&order=week_start.asc`)
+    return res.status(200).json({pending})
+   }
+   if(!['GET','POST'].includes(req.method))return res.status(405).json({error:'Method not allowed'})
+   const week=req.query.week,op=req.method==='GET'?'list':req.body?.operation,data=req.body?.data||{}
+   if(typeof week!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(week)||!Number.isFinite(Date.parse(week))||new Date(week).toISOString().slice(0,10)!==week||new Date(week).getUTCDay()!==1)return res.status(400).json({error:'Choose a Monday'})
+   if(!['list','submit','approve','return'].includes(op))return res.status(400).json({error:'Invalid action'})
+   if(['approve','return'].includes(op)&&!requireRole(ctx,['owner','admin','manager'],res))return
+   if(op!=='list'&&(!Number.isInteger(data.version)||data.version<0||typeof data.fingerprint!=='string'||!/^[a-f0-9]{32}$/.test(data.fingerprint)||data.comment!==undefined&&(typeof data.comment!=='string'||data.comment.length>1000)))return res.status(400).json({error:'Reload the timesheet and enter a valid comment'})
+   if(['approve','return'].includes(op)&&!isUuid(data.user_id))return res.status(400).json({error:'Select an employee'})
+   const result=await sb('POST','rpc/ovrendi_submit_week',{p_account:ctx.account.id,p_user:ctx.user.id,p_week:week,p_action:op,p_data:data})
+   if(result.notify)result.notification=await require('./email').notifyTimesheetManagers(ctx.account.id,week,ctx.user.id,data.version+1)
+   return res.status(result.error?409:200).json(result)
+  }
   if(action==='weekly-timesheets'){
    if(!requireRole(ctx,['owner','admin','manager'],res))return
    if(!['GET','POST'].includes(req.method))return res.status(405).json({error:'Method not allowed'})

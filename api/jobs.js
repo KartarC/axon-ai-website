@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (!ctx) return
   if (!requireModule(ctx, 'production-board', res)) return
 
-  if(['production','from-quote','timer','employee-timer','timesheets','time-admin','weekly-timesheets'].includes(req.query.action))return require('./_lib/production').production(req,res,ctx)
+  if(['production','from-quote','timer','employee-timer','timesheets','time-admin','weekly-timesheets','time-submissions'].includes(req.query.action))return require('./_lib/production').production(req,res,ctx)
   const { id, status, search } = req.query
 
   // ── Single job routes (?id=X) ────────────────────────────

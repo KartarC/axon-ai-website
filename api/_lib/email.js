@@ -116,3 +116,11 @@ function overBudgetEmail(shopName, jobNumber, partName, actual, quoted, appUrl) 
 }
 
 module.exports = { passwordResetEmail, emailStatus, invitationEmail, sendEmail, getOwnerEmail, welcomeEmail, trialReminderEmail, trialExpiredEmail, overBudgetEmail }
+
+async function notifyTimesheetManagers(accountId,week,userId,version){
+ const result={sent:0,failed:0};
+ try{const members=await sb('GET',`account_users?account_id=eq.${accountId}&role=in.(owner,admin,manager)&select=user_id`);
+ await Promise.all(members.map(async member=>{try{const user=await authAdmin('GET','users/'+member.user_id);if(!user?.email){result.failed++;return}const url='https://getovrendi.com/app/modules/production-board/timesheets.html?week='+week;const sent=await sendEmail({to:user.email,kind:'timesheet_submission',idempotencyKey:`timesheet-${accountId}-${userId}-${week}-${version}-${member.user_id}`,subject:'A weekly timesheet is ready for review',text:`An employee submitted their timesheet for the week of ${week}. Sign in to review hours and approve or return it: ${url}`,html:shell(`<h2>Weekly timesheet submitted</h2><p>An employee’s timesheet for the week of ${escapeHtml(week)} is ready for your review.</p><p><a href="${url}">Review timesheet</a></p>`,'Review the submitted hours and approve or return with comments.')});if(sent.ok)result.sent++;else result.failed++}catch{result.failed++}}))
+ }catch{result.failed++}return result
+}
+module.exports.notifyTimesheetManagers=notifyTimesheetManagers
