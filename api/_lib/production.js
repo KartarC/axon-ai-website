@@ -4,6 +4,22 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='timesheets'){
+   if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'})
+   const from=req.query.from||new Date(Date.now()-14*86400000).toISOString().slice(0,10),to=req.query.to||new Date().toISOString().slice(0,10)
+   if(![from,to].every(v=>/^\d{4}-\d{2}-\d{2}$/.test(v)&&Number.isFinite(Date.parse(v))&&new Date(v).toISOString().slice(0,10)===v)||from>to)return res.status(400).json({error:'Choose valid dates'})
+   const result=await sb('POST','rpc/ovrendi_timesheets',{p_account:ctx.account.id,p_user:ctx.user.id,p_from:from+'T00:00:00Z',p_to:new Date(Date.parse(to)+86400000).toISOString()})
+   return res.status(result.error?403:200).json(result)
+  }
+  if(action==='employee-timer'){
+   if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'})
+   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
+   const body=req.body||{}
+   if(!isUuid(req.query.id)||!isUuid(body.entry_id)||!['start','stop','review'].includes(body.timer_action)||Object.keys(body).some(k=>!['entry_id','timer_action','note'].includes(k))||body.note!==undefined&&(typeof body.note!=='string'||body.note.length>1000))return res.status(400).json({error:'Invalid employee timer request'})
+   if(body.timer_action==='review'&&!requireRole(ctx,['owner','admin','manager'],res))return
+   const result=await sb('POST','rpc/ovrendi_employee_timer',{p_account:ctx.account.id,p_user:ctx.user.id,p_job:req.query.id,p_entry:body.entry_id,p_action:body.timer_action,p_note:body.note||''})
+   return res.status(result.error?409:200).json(result)
+  }
   if(action==='timer'){
    if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'})
    if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
@@ -32,7 +48,8 @@ async function production(req,res,ctx){
    const quoteRate=quote?.result?.rates
    const profiles=manage?await sb('GET',`billet_laser_profiles?account_id=eq.${ctx.account.id}&select=id,name,rates&limit=500`):[]
    const rates=profiles.filter(p=>p.rates.laborHourly!==null&&p.rates.laborHourly!==undefined&&p.rates.laborHourly!=='').map(p=>({id:p.id,name:p.name,rate:Number(p.rates.laborHourly),currency:p.rates.currency}))
-   return res.status(200).json({...rows[0],events,server_time:new Date().toISOString(),labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
+   const personal=await sb('GET',`ovrendi_employee_time?account_id=eq.${ctx.account.id}&user_id=eq.${ctx.user.id}&ended_at=is.null&limit=1`)
+   return res.status(200).json({...rows[0],personal_timer:personal[0]||null,events,server_time:new Date().toISOString(),labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
   }
   if(req.method!=='PATCH'||!isUuid(req.query.id))return res.status(405).json({error:'Method not allowed'})
   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
