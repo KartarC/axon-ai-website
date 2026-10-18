@@ -16,6 +16,7 @@ export default async function handler(req, res) {
 
   const ctx = await requireAuth(req, res)
   if (!ctx) return
+  if (!requireRole(ctx, ['owner','admin','manager'], res)) return
   if (!requireModule(ctx, 'job-costing', res)) return
 
   const { action, id, job_id } = req.query

@@ -4,6 +4,16 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='time-admin'){
+   if(!requireRole(ctx,['owner','admin','manager'],res))return
+   const body=req.body||{},op=req.method==='GET'?'list':body.operation,data=body.data||{}
+   if(!['GET','POST'].includes(req.method)||!['list','rate','correct'].includes(op))return res.status(400).json({error:'Invalid manager action'})
+   if(op!=='list'&&(!Number.isInteger(data.version)||data.version<0||typeof data.reason!=='string'||!data.reason.trim()||data.reason.length>1000))return res.status(400).json({error:'Version and reason required'})
+   if(op==='rate'&&!isUuid(data.user_id)||op==='correct'&&!isUuid(data.entry_id))return res.status(400).json({error:'Select an employee or entry'})
+   for(const key of ['hours','hourly_rate'])if(data[key]!==undefined&&(typeof data[key]!=='number'||!Number.isFinite(data[key])||data[key]<0||data[key]>1000000))return res.status(400).json({error:'Invalid hours or rate'})
+   const result=await sb('POST','rpc/ovrendi_time_admin',{p_account:ctx.account.id,p_user:ctx.user.id,p_action:op,p_data:data})
+   return res.status(result.error?409:200).json(result)
+  }
   if(action==='timesheets'){
    if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'})
    const from=req.query.from||new Date(Date.now()-14*86400000).toISOString().slice(0,10),to=req.query.to||new Date().toISOString().slice(0,10)
@@ -49,7 +59,8 @@ async function production(req,res,ctx){
    const profiles=manage?await sb('GET',`billet_laser_profiles?account_id=eq.${ctx.account.id}&select=id,name,rates&limit=500`):[]
    const rates=profiles.filter(p=>p.rates.laborHourly!==null&&p.rates.laborHourly!==undefined&&p.rates.laborHourly!=='').map(p=>({id:p.id,name:p.name,rate:Number(p.rates.laborHourly),currency:p.rates.currency}))
    const personal=await sb('GET',`ovrendi_employee_time?account_id=eq.${ctx.account.id}&user_id=eq.${ctx.user.id}&ended_at=is.null&limit=1`)
-   return res.status(200).json({...rows[0],personal_timer:personal[0]||null,events,server_time:new Date().toISOString(),labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
+   const sessions=manage?await sb('GET',`ovrendi_employee_time?account_id=eq.${ctx.account.id}&job_id=eq.${req.query.id}&select=hours,hourly_rate,rate_currency,ended_at`):[]
+   return res.status(200).json({...rows[0],...(manage?{employee_sessions:sessions.filter(e=>e.ended_at)}:{}),personal_timer:personal[0]?Object.fromEntries(['id','job_id','user_id','started_at'].map(k=>[k,personal[0][k]])):null,events,server_time:new Date().toISOString(),labor_profiles:rates,quote_labor_rate:manage&&quoteRate?{rate:quoteRate.laborHourly,currency:quoteRate.currency}:null})
   }
   if(req.method!=='PATCH'||!isUuid(req.query.id))return res.status(405).json({error:'Method not allowed'})
   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
