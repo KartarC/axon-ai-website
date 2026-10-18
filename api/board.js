@@ -3,6 +3,8 @@
 // Fire-and-forget: auto-log labor cost when operation completes
 async function tryAutoLogCost(ctx, entryId, entry) {
   if (!entry.started_at || !entry.machine_id) return
+  const [tracking]=await sb('GET',`ovrendi_job_tracking?account_id=eq.${ctx.account.id}&job_id=eq.${entry.job_id}&select=labor_cost`)
+  if(tracking?.labor_cost!=null)return
   const completedAt = entry.completed_at || new Date().toISOString()
   const hours = (new Date(completedAt) - new Date(entry.started_at)) / 3_600_000
   if (hours <= 0) return

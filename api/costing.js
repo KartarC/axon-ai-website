@@ -7,6 +7,7 @@
 // POST ?action=quote              → set/update job quote
 // POST ?action=auto-log           → auto-log labor from completed board entry
 const { sb, requireAuth, requireModule, requireRole, cors } = require('./_lib/supabase')
+const {reconcile,trackingFor}=require('./_lib/production-costing')
 const { sendEmail, getOwnerEmail, overBudgetEmail } = require('./_lib/email')
 
 export default async function handler(req, res) {
@@ -27,15 +28,17 @@ export default async function handler(req, res) {
       `job_quotes(quoted_price,target_margin),` +
       `job_cost_entries(total_cost,type)`
     )
+    const tracking=await trackingFor(sb,ctx.account.id,(jobs||[]).map(j=>j.id))
     // Aggregate cost totals per job
     const result = (jobs || []).map(j => {
-      const entries  = j.job_cost_entries || []
+      const resolved=reconcile(Array.isArray(j.job_quotes)?j.job_quotes[0]:j.job_quotes,j.job_cost_entries||[],tracking.get(j.id))
+      const entries=resolved.entries
       const actual   = entries.reduce((sum, e) => sum + parseFloat(e.total_cost || 0), 0)
       // PostgREST returns one-to-one embeds as an object (unique FK), older shapes as array — handle both
-      const jq       = Array.isArray(j.job_quotes) ? j.job_quotes[0] : j.job_quotes
+      const jq       = resolved.quote
       const quoted   = parseFloat(jq?.quoted_price || 0)
       const target   = parseFloat(jq?.target_margin || 0)
-      const variance = quoted > 0 ? actual - (quoted * (1 - target / 100)) : null
+      const variance = resolved.variance
       const margin   = quoted > 0 ? ((quoted - actual) / quoted) * 100 : null
 
       // ── Budget alert ────────────────────────────────────────
@@ -58,7 +61,8 @@ export default async function handler(req, res) {
         due_date:      j.due_date,
         priority:      j.priority,
         status:        j.status,
-        customer:      j.customers?.name || null,
+        customer:      tracking.get(j.id)?.snapshot?.customer||j.customers?.name||null,
+        currency:resolved.currency,production:resolved.production,quote_source:resolved.quote?.source||'manual',estimated_cost:resolved.estimated_cost,excluded_count:resolved.excluded_entries.length,
         quoted_price:  quoted,
         actual_cost:   Math.round(actual * 100) / 100,
         variance:      variance !== null ? Math.round(variance * 100) / 100 : null,
@@ -84,7 +88,7 @@ export default async function handler(req, res) {
       `job_cost_entries?job_id=eq.${job_id}&account_id=eq.${ctx.account.id}&order=recorded_at.asc` +
       `&select=*,board_entries(operation,machines(name))`
     )
-    return res.status(200).json({ quote: quote || null, entries: entries || [] })
+    const tracks=await trackingFor(sb,ctx.account.id,[job_id]);return res.status(200).json(reconcile(quote||null,entries||[],tracks.get(job_id)))
   }
 
   // ── POST ?action=quote: set job quote ────────────────────
@@ -97,6 +101,8 @@ export default async function handler(req, res) {
     const jobs = await sb('GET', `jobs?id=eq.${jid}&account_id=eq.${ctx.account.id}`)
     if (!jobs?.length) return res.status(404).json({ error: 'Job not found' })
 
+    const tracking=(await trackingFor(sb,ctx.account.id,[jid])).get(jid)
+    if(tracking?.quote_id)return res.status(409).json({error:'This job uses its accepted quotation. Its price cannot be overwritten in Job Costing.'})
     // Upsert quote
     const existing = await sb('GET', `job_quotes?job_id=eq.${jid}`)
     let quote
@@ -120,6 +126,8 @@ export default async function handler(req, res) {
     )
     if (!entries?.length) return res.status(404).json({ error: 'Board entry not found' })
     const be = entries[0]
+    const tracking=(await trackingFor(sb,ctx.account.id,[be.job_id||be.jobs.id])).get(be.job_id||be.jobs.id)
+    if(tracking?.labor_cost!=null)return res.status(409).json({error:'Labour is managed by the cumulative production total. Update it in Production.'})
 
     if (!be.started_at || !be.completed_at) return res.status(400).json({ error: 'Board entry has no time data' })
     if (!be.machines?.hourly_rate) return res.status(400).json({ error: 'Machine has no hourly rate set' })
@@ -155,6 +163,8 @@ export default async function handler(req, res) {
     const jobs = await sb('GET', `jobs?id=eq.${jid}&account_id=eq.${ctx.account.id}`)
     if (!jobs?.length) return res.status(404).json({ error: 'Job not found' })
 
+    const tracking=(await trackingFor(sb,ctx.account.id,[jid])).get(jid)
+    if((type==='labor'&&tracking?.labor_cost!=null)||(type==='material'&&tracking?.material_cost!=null))return res.status(409).json({error:'This category uses the production cumulative total. Update it in Production to avoid double-counting.'})
     const [entry] = await sb('POST', 'job_cost_entries', {
       account_id:  ctx.account.id,
       job_id:      jid,
@@ -171,11 +181,12 @@ export default async function handler(req, res) {
     let budget_alert = null
     try {
       const [jobQuote]   = await sb('GET', `job_quotes?job_id=eq.${jid}&account_id=eq.${ctx.account.id}`) || []
-      const allEntries   = await sb('GET', `job_cost_entries?job_id=eq.${jid}&account_id=eq.${ctx.account.id}&select=total_cost`)
-      if (jobQuote) {
-        const quoted     = parseFloat(jobQuote.quoted_price || 0)
-        const target     = parseFloat(jobQuote.target_margin || 40)
-        const actualNow  = (allEntries || []).reduce((s, e) => s + parseFloat(e.total_cost || 0), 0)
+      const allEntries   = await sb('GET', `job_cost_entries?job_id=eq.${jid}&account_id=eq.${ctx.account.id}&select=total_cost,type`)
+      const effective=reconcile(jobQuote,allEntries,tracking)
+      if (effective.quote) {
+        const quoted     = parseFloat(effective.quote.quoted_price || 0)
+        const target     = parseFloat(effective.quote.target_margin ?? 40)
+        const actualNow  = effective.actual_cost
         const targetCost = quoted * (1 - target / 100)
         if (actualNow >= quoted)                               budget_alert = 'over'
         else if (targetCost > 0 && actualNow >= targetCost * 0.80) budget_alert = 'at_risk'
@@ -205,6 +216,9 @@ export default async function handler(req, res) {
     if (!requireRole(ctx, ['owner','admin','manager'], res)) return
     const rows = await sb('GET', `job_cost_entries?id=eq.${id}&account_id=eq.${ctx.account.id}`)
     if (!rows?.length) return res.status(404).json({ error: 'Entry not found' })
+    const tracking=(await trackingFor(sb,ctx.account.id,[rows[0].job_id])).get(rows[0].job_id)
+    const type=req.body.type||rows[0].type
+    if((type==='labor'&&tracking?.labor_cost!=null)||(type==='material'&&tracking?.material_cost!=null))return res.status(409).json({error:'Update this cumulative cost in Production.'})
     const allowed = ['description','quantity','unit_cost','type']
     const updates = {}
     for (const k of allowed) { if (req.body[k] !== undefined) updates[k] = req.body[k] }

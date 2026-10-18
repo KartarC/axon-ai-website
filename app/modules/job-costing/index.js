@@ -33,8 +33,9 @@ function renderStats() {
   // "At Risk" = at_risk OR over (any job that needs attention)
   const alertCount  = allJobs.filter(j => j.budget_alert === 'at_risk' || j.budget_alert === 'over').length
 
-  document.getElementById('sQuoted').textContent = totalQuoted > 0 ? fmt$(totalQuoted) : '—'
-  document.getElementById('sActual').textContent = totalActual > 0 ? fmt$(totalActual) : '—'
+  const currencies=[...new Set(allJobs.map(j=>j.currency||''))],currency=currencies.length===1?currencies[0]:null
+  document.getElementById('sQuoted').textContent = currencies.length>1?'Separate currencies':fmt$(totalQuoted,currency)
+  document.getElementById('sActual').textContent = currencies.length>1?'Separate currencies':fmt$(totalActual,currency)
   document.getElementById('sMargin').textContent = avgMargin !== null ? avgMargin.toFixed(1) + '%' : '—'
   document.getElementById('sOver').textContent   = alertCount
 
@@ -82,8 +83,8 @@ function renderTable() {
   }
 
   tbody.innerHTML = jobs.map(j => {
-    const quotedStr   = j.has_quote ? fmt$(j.quoted_price) : '—'
-    const actualStr   = j.actual_cost > 0 ? fmt$(j.actual_cost) : '—'
+    const quotedStr   = j.has_quote ? fmt$(j.quoted_price,j.currency) : '—'
+    const actualStr   = fmt$(j.actual_cost,j.currency)
     const sc          = statusColors[j.status] || statusColors.open
     const stLabel     = statusText[j.status]   || j.status
 
@@ -98,21 +99,21 @@ function renderTable() {
     let varianceStr = '—', marginStr = '—'
     if (j.has_quote && j.margin_pct !== null) {
       const cost_target = j.quoted_price * (1 - j.target_margin / 100)
-      const variance    = j.actual_cost - cost_target
+      const variance    = j.variance
       const over        = variance > 0
-      varianceStr = `<span class="${over ? 'variance-over' : 'variance-ok'}">${over ? '+' : '-'}${fmt$(Math.abs(variance))}</span>`
+      varianceStr = variance==null?'—':`<span class="${over ? 'variance-over' : 'variance-ok'}">${over ? '+' : '-'}${fmt$(Math.abs(variance),j.currency)}</span>`
 
       const mp    = j.margin_pct
       const cls   = mp >= j.target_margin ? 'green' : mp >= j.target_margin - 10 ? 'amber' : 'red'
       marginStr   = `<span class="margin-pill margin-pill--${cls}">${mp.toFixed(1)}%</span>`
     }
 
-    const actionCell = j.has_quote
+    const actionCell = j.quote_source==='accepted_quote'?`<a href="/app/modules/production-board/?job=${j.id}">Production totals</a>`:j.has_quote
       ? `<button class="set-quote-btn" data-id="${j.id}" data-num="${esc(j.job_number)}" data-part="${esc(j.part_name)}" data-price="${j.quoted_price}" data-margin="${j.target_margin}">Edit quote</button>`
       : `<button class="set-quote-btn" data-id="${j.id}" data-num="${esc(j.job_number)}" data-part="${esc(j.part_name)}">Set quote</button>`
 
     return `<tr class="clickable ${rowCls}" data-job-id="${j.id}">
-      <td><span class="job-num">${esc(j.job_number)}${alertIcon}</span><span class="job-part">${esc(j.part_name)}</span></td>
+      <td><span class="job-num">${esc(j.job_number)}${alertIcon}</span><span class="job-part">${esc(j.part_name)}</span>${j.production?`<small>Production: ${j.production.actual_hours??'—'} actual hours${j.production.labor_cost_missing?' · labour cost not recorded':''}</small>`:''}</td>
       <td style="color:var(--gray-500)">${esc(j.customer || '—')}</td>
       <td class="num-cell">${quotedStr}</td>
       <td class="num-cell">${actualStr}</td>
@@ -126,7 +127,7 @@ function renderTable() {
   // Row click → job detail
   tbody.querySelectorAll('tr.clickable').forEach(row => {
     row.addEventListener('click', (e) => {
-      if (e.target.closest('.set-quote-btn')) return
+      if (e.target.closest('.set-quote-btn,a')) return
       window.location.href = `/app/jobs/detail.html?id=${row.dataset.jobId}`
     })
   })
@@ -239,7 +240,7 @@ document.getElementById('searchInput').addEventListener('input', renderTable)
 document.getElementById('refreshBtn').addEventListener('click', loadData)
 
 // ── Utils ──────────────────────────────────────────────────
-function fmt$(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }
+function fmt$(n,currency) {return (currency?currency+' ':'Unspecified currency ')+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 
 loadData()

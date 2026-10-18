@@ -37,7 +37,7 @@ function render() {
 
   const totalActual = entries.reduce((s, e) => s + parseFloat(e.total_cost || 0), 0)
   const quotedPrice = parseFloat(quote?.quoted_price || 0)
-  const targetMgn   = parseFloat(quote?.target_margin || 40)
+  const targetMgn   = parseFloat(quote?.target_margin ?? 40)
   const actualMargin = quotedPrice > 0 ? ((quotedPrice - totalActual) / quotedPrice) * 100 : null
   const marginCls   = actualMargin === null ? '' : actualMargin >= targetMgn ? 'cs-margin--green' : actualMargin >= targetMgn - 10 ? 'cs-margin--amber' : 'cs-margin--red'
 
@@ -68,7 +68,7 @@ function render() {
           <div style="font-weight:800;color:#D97706;font-size:.875rem">Budget At Risk</div>
           <div style="font-size:.8rem;color:#92400E;margin-top:2px">
             Actual costs (${fmt$(totalActual)}) are approaching the target cost ceiling
-            (${fmt$(quotedPrice * (1 - targetMgn / 100))} for ${targetMgn}% margin).
+            (${fmt$(quotedPrice * (1 - targetMgn / 100))} for ${targetMgn.toFixed(1)}% margin).
             Review remaining operations before adding more costs.
           </div>
         </div>
@@ -116,6 +116,7 @@ function render() {
 
         <!-- Cost entries -->
         ${hasCosting ? `
+        ${costData?.production?`<section class="acard" id="productionCosts"><h3>Production actuals</h3><p>Actual hours: <strong>${costData.production.actual_hours??'Not recorded'}</strong> · Quoted processing hours: ${costData.production.estimated_process_hours==null?'Not recorded':costData.production.estimated_process_hours.toFixed(2)} (excludes setup / additional labour).</p><p>Material used: ${costData.production.material_used??'Not recorded'} ${esc(costData.production.material_unit||'')}</p><p>${costData.production.labor_cost_missing?'Hours are recorded, but no production labour total has been entered. Hours alone are not a dollar cost.':''}</p><p>Production totals replace other entries in the same category. Other categories remain additive. Margins reflect recorded costs only; missing costs are not assumed complete.</p><a href="/app/modules/production-board/?job=${jobId}">Update production actuals →</a>${costData.excluded_entries?.length?`<details><summary>${costData.excluded_entries.length} older entries excluded from totals</summary><ul>${costData.excluded_entries.map(e=>`<li>${esc(e.description)} · ${fmt$(e.total_cost)}</li>`).join('')}</ul></details>`:''}</section>`:''}
         <div class="entries-card">
           <div class="entries-header">
             <div class="entries-title">Cost Breakdown</div>
@@ -129,11 +130,11 @@ function render() {
               ${entries.map(e => `
                 <tr>
                   <td><span class="type-pill type-${e.type}">${e.type}</span></td>
-                  <td>${esc(e.description)}${e.source === 'auto' ? '<span class="auto-badge">auto</span>' : ''}</td>
+                  <td>${esc(e.description)}${e.source==='production'?'<span class="auto-badge">Production · live total</span>':''}${e.source === 'auto' ? '<span class="auto-badge">auto</span>' : ''}</td>
                   <td class="num">${parseFloat(e.quantity).toFixed(2)}</td>
                   <td class="num">${fmt$(e.unit_cost)}</td>
                   <td class="num" style="font-weight:700">${fmt$(e.total_cost)}</td>
-                  <td>${e.source !== 'auto' ? `<button class="del-btn" data-entry-id="${e.id}" title="Delete">x</button>` : ''}</td>
+                  <td>${!e.read_only && e.source !== 'auto' ? `<button class="del-btn" data-entry-id="${e.id}" title="Delete">x</button>` : ''}</td>
                 </tr>
               `).join('')}
               <tr style="background:var(--gray-50)">
@@ -190,8 +191,8 @@ function render() {
 
           ${quote ? `
           <div class="cs-row"><span class="cs-row-label">Quoted Price</span><span class="cs-row-val" style="color:var(--blue-700)">${fmt$(quotedPrice)}</span></div>
-          <div class="cs-row"><span class="cs-row-label">Target Margin</span><span class="cs-row-val">${targetMgn}%</span></div>
-          <div class="cs-row"><span class="cs-row-label">Target Cost</span><span class="cs-row-val">${fmt$(quotedPrice * (1 - targetMgn / 100))}</span></div>
+          <div class="cs-row"><span class="cs-row-label">Target Margin</span><span class="cs-row-val">${targetMgn.toFixed(1)}%</span></div>
+          <div class="cs-row"><span class="cs-row-label">Target Cost</span><span class="cs-row-val">${costData.estimated_cost==null?'Not recorded':fmt$(costData.estimated_cost)}</span></div><div class="cs-row"><span class="cs-row-label">Cost variance (actual − target)</span><span class="cs-row-val">${costData.variance==null?'Not available':fmt$(costData.variance)}</span></div>
           <div style="height:1px;background:var(--gray-200);margin:4px 0"></div>
           ` : `<div style="padding:12px;background:var(--blue-50);border-radius:var(--radius);margin-bottom:16px;font-size:.82rem;color:var(--blue-700);font-weight:600">No quote set yet. Set a quoted price to track margin.</div>`}
 
@@ -204,13 +205,13 @@ function render() {
           ${actualMargin !== null ? `
           <div class="cs-margin ${marginCls}">
             <div class="cs-margin-pct">${actualMargin.toFixed(1)}%</div>
-            <div class="cs-margin-label">Current Margin</div>
+            <div class="cs-margin-label">Margin on recorded costs</div>
           </div>
-          <div class="cs-target">Target: ${targetMgn}% · ${actualMargin >= targetMgn ? 'On track' : (actualMargin - targetMgn).toFixed(1) + '% below target'}</div>
+          <div class="cs-target">Target: ${targetMgn.toFixed(1)}% · ${actualMargin >= targetMgn ? 'On track' : (actualMargin - targetMgn).toFixed(1) + '% below target'}</div>
           ` : ''}
 
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-            <button class="btn-app btn-app--secondary" style="width:100%" id="setQuoteSideBtn">
+            <button class="btn-app btn-app--secondary" style="width:100%" id="setQuoteSideBtn" ${quote?.source==='accepted_quote'?'hidden':''}>
               ${quote ? 'Edit Quote' : 'Set Quote'}
             </button>
             ${quote ? `<a class="btn-app btn-app--primary" style="width:100%;text-align:center;text-decoration:none;box-sizing:border-box" href="/app/quote-doc.html?id=${jobId}" target="_blank">Quote PDF ↗</a>` : ''}
@@ -268,7 +269,7 @@ function render() {
   // Set quote buttons
   const openQuote = () => {
     const price = quote?.quoted_price || ''
-    const mgn   = quote?.target_margin || 40
+    const mgn   = quote?.target_margin ?? 40
     const qp    = prompt(`Set quoted price for ${j.job_number}:`, price)
     if (qp === null) return
     const qm    = prompt('Target margin % (e.g. 40):', mgn)
@@ -281,6 +282,6 @@ function render() {
   document.getElementById('setQuoteSideBtn')?.addEventListener('click', openQuote)
 }
 
-function fmt$(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }
+function fmt$(n) {return (costData?.currency?costData.currency+' ':'Unspecified currency ')+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 function fmtDate(d) { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) }
