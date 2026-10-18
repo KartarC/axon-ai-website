@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test onboarding-cloud.test.cjs security.test.cjs laser-quoting.test.cjs account-email.test.cjs launch.test.cjs resend.test.cjs staff-auth.test.cjs company-users.test.cjs zoho-mail.test.cjs engagement.test.cjs workflow.test.cjs contact.test.cjs quote-approval.test.cjs sales.test.cjs settings-invite.test.cjs && node database-security.cjs && node database-laser.cjs && node laser-persistence.cjs",
+    "test:production": "node production-workflow-browser.cjs",
     "test:browser": "node laser-browser.cjs",
     "test:mailbox": "node mailbox-browser.cjs",
     "test:education": "node education-browser.cjs && node education-library-browser.cjs"
