@@ -4,6 +4,14 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='weekly-timesheets'){
+   if(!requireRole(ctx,['owner','admin','manager'],res))return
+   if(!['GET','POST'].includes(req.method))return res.status(405).json({error:'Method not allowed'})
+   const week=req.query.week
+   if(typeof week!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(week)||!Number.isFinite(Date.parse(week))||new Date(week).toISOString().slice(0,10)!==week||new Date(week).getUTCDay()!==1)return res.status(400).json({error:'Choose a Monday'})
+   const result=await sb('POST','rpc/ovrendi_week_timesheet',{p_account:ctx.account.id,p_user:ctx.user.id,p_week:week,p_approve:req.method==='POST',p_fingerprint:req.body?.fingerprint||null})
+   return res.status(result.error?409:200).json(result)
+  }
   if(action==='time-admin'){
    if(!requireRole(ctx,['owner','admin','manager'],res))return
    const body=req.body||{},op=req.method==='GET'?'list':body.operation,data=body.data||{}
