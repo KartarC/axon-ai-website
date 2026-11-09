@@ -98,6 +98,7 @@ function render() {
       <a href="/app/modules/production-board/" class="btn-app btn-app--secondary btn-app--sm">View on Board</a>
     </div>
 
+    ${renderLaserRuns(costData?.laser_runs)}
     <div class="job-detail-grid">
       <div>
         <!-- Job info -->
@@ -285,3 +286,10 @@ function render() {
 function fmt$(n) {return (costData?.currency?costData.currency+' ':'Unspecified currency ')+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 function fmtDate(d) { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) }
+
+function renderLaserRuns(data){
+ if(!data)return ''
+ if(!data.count)return '<section class="job-info-card"><h2>Laser runs: quoted vs actual</h2><p>No completed runs recorded for this accepted quote.</p></section>'
+ const fmt=n=>n==null?'Not available':Number(n).toLocaleString(undefined,{maximumFractionDigits:3})
+ return `<section class="job-info-card" id="laserRunComparison"><h2>Laser runs: quoted vs actual</h2><p>Accepted revision ${esc(data.revision)} · ${esc(data.program||'No program reference')} · ${data.count} completed run(s). Compare the full quoted batch with runs recorded so far.</p><div style="overflow:auto"><table><thead><tr><th>Metric</th><th>Quoted</th><th>Recorded</th><th>Difference</th></tr></thead><tbody>${data.metrics.map(m=>`<tr><td>${esc(m.label)}</td><td>${fmt(m.quoted)}</td><td>${fmt(m.actual)}</td><td>${fmt(m.variance)}</td></tr>`).join('')}</tbody></table></div><p>Difference = recorded minus quoted. Missing readings or a different gas leave the comparison unavailable. Calculated costs use the accepted quote’s rates. This comparison does not post additional costs to the ledger. Machine elapsed time includes pauses and is separate from employee hours.</p><details><summary>Run sources</summary><ul>${data.runs.map(r=>`<li>${esc(r.run)} · ${esc(r.program)} · ${esc(r.date)} · ${esc(r.entry)} · cut ${fmt(r.cut)} min / elapsed ${fmt(r.elapsed)} min · ${fmt(r.sheets)} sheets, ${fmt(r.parts)} good parts · gas: ${fmt(r.gas_m3)} std m³ ${esc(r.gas_type||'')} (${esc(r.gas||'not recorded')}) · energy: ${fmt(r.kwh)} kWh (${esc(r.energy||'not recorded')})</li>`).join('')}</ul></details></section>`
+}

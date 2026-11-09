@@ -4,6 +4,14 @@ const stages=['planned','cutting','secondary','inspection','ready','completed','
 async function production(req,res,ctx){
  try{
   const action=req.query.action,manage=['owner','admin','manager'].includes(ctx.role)
+  if(action==='laser-run'){
+   if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'})
+   if(!requireRole(ctx,['owner','admin','manager','operator'],res))return
+   if(!isUuid(req.query.id))return res.status(400).json({error:'Choose a job'})
+   const error=require('./laser-runs').validate(req.body);if(error)return res.status(400).json({error})
+   const saved=await sb('POST','rpc/ovrendi_record_laser_run',{a:ctx.account.id,u:ctx.user.id,j:req.query.id,d:req.body})
+   return res.status(saved.error?409:201).json(saved)
+  }
   if(action==='time-submissions'){
    if(req.method==='GET'&&req.query.inbox==='1'){
     if(!requireRole(ctx,['owner','admin','manager'],res))return

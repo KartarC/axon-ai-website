@@ -89,7 +89,7 @@ export default async function handler(req, res) {
       `job_cost_entries?job_id=eq.${job_id}&account_id=eq.${ctx.account.id}&order=recorded_at.asc` +
       `&select=*,board_entries(operation,machines(name))`
     )
-    const tracks=await trackingFor(sb,ctx.account.id,[job_id]);return res.status(200).json(reconcile(quote||null,entries||[],tracks.get(job_id)))
+    const tracks=await trackingFor(sb,ctx.account.id,[job_id]);const t=tracks.get(job_id);return res.status(200).json({...reconcile(quote||null,entries||[],t),laser_runs:await require('./_lib/laser-runs').comparison(sb,ctx.account.id,t)})
   }
 
   // ── POST ?action=quote: set job quote ────────────────────
